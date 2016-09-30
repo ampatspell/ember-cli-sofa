@@ -2,7 +2,7 @@ import Ember from 'ember';
 import { assert, notBlank, isClass_ } from '../assert';
 import SofaModel from '../model';
 import InternalModel, { internalPropertyName } from './internal-model';
-import { createDatabase } from '../database';
+import { createInternalDatabase } from './internal-database';
 
 const {
   getOwner,
@@ -39,7 +39,8 @@ export default class InternalStore {
   createDatabase(identifier) {
     let databaseOptions = this.databaseOptionsForIdentifier(identifier);
     let documents = this.createCouchDatabase(databaseOptions);
-    return createDatabase(this, identifier, documents);
+    let internalDatabase = createInternalDatabase(this, identifier, documents);
+    return internalDatabase.database;
   }
 
   database(identifier) {

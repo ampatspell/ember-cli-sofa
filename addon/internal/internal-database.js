@@ -1,3 +1,15 @@
+import Ember from 'ember';
+
+const {
+  getOwner
+} = Ember;
+
+export function createInternalDatabase(internalStore, identifier, documents) {
+  let internal = new InternalDatabase(internalStore.store, internalStore, identifier, documents);
+  let database = getOwner(internalStore.store).lookup('sofa:database').create({ _internal: internal });
+  internal.database = database;
+  return internal;
+}
 
 export default class InternalDatabase {
 
@@ -6,7 +18,7 @@ export default class InternalDatabase {
     this.internalStore = internalStore;
     this.identifier = identifier;
     this.documents = documents;
-    this.database = null;
+    this._database = null;
   }
 
   modelClassForName(modelName) {
