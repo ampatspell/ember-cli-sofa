@@ -1,5 +1,4 @@
 import Ember from 'ember';
-import hbs from 'htmlbars-inline-precompile';
 
 const {
   computed
@@ -7,10 +6,6 @@ const {
 
 export default Ember.Component.extend({
   classNameBindings: [':ui-input'],
-  layout: hbs`
-    <div class="title">{{title}} <span class="detail">{{detailedValue}}</span></div>
-    <div class="value">{{input value=value}}</div>
-  `,
 
   detailedValue: computed('value', function() {
     let value = this.get('value');
