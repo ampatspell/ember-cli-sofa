@@ -77,6 +77,7 @@ export default class Definition {
   }
 
   deserialize(internal, doc) {
+    // TOOD: move up `changed` so it also includes isDirty, isNew, ...
     internal.withPropertyChanges(changed => {
       this.eachProperty(property => {
         property.deserialize(internal, doc, changed);
