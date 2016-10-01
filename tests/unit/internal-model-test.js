@@ -17,7 +17,7 @@ module('internal-model', () => {
 
 test('is created with isNew true and no database', assert => {
   let modelClass = store.modelClassForName('duck');
-  let internal = create(modelClass);
+  let { internal, instance } = create(modelClass);
   assert.ok(internal);
   assert.ok(internal.modelClass === modelClass);
   assert.ok(internal.database === null);
@@ -26,7 +26,7 @@ test('is created with isNew true and no database', assert => {
 
 test('is created with isNew true and database', assert => {
   let modelClass = store.modelClassForName('duck');
-  let internal = create(modelClass, store.get('db.main'));
+  let { internal, instance } = create(modelClass, store.get('db.main'));
   assert.ok(internal);
   assert.ok(internal.modelClass === modelClass);
   assert.ok(internal.database === store.get('db.main'));
@@ -35,7 +35,7 @@ test('is created with isNew true and database', assert => {
 
 test('internal model creates model', assert => {
   let modelClass = store.modelClassForName('duck');
-  let internal = create(modelClass);
+  let { internal, instance } = create(modelClass);
   let model = internal.getModel();
   assert.ok(model);
   assert.ok(model.get('_internal') === internal);

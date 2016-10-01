@@ -1,4 +1,6 @@
 import EmptyObject from './util/empty-object';
+import { assert } from './util/assert';
+import { getDefinition } from './model';
 
 export const internalPropertyName = '_internal';
 
@@ -11,8 +13,9 @@ export default class InternalModel {
   constructor(store, modelClass, database = null) {
     this.store = store;
     this.modelClass = modelClass;
+    this.definition = getDefinition(modelClass);
     this.values = new EmptyObject();
-    this.database = database;
+    this._database = database;
     this.model = null;
     this.state = {
       isNew: true,
@@ -24,6 +27,17 @@ export default class InternalModel {
       isError: false,
       error: null
     };
+  }
+
+  get database() {
+    return this._database;
+  }
+
+  set database(database) {
+    if(this._database !== database) {
+      assert({ error: 'internal', reason: 'Database can be set only while model is new' }, this.state.isNew);
+      this._database = database;
+    }
   }
 
   withPropertyChanges(cb, notify) {
@@ -79,31 +93,34 @@ export default class InternalModel {
     }, notify);
   }
 
+  onDirty(changed) {
+    if(this.state.isDirty) {
+      return;
+    }
+    this.state.isDirty = true;
+    changed('isDirty');
+  }
+
   getValue(key) {
     return this.values[key];
   }
 
-  setValue(key, value) {
+  setValue(key, value, changed) {
+    if(this.values[key] === value) {
+      return value;
+    }
     this.values[key] = value;
+    this.onDirty(changed);
     return value;
   }
 
-  getModel() {
+  getModel(props) {
     let model = this.model;
     if(!model) {
-      model = this.store._createModelForInternalModel(this);
+      model = this.store._createModelForInternalModel(this, props);
       this.model = model;
     }
     return model;
-  }
-
-  deserialize(doc, notify) {
-    this.withPropertyChanges(changed => {
-      for(let key in doc) {
-        this.setValue(key, doc[key]);
-        changed(key);
-      }
-    }, notify);
   }
 
 }

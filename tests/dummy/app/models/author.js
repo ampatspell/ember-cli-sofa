@@ -1,5 +1,7 @@
-import Model from 'sofa/model';
+import { Model, attr } from 'sofa';
 
 export default Model.extend({
+
+  name: attr('string'),
 
 });

@@ -3,20 +3,19 @@ import { internalPropertyName } from '../internal-model';
 
 export default Ember.Mixin.create({
 
-  _createModelForInternalModel(internal, modelProps) {
+  _createModelForInternalModel(internal, props) {
     let modelClass = internal.modelClass;
     let model = modelClass._create({ [internalPropertyName]: internal });
-    if(modelProps) {
-      model.setProperties(modelProps);
+    if(props) {
+      model.setProperties(props);
     }
     return model;
   },
 
   _createModelForName(modelName, database, props) {
     let Model = this.modelClassForName(modelName);
-    let internal = this._createNewInternalModel(Model, database, props);
-    // TODO: props
-    return internal.getModel();
+    let { internal, instance } = this._createNewInternalModel(Model, database, props);
+    return internal.getModel(instance);
   },
 
   model(modelName, props) {

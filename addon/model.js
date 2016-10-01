@@ -1,6 +1,8 @@
 import Ember from 'ember';
 import Error from './util/error';
 import { internalPropertyName, getInternalModel } from './internal-model';
+import { create as definition } from './model-definition';
+import { type, rev, id } from './properties/helpers';
 import ModelStateMixin from './model-state-mixin';
 
 const {
@@ -8,34 +10,23 @@ const {
   get
 } = Ember;
 
+export function getDefinition(modelClass) {
+  return get(modelClass, 'definition');
+}
+
 const constructor = () => {
   return computed(function() {
     return get(this.constructor, 'modelName');
   }).readOnly();
 };
 
-// const internalProperty = (name) => {
-//   return computed(function() {
-//     return getInternalModel(this)[name];
-//   }).readOnly();
-// };
-
-const database = () => {
+const internal = (name) => {
   return computed({
     get() {
-      return getInternalModel(this).database;
+      return getInternalModel(this)[name];
     },
     set(key, value) {
-      let internal = getInternalModel(this);
-      if(internal.database !== value) {
-        if(!internal.isNew) {
-          throw new Error({
-            error: 'internal',
-            reason: 'Database can be set only while model is new'
-          });
-        }
-        internal.database = value;
-      }
+      getInternalModel(this)[name] = value;
       return value;
     }
   });
@@ -45,8 +36,12 @@ const Model = Ember.Object.extend(ModelStateMixin, {
 
   [internalPropertyName]: null,
 
+  type: type(),
+  rev: rev(),
+  id: id(),
+
   modelName: constructor('modelName'),
-  database: database(),
+  database: internal('database'),
 
 });
 
@@ -54,13 +49,14 @@ Model.reopenClass({
 
   store: null,
   modelName: null,
+  definition: definition(),
 
   _create: Model.create,
 
   create() {
     throw new Error({
       error: 'internal',
-      reason: 'model.create'
+      reason: 'use `store.model` or `database.model` to create new models'
     });
   },
 

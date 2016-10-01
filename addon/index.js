@@ -1,9 +1,23 @@
 import Store from './store';
 import Model from './model';
 
-export default {
+import {
+  id,
+  prefix,
+  rev,
+  type,
+  attr,
+} from './properties/helpers';
+
+export {
   Store,
-  Model
+  Model,
+
+  id,
+  prefix,
+  rev,
+  type,
+  attr
 };
 
 export default Store;

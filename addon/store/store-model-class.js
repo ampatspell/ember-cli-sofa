@@ -21,9 +21,8 @@ export default Ember.Mixin.create({
   modelClassForName(modelName) {
     return this._classForName('model', modelName, (Model, normalizedModelName) => {
       assert(`model '${normalizedModelName}' must be sofa Model`, this._isModelClass(Model));
-      let store = this.store;
       let Extended = Model.extend();
-      Extended.reopenClass({ store, [__sofa_type__]: __sofa_model_type__ });
+      Extended.reopenClass({ store: this, [__sofa_type__]: __sofa_model_type__ });
       return Extended;
     });
   }

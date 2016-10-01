@@ -18,4 +18,8 @@ props.forEach(key => {
   hash[key] = state(key);
 });
 
+hash.state = computed(...props, function() {
+  return this.getProperties(...props);
+});
+
 export default Ember.Mixin.create(hash);
