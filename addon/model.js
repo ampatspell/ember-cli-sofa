@@ -1,7 +1,7 @@
 import Ember from 'ember';
-import Error from './error';
-import { internalPropertyName, getInternalModel } from './internal/internal-model';
-import ModelStateMixin from './internal/model-state-mixin';
+import Error from './util/error';
+import { internalPropertyName, getInternalModel } from './internal-model';
+import ModelStateMixin from './model-state-mixin';
 
 const {
   computed,

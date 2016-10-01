@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import SofaError from '../error';
+import SofaError from '../util/error';
 
 const {
   isNone,

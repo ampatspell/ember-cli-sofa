@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import SofaError from '../../error';
+import SofaError from '../../util/error';
 import readFile from './file-reader';
 import mimeType from './mime-type';
 import arrayBufferToBase64 from './array-buffer-to-base64';

@@ -1,26 +1,13 @@
 import Ember from 'ember';
-import { forwardCall } from './computed';
 
-const {
-  computed: { oneWay }
-} = Ember;
+import DatabaseModelClass from './database/database-model-class';
+import DatabaseModel from './database/database-model';
+import DatabasePush from './database/database-push';
 
-let call = forwardCall('_internal');
+export default Ember.Object.extend(DatabaseModelClass, DatabaseModel, DatabasePush, {
 
-let prop = (name) => {
-  return oneWay(`_internal.${name}`).readOnly();
-};
-
-export default Ember.Object.extend({
-
-  _internal: null,
-
-  store:      prop('store'),
-  identifier: prop('identifier'),
-  documents:  prop('documents'),
-
-  modelClassForName: call('modelClassForName'),
-  model:             call('model'),
-  push:              call('push'),
+  store:      null,
+  identifier: null,
+  documents:  null,
 
 });

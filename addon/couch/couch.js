@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import { object } from '../computed';
+import { object } from '../util/computed';
 
 const {
   computed,

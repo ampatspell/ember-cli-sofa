@@ -7,7 +7,7 @@ let Duck = Model.extend({
 });
 
 let create = (modelClass, db) => {
-  return store.get('_internal').createNewInternalModel(modelClass, db);
+  return store._createNewInternalModel(modelClass, db);
 };
 
 module('internal-model', () => {

@@ -1,30 +1,25 @@
 import Ember from 'ember';
-import InternalStore from './internal/internal-store';
-import { lookup, createInternal, forwardCall } from './computed';
+import StoreDatabase from './store/store-database';
+import StoreClass from './store/store-class';
+import StoreModelClass from './store/store-model-class';
+import StoreInternalModel from './store/store-internal-model';
+import StoreModel from './store/store-model';
+import StoreDestroy from './store/store-destroy';
 
-const lookupWithStore = (name) => {
-  return lookup(name, function() {
-    return { store: this };
-  });
-};
+const {
+  Logger: { warn }
+} = Ember;
 
-let call = forwardCall('_internal');
-
-export default Ember.Service.extend({
-
-  _internal: createInternal(InternalStore),
-
-  database: call('database'),
-  db: lookupWithStore('sofa:databases'),
-
-  modelClassForName: call('modelClassForName'),
-  model: call('createModelForName'),
+export default Ember.Service.extend(
+  StoreDatabase,
+  StoreClass,
+  StoreModelClass,
+  StoreInternalModel,
+  StoreModel,
+  StoreDestroy, {
 
   find() {
-    console.warn(this+'', '`find`', ...arguments);
-  },
-
-  willDestroy() {
+    warn(this+'', '`find`', ...arguments);
   }
 
 });

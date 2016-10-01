@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import SofaError from '../error';
+import SofaError from '../util/error';
 import wrap from './util/file';
 import { isFileOrBlob, hasToBase64, toBase64 } from './util/file-availability';
 

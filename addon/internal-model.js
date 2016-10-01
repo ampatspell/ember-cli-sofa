@@ -1,4 +1,4 @@
-import EmptyObject from './empty-object';
+import EmptyObject from './util/empty-object';
 
 export const internalPropertyName = '_internal';
 
@@ -8,8 +8,8 @@ export function getInternalModel(model) {
 
 export default class InternalModel {
 
-  constructor(internalStore, modelClass, database = null) {
-    this.internalStore = internalStore;
+  constructor(store, modelClass, database = null) {
+    this.store = store;
     this.modelClass = modelClass;
     this.values = new EmptyObject();
     this.database = database;
@@ -91,7 +91,7 @@ export default class InternalModel {
   getModel() {
     let model = this.model;
     if(!model) {
-      model = this.internalStore.createModelForInternalModel(this);
+      model = this.store._createModelForInternalModel(this);
       this.model = model;
     }
     return model;
