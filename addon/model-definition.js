@@ -68,13 +68,13 @@ export default class Definition {
     return this.property('type').matchesDocument(this.modelClass, doc);
   }
 
-  // serialize(model, preview=false) {
-  //   let doc = {};
-  //   this.eachProperty(property => {
-  //     property.serialize(model, doc, preview);
-  //   });
-  //   return doc;
-  // }
+  serialize(internal, preview=false) {
+    let doc = {};
+    this.eachProperty(property => {
+      property.serialize(internal, doc, preview);
+    });
+    return doc;
+  }
 
   // deserialize(model, doc) {
   //   this.eachProperty(property => {

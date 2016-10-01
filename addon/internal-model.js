@@ -1,6 +1,11 @@
+import Ember from 'ember';
 import EmptyObject from './util/empty-object';
 import { assert } from './util/assert';
 import { getDefinition } from './model';
+
+const {
+  get
+} = Ember;
 
 export const internalPropertyName = '_internal';
 
@@ -27,6 +32,10 @@ export default class InternalModel {
       isError: false,
       error: null
     };
+  }
+
+  get modelName() {
+    return get(this.modelClass, 'modelName');
   }
 
   get database() {
@@ -105,12 +114,11 @@ export default class InternalModel {
     return this.values[key];
   }
 
-  setValue(key, value, changed) {
+  setValue(key, value) {
     if(this.values[key] === value) {
       return value;
     }
     this.values[key] = value;
-    this.onDirty(changed);
     return value;
   }
 

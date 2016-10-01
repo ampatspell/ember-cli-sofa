@@ -32,6 +32,22 @@ const internal = (name) => {
   });
 };
 
+const serialize = () => {
+  return function(preview=false) {
+    let definition = getDefinition(this.constructor);
+    let internal = getInternalModel(this);
+    return definition.serialize(internal, preview);
+  };
+}
+
+const docId = () => {
+  return computed('id', function() {
+    let modelId = this.get('id');
+    let definition = getDefinition(this.constructor);
+    return definition.docId(modelId);
+  }).readOnly();
+}
+
 const Model = Ember.Object.extend(ModelStateMixin, {
 
   [internalPropertyName]: null,
@@ -40,8 +56,12 @@ const Model = Ember.Object.extend(ModelStateMixin, {
   rev: rev(),
   id: id(),
 
+  docId: docId(),
+
   modelName: constructor('modelName'),
   database: internal('database'),
+
+  serialize: serialize(),
 
 });
 

@@ -1,6 +1,5 @@
 import Ember from 'ember';
 import { getInternalModel } from '../internal-model';
-// import { onDirty } from '../state';
 
 const {
   merge,
@@ -72,99 +71,83 @@ export default class Property {
 
   //
 
-  // dirty(model) {
-  //   if(!this.opts.dirties) {
-  //     return;
-  //   }
-  //   onDirty(model);
-  // }
+  dirty(internal, changed) {
+    if(!this.opts.dirties) {
+      return;
+    }
+    internal.onDirty(changed);
+  }
 
   //
 
-  // getDataValue(model) {
-  //   return model.get('internal').getValue(this.name);
-  // }
-
-  // setDataValue(model, value) {
-  //   return model.get('internal').setValue(this.name, value);
-  // }
-
-  //
-
-  // _getValue(model) {
-  //   return this.getDataValue(model);
-  // }
-
-  getValue(internal) {
+  getInternalValue(internal) {
     return internal.getValue(this.name);
   }
 
-  _setValue(internal, value, changed) {
+  setInternalValue(internal, value, changed) {
     internal.setValue(this.name, value, changed);
-    // let result = this.setDataValue(model, value);
-    // this.dirty(model);
-    // this.notifyDocumentChange(model);
-    // return result;
+  }
+
+  //
+
+  _getValue(internal) {
+    return this.getInternalValue(internal);
+  }
+
+  getValue(internal) {
+    return this._getValue(internal);
+  }
+
+  _setValue(internal, value, changed) {
+    this.setInternalValue(internal, value, changed);
+    this.dirty(internal, changed);
+    return value;
   }
 
   setValue(internal, value, changed) {
-    return this._setValue(internal, value, changed);
+    let transformed = this.transformValueToInternalModel(internal, value);
+    let current = this.getInternalValue(internal);
+    if(current !== transformed) {
+      return this._setValue(internal, value, changed);
+    }
+    return current;
   }
 
-  // //
+  //
 
   getPropertyValue(model) {
     let internal = getInternalModel(model);
     return this.getValue(internal);
   }
 
-  // setPropertyValue(model, value) {
-  //   let transformed = this.transformValueToModel(model, value);
-  //   let current = this.getDataValue(model);
-  //   if(current !== transformed) {
-  //     return this.setValue(model, transformed);
-  //   }
-  //   return transformed;
-  // }
+  setPropertyValue(model, value) {
+    let internal = getInternalModel(model);
+    return this.setValue(internal, value, Ember.K);
+  }
 
-  // notifyDocumentChange(model, self=false) {
-  //   model.notifyPropertyChange('document');
-  //   if(!self) {
-  //     get(model.constructor, 'definition').documentDidChange(this, model, this.name);
-  //   }
-  // }
+  //
 
-  // documentDidChange() {
-  // }
+  setDocValue(doc, value) {
+    if(value !== undefined) {
+      doc[this.opts.key] = value;
+    }
+  }
 
-  // notifyPropertyChange(model) {
-  //   model.notifyPropertyChange(this.name);
-  //   this.notifyDocumentChange(model);
-  // }
+  getDocValue(doc) {
+    return doc[this.opts.key];
+  }
 
-  // //
+  _serialize(internal, doc) {
+    let value = this.getInternalValue(internal);
+    this.setDocValue(doc, value);
+  }
 
-  // setDocValue(doc, value) {
-  //   if(value !== undefined) {
-  //     doc[this.opts.key] = value;
-  //   }
-  // }
-
-  // getDocValue(doc) {
-  //   return doc[this.opts.key];
-  // }
-
-  // _serialize(model, doc) {
-  //   let value = this.getDataValue(model);
-  //   this.setDocValue(doc, value);
-  // }
-
-  // serialize(model, doc) {
-  //   if(!this.opts.serialize) {
-  //     return;
-  //   }
-  //   return this._serialize(model, doc);
-  // }
+  serialize(internal, doc) {
+    if(!this.opts.serialize) {
+      return;
+    }
+    return this._serialize(internal, doc);
+  }
 
   // _deserialize(model, doc) {
   //   let value = this.getDocValue(doc);

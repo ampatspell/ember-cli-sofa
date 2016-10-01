@@ -34,13 +34,13 @@ export default class PrefixedIdentifier extends Identifier {
     return docId.substr(prefix.length);
   }
 
-  // serialize(model, doc, preview) {
-  //   let modelId = this.getDataValue(model);
-  //   if(this.validateId(modelId, preview)) {
-  //     let docId = this.docId(model.constructor, modelId);
-  //     this.setDocValue(doc, docId);
-  //   }
-  // }
+  serialize(internal, doc, preview) {
+    let modelId = this.getInternalValue(internal);
+    if(this.validateId(modelId, preview)) {
+      let docId = this.docId(internal.modelClass, modelId);
+      this.setDocValue(doc, docId);
+    }
+  }
 
   // deserialize(model, doc) {
   //   let docId = this.getDocValue(doc);

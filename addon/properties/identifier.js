@@ -26,41 +26,41 @@ export default class Identifier extends Attribute {
     return docId;
   }
 
-  // validateValue(model, value) {
-  //   if(!model.get('isNew')) {
-  //     error(`Model id cannot be changed after model is saved. Attempted to set id '${value}' for ${model} with id '${model.get('id')}'`);
-  //     this.notifyPropertyChange(model);
-  //     return false;
-  //   }
-  //   return true;
-  // }
+  validateValue(internal, value) {
+    if(!internal.state.isNew) {
+      error(`Model id cannot be changed after model is saved. Attempted to set id '${value}' for ${internal.modelName} with id '${internal.getValue('id')}'`);
+      // this.notifyPropertyChange(model);
+      return false;
+    }
+    return true;
+  }
 
-  // setValue(model, value) {
-  //   if(!this.validateValue(model, value)) {
-  //     return this.getDataValue(model);
-  //   }
-  //   return super.setValue(model, value);
-  // }
+  setValue(internal, value, changed) {
+    if(!this.validateValue(internal, value)) {
+      return this.getValue(internal);
+    }
+    return super.setValue(internal, value, changed);
+  }
 
-  // validateId(id, preview=false) {
-  //   let test;
+  validateId(id, preview=false) {
+    let test;
 
-  //   test = typeOf(id) === 'string' && id.length > 0;
-  //   if(!preview) {
-  //     assert({ error: 'invalid_id', reason: 'id cannot be empty' }, test);
-  //   } else if(!test) {
-  //     return false;
-  //   }
+    test = typeOf(id) === 'string' && id.length > 0;
+    if(!preview) {
+      assert({ error: 'invalid_id', reason: 'id cannot be empty' }, test);
+    } else if(!test) {
+      return false;
+    }
 
-  //   test = id.trim().length === id.length;
-  //   if(!preview) {
-  //     assert({ error: 'invalid_id', reason: 'id cannot have extra whitespace' }, test);
-  //   } else if(!test) {
-  //     return false;
-  //   }
+    test = id.trim().length === id.length;
+    if(!preview) {
+      assert({ error: 'invalid_id', reason: 'id cannot have extra whitespace' }, test);
+    } else if(!test) {
+      return false;
+    }
 
-  //   return true;
-  // }
+    return true;
+  }
 
   // serialize(model, doc, preview=false) {
   //   let docId = this.getDataValue(model);

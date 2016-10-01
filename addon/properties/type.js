@@ -25,10 +25,10 @@ export default class Identifier extends Attribute {
     return this.opts.value || get(modelClass, 'modelName');
   }
 
-  // serialize(model, doc) {
-  //   let value = this.valueForModelClass(model.constructor);
-  //   doc[this.opts.key] = value;
-  // }
+  serialize(internal, doc) {
+    let value = this.valueForModelClass(internal.modelClass);
+    this.setDocValue(doc, value);
+  }
 
   // matchesDocument(modelClass, doc) {
   //   let expected = this.valueForModelClass(modelClass);
