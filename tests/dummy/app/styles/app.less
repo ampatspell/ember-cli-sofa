@@ -14,6 +14,49 @@ body {
   }
 }
 
+input {
+  display: block;
+  width: 100%;
+  -webkit-appearance: none;
+  border-radius: 0;
+  outline: none;
+  margin: 0;
+  font-family: "Monaco";
+  font-size: 12px;
+  border: 1px solid #eee;
+  padding: 5px;
+}
+
+button {
+  -webkit-appearance: none;
+  border: none;
+  border-radius: 0;
+  outline: none;
+  margin: 0;
+  font-family: "Monaco";
+  font-size: 12px;
+  padding: 5px 10px;
+  background: #eee;
+  border: 1px solid #ddd;
+}
+
+.ui-input {
+  padding: 10px 0;
+  > .title {
+    padding: 0 5px;
+    > .detail {
+      font-size: 10px;
+    }
+  }
+  > .value {
+
+  }
+}
+
+.ui-button {
+  display: inline-block;
+}
+
 .block {
   padding: 5px 0;
   &.pb {
