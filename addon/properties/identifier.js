@@ -29,7 +29,7 @@ export default class Identifier extends Attribute {
   validateValue(internal, value) {
     if(!internal.state.isNew) {
       error(`Model id cannot be changed after model is saved. Attempted to set id '${value}' for ${internal.modelName} with id '${internal.getValue('id')}'`);
-      // this.notifyPropertyChange(model);
+      this.notifyPropertyChange(internal);
       return false;
     }
     return true;

@@ -49,6 +49,14 @@ export default class InternalModel {
     }
   }
 
+  notifyPropertyChange(key) {
+    let model = this.model;
+    if(!model) {
+      return;
+    }
+    model.notifyPropertyChange(key);
+  }
+
   withPropertyChanges(cb, notify) {
     let model = this.model;
     if(!model) {

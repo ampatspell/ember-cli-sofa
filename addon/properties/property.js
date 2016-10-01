@@ -78,6 +78,10 @@ export default class Property {
     internal.onDirty(changed);
   }
 
+  notifyPropertyChange(internal) {
+    internal.notifyPropertyChange(this.name);
+  }
+
   //
 
   getInternalValue(internal) {
