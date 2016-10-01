@@ -126,7 +126,7 @@ export default class Property {
 
   setPropertyValue(model, value) {
     let internal = getInternalModel(model);
-    return this.setValue(internal, value, Ember.K);
+    return this.setValue(internal, value, internal.boundNotifyPropertyChange);
   }
 
   //

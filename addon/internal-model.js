@@ -22,6 +22,7 @@ export default class InternalModel {
     this.values = new EmptyObject();
     this._database = database;
     this.model = null;
+    this.boundNotifyPropertyChange = this.notifyPropertyChange.bind(this);
     this.state = {
       isNew: true,
       isLoading: false,
