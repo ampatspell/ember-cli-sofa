@@ -62,12 +62,12 @@ export default class Identifier extends Attribute {
     return true;
   }
 
-  // serialize(model, doc, preview=false) {
-  //   let docId = this.getDataValue(model);
-  //   if(typeOf(docId) !== 'undefined') {
-  //     this.validateId(docId, preview);
-  //   }
-  //   super.serialize(model, doc);
-  // }
+  serialize(internal, doc, preview=false) {
+    let docId = this.getInternalValue(internal);
+    if(typeOf(docId) !== 'undefined') {
+      this.validateId(docId, preview);
+    }
+    super.serialize(internal, doc, preview);
+  }
 
 }

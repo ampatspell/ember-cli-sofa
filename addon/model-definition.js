@@ -76,11 +76,13 @@ export default class Definition {
     return doc;
   }
 
-  // deserialize(model, doc) {
-  //   this.eachProperty(property => {
-  //     property.deserialize(model, doc);
-  //   });
-  // }
+  deserialize(internal, doc) {
+    internal.withPropertyChanges(changed => {
+      this.eachProperty(property => {
+        property.deserialize(internal, doc, changed);
+      });
+    }, true);
+  }
 
   // deserializeIdRev(model, json) {
   //   let id = this.modelId(json.id);

@@ -42,10 +42,10 @@ export default class PrefixedIdentifier extends Identifier {
     }
   }
 
-  // deserialize(model, doc) {
-  //   let docId = this.getDocValue(doc);
-  //   let modelId = this.modelId(model.constructor, docId);
-  //   model.set(this.name, modelId);
-  // }
+  deserialize(internal, doc, changed) {
+    let docId = this.getDocValue(doc);
+    let modelId = this.modelId(internal.modelClass, docId);
+    this.setInternalValue(internal, modelId, changed);
+  }
 
 }

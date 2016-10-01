@@ -112,7 +112,7 @@ export default class Property {
     let transformed = this.transformValueToInternalModel(internal, value);
     let current = this.getInternalValue(internal);
     if(current !== transformed) {
-      return this._setValue(internal, value, changed);
+      return this._setValue(internal, transformed, changed);
     }
     return current;
   }
@@ -153,16 +153,16 @@ export default class Property {
     return this._serialize(internal, doc);
   }
 
-  // _deserialize(model, doc) {
-  //   let value = this.getDocValue(doc);
-  //   model.set(this.name, value);
-  // }
+  _deserialize(internal, doc, changed) {
+    let value = this.getDocValue(doc);
+    this.setValue(internal, value, changed);
+  }
 
-  // deserialize(model, doc) {
-  //   if(!this.opts.deserialize) {
-  //     return;
-  //   }
-  //   return this._deserialize(model, doc);
-  // }
+  deserialize(internal, doc, changed) {
+    if(!this.opts.deserialize) {
+      return;
+    }
+    return this._deserialize(internal, doc);
+  }
 
 }

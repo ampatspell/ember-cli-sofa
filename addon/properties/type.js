@@ -30,20 +30,20 @@ export default class Identifier extends Attribute {
     this.setDocValue(doc, value);
   }
 
-  // matchesDocument(modelClass, doc) {
-  //   let expected = this.valueForModelClass(modelClass);
-  //   let value = doc[this.opts.key];
-  //   return expected === value;
-  // }
+  matchesDocument(modelClass, doc) {
+    let expected = this.valueForModelClass(modelClass);
+    let value = this.getDocValue(doc);
+    return expected === value;
+  }
 
-  // setValue(model, value) {
-  //   var expected = this.valueForModelClass(model.constructor);
-  //   assert(`Type value must be '${expected}'`, expected === value);
-  //   return super.setValue(...arguments);
-  // }
+  setValue(internal, value, changed) {
+    var expected = this.valueForModelClass(internal.modelClass);
+    assert(`Type value must be '${expected}'`, expected === value);
+    return super.setValue(...arguments);
+  }
 
-  // getValue(model) {
-  //   return this.valueForModelClass(model.constructor);
-  // }
+  getValue(internal) {
+    return this.valueForModelClass(internal.modelClass);
+  }
 
 }
