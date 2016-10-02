@@ -33,6 +33,22 @@ export default Ember.Mixin.create({
     return internal;
   },
 
+  _assertDefinitionMatchesDocument(definition, doc) {
+    assert({
+      error: 'invalid_document',
+      reason: `document '${doc._id}' is expected to be '${definition.modelName}'`
+    }, definition.matchesDocument(doc));
+  },
+
+  _deserializeDocument(internal, doc) {
+    let definition = internal.definition;
+    internal.withPropertyChanges(changed => {
+      definition.deserialize(internal, doc, changed);
+      internal.onLoaded(changed);
+      this._storeLoadedInternalModel(internal);
+    }, true);
+  },
+
   _deserializeSavedDocumentToInternalModel(doc, expectedModelClass, optional=true) {
     let docId = doc._id;
 
@@ -43,29 +59,19 @@ export default Ember.Mixin.create({
     }
 
     let internal = this._internalModelWithDocId(docId, true);
-
     let definition;
+
     if(internal) {
       definition = internal.definition;
-    } else {
-      definition = this._definitionForModelClass(modelClass);
-    }
-
-    if(internal) {
       assert({
         error: 'inivalid_document',
         reason: `document '${docId}' is expected to be '${internal.modelName}' not '${get(modelClass, 'modelName')}'`
       }, modelClass === internal.modelClass);
     } else {
+      definition = this._definitionForModelClass(modelClass);
       let modelId = definition.modelId(docId);
       internal = this._createExistingInternalModel(modelClass, modelId);
     }
-
-    internal.withPropertyChanges(changed => {
-      definition.deserialize(internal, doc, changed);
-      internal.onLoaded(changed);
-      this._storeLoadedInternalModel(internal);
-    }, true);
 
     if(expectedModelClass && !definition.is(expectedModelClass)) {
       assert({
@@ -74,6 +80,8 @@ export default Ember.Mixin.create({
       }, optional);
       return;
     }
+
+    this._deserializeDocument(internal, doc);
 
     return internal;
   },
@@ -93,10 +101,16 @@ export default Ember.Mixin.create({
     this._storeSavedInternalModel(internal);
   },
 
-  _existingInternalModel(modelName, modelId, opts) {
+  _deserializeInternalModelDelete(internal, json, changed) {
+    let definition = internal.definition;
+    definition.deserializeDelete(internal, json, changed);
+    internal.onDeleted(changed);
+    this._storeDeletedInternalModel(internal);
+  },
+
+  _existingInternalModelForModelClass(modelClass, modelId, opts) {
     let { create, deleted } = merge({ create: false, deleted: false }, opts);
 
-    let modelClass = this.modelClassForName(modelName);
     let definition = this._definitionForModelClass(modelClass);
 
     let docId = definition.docId(modelId);
@@ -112,6 +126,11 @@ export default Ember.Mixin.create({
     }
 
     return internal;
+  },
+
+  _existingInternalModelForModelName(modelName, modelId, opts) {
+    let modelClass = this.modelClassForName(modelName);
+    return this._existingInternalModelForModelClass(modelClass, modelId, opts);
   }
 
 });

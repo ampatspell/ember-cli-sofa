@@ -45,3 +45,15 @@ test('save model', assert => {
     assert.ok(db.get('_modelIdentity').saved['duck:yellow']);
   });
 });
+
+test('attempt to save known conflict', assert => {
+  db.existing('duck', 'yellow', { create: true });
+  return db.model('duck', { id: 'yellow' }).save().then(() => {
+    assert.ok(false, 'should reject');
+  }, err => {
+    assert.deepEqual(err.toJSON(), {
+      "error": "conflict",
+      "reason": "Document update conflict"
+    });
+  });
+});

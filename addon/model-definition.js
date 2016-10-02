@@ -4,7 +4,8 @@ import { isClass_ } from './util/assert';
 
 const {
   computed,
-  copy
+  copy,
+  get
 } = Ember;
 
 export function create() {
@@ -41,6 +42,15 @@ export default class Definition {
   constructor(modelClass) {
     this.modelClass = modelClass;
     this.properties = lookupProperties(modelClass);
+  }
+
+  get modelName() {
+    let modelName = this._modelName;
+    if(!modelName) {
+      modelName = get(this.modelClass, 'modelName');
+      this._modelName = modelName;
+    }
+    return modelName;
   }
 
   eachProperty(fn) {

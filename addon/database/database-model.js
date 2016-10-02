@@ -7,10 +7,16 @@ export default Ember.Mixin.create({
   },
 
   existing(modelName, modelId, opts) {
-    let internal = this._existingInternalModel(modelName, modelId, opts);
+    let internal = this._existingInternalModelForModelName(modelName, modelId, opts);
     if(internal) {
       return internal.getModel();
     }
   },
+
+  load(modelName, modelId, opts) {
+    return this._loadInternalModelForModelName(modelName, modelId, opts).then(internal => {
+      return internal.getModel();
+    });
+  }
 
 });

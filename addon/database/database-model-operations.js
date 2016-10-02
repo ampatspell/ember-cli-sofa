@@ -119,6 +119,78 @@ export default Ember.Mixin.create({
       }
       return reject(err);
     });
+  },
+
+  _onInternalModelLoading(internal) {
+    internal.withPropertyChanges(changed => {
+      internal.onLoading(changed);
+    }, true);
+  },
+
+  _isNotFoundMissingOrDeleted(err) {
+    return err.error === 'not_found' && (err.reason === 'deleted' || err.reason === 'missing');
+  },
+
+  _onInternalModelLoadFailed(internal, err) {
+    internal.withPropertyChanges(changed => {
+      if(this._isNotFoundMissingOrDeleted(err)) {
+        this._deserializeInternalModelDelete(internal, null, changed);
+      }
+      internal.onError(err, changed);
+    }, true);
+  },
+
+  _onInternalModelLoaded(internal, doc) {
+    let definition = internal.definition;
+    this._assertDefinitionMatchesDocument(definition, doc);
+    this._deserializeDocument(internal, doc);
+    return internal;
+  },
+
+  _reloadInternalModel(internal) {
+    if(internal.state.isNew) {
+      return reject(new Error({ error: 'not_saved', reason: 'Model is not saved yet' }));
+    }
+
+    let docId = internal.docId;
+    let documents = this.get('documents');
+
+    return resolve().then(() => {
+      this._onInternalModelLoading(internal);
+      return documents.load(docId);
+    }).then(doc => {
+      return this._onInternalModelLoaded(internal, doc);
+    }, err => {
+      this._onInternalModelLoadFailed(internal, err);
+      return reject(err);
+    });
+  },
+
+  _loadInternalModel(internal, opts) {
+    opts = merge({}, opts);
+    if(internal.state.isLoaded && !opts.force) {
+      return resolve(internal);
+    }
+    if(internal.state.isNew) {
+      return resolve(internal);
+    }
+    return this._reloadInternalModel(internal);
+  },
+
+  _loadInternalModelForModelName(modelName, modelId, opts) {
+    let modelClass = this.modelClassForName(modelName);
+    let internal = this._existingInternalModelForModelClass(modelClass, modelId, { deleted: true });
+    if(internal) {
+      return this._loadInternalModel(internal, opts);
+    }
+
+    let definition = this._definitionForModelClass(modelClass);
+    let docId = definition.docId(modelId);
+
+    return this.get('documents').load(docId).then(doc => {
+      internal = this._createExistingInternalModel(modelClass, modelId);
+      return this._onInternalModelLoaded(internal, doc);
+    });
   }
 
 });

@@ -1,11 +1,6 @@
-import Ember from 'ember';
 import EmptyObject from './util/empty-object';
 import { assert } from './util/assert';
 import { getDefinition } from './model';
-
-const {
-  get
-} = Ember;
 
 export const internalPropertyName = '_internal';
 
@@ -37,12 +32,7 @@ export default class InternalModel {
   }
 
   get modelName() {
-    let modelName = this._modelName;
-    if(!modelName) {
-      modelName = get(this.modelClass, 'modelName');
-      this._modelName = modelName;
-    }
-    return modelName;
+    return this.definition.modelName;
   }
 
   get docId() {
@@ -111,6 +101,14 @@ export default class InternalModel {
     this.withPropertyChanges(changed => {
       this._setState(props, changed);
     }, notify);
+  }
+
+  onLoading(changed) {
+    this._setState({
+      isLoading: true,
+      isError: false,
+      error: null
+    }, changed);
   }
 
   onLoaded(changed) {

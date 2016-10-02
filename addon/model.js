@@ -81,8 +81,10 @@ const Model = Ember.Object.extend(ModelStateMixin, {
   modelName: constructor('modelName'),
   database: internal('database'),
 
-  save: databaseInternalPromise('_saveInternalModel'),
   serialize: serialize(),
+
+  save: databaseInternalPromise('_saveInternalModel'),
+  load: databaseInternalPromise('_loadInternalModel'),
 
   willCreate: Ember.K,
   willSave: Ember.K,
