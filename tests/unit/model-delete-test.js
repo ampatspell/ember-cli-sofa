@@ -73,6 +73,7 @@ test('save delete save delete', assert => {
     assert.ok(db.existing('duck', 'yellow'));
     return model.delete();
   }).then(model => {
+    assert.ok(model);
     assert.ok(!db.existing('duck', 'yellow'));
     assert.ok(db.existing('duck', 'yellow', { deleted: true }));
   });

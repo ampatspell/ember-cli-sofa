@@ -9,7 +9,7 @@ export default {
       return function(arg) {
         window[key] = arg;
         console.log(key, '=', arg+'');
-      }
-    }
+      };
+    };
   }
 };

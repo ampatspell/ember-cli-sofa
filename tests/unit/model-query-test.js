@@ -1,3 +1,4 @@
+/* global emit */
 import Ember from 'ember';
 import { module, test, createStore, registerModels, cleanup } from '../helpers/setup';
 import { Model, prefix, attr } from 'sofa';
@@ -83,7 +84,7 @@ module('model-query', () => {
     return all(docs.map(doc => {
       return db.get('documents').save(doc);
     }));
-  })
+  });
 });
 
 test('load view', assert => {
