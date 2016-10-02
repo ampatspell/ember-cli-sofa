@@ -21,9 +21,9 @@ export default Ember.Mixin.create({
 
   _internalModelsToModels(array) {
     // TODO: ArrayProxy which lazy-creates models
-    return array.map(internal => {
+    return Ember.A(array.map(internal => {
       return internal.getModel();
-    });
+    }));
   },
 
   // { model: 'duck', ddoc: 'ducks', view: 'by-name', key: 'yellow' }
@@ -36,6 +36,13 @@ export default Ember.Mixin.create({
   // { model: 'duck', selector: { type: 'duck', name: 'yellow' } }
   mango(opts) {
     return this._internalModelMango(opts).then(array => {
+      return this._internalModelsToModels(array);
+    });
+  },
+
+  // { model: 'duck', key: 'yellow' }
+  all(opts) {
+    return this._internalModelAll(opts).then(array => {
       return this._internalModelsToModels(array);
     });
   }

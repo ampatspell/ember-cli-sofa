@@ -234,14 +234,14 @@ export default Ember.Mixin.create({
     });
   },
 
-  _deserializeDocuments(docs, expectedModelClass) {
+  _deserializeDocuments(docs, expectedModelClass, optional) {
     return Ember.A(Ember.A(docs.map(doc => {
       if(!doc) {
         // on high load it is possible that view returns row with already deleted document's key, value but w/o doc
         // see: https://issues.apache.org/jira/browse/COUCHDB-1797
         return;
       }
-      return this._deserializeDocumentToInternalModel(doc, expectedModelClass, false);
+      return this._deserializeDocumentToInternalModel(doc, expectedModelClass, optional);
     })).compact());
   },
 
@@ -251,6 +251,12 @@ export default Ember.Mixin.create({
       delete opts.model;
       return this.modelClassForName(model);
     }
+  },
+
+  _optionalFromOpts(opts) {
+    let optional = opts.optional;
+    delete opts.optional;
+    return !!optional;
   },
 
   _internalModelView(opts) {
@@ -263,10 +269,11 @@ export default Ember.Mixin.create({
     delete opts.view;
 
     let expectedModelClass = this._expectedModelClassFromOpts(opts);
+    let optional = this._optionalFromOpts(opts);
 
     let documents = this.get('documents');
     return documents.view(ddoc, view, opts).then(json => {
-      return this._deserializeDocuments(Ember.A(json.rows).map(row => row.doc), expectedModelClass);
+      return this._deserializeDocuments(Ember.A(json.rows).map(row => row.doc), expectedModelClass, optional);
     });
   },
 
@@ -274,10 +281,23 @@ export default Ember.Mixin.create({
     opts = merge({}, opts);
 
     let expectedModelClass = this._expectedModelClassFromOpts(opts);
+    let optional = this._optionalFromOpts(opts);
 
     let documents = this.get('documents');
     return documents.mango(opts).then(json => {
-      return this._deserializeDocuments(json.docs, expectedModelClass);
+      return this._deserializeDocuments(json.docs, expectedModelClass, optional);
+    });
+  },
+
+  _internalModelAll(opts) {
+    opts = merge({ include_docs: true }, opts);
+
+    let expectedModelClass = this._expectedModelClassFromOpts(opts);
+    let optional = this._optionalFromOpts(opts);
+
+    let documents = this.get('documents');
+    return documents.all(opts).then(json => {
+      return this._deserializeDocuments(Ember.A(json.rows).map(row => row.doc), expectedModelClass, optional);
     });
   }
 

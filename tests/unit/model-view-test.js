@@ -57,6 +57,11 @@ let docs = [
     type: 'duck',
     name: 'blue'
   },
+  {
+    _id: 'fish:red',
+    type: 'fish',
+    name: 'red'
+  },
 ];
 
 let Duck = Model.extend({
@@ -64,11 +69,16 @@ let Duck = Model.extend({
   name: attr('string'),
 });
 
+let Fish = Model.extend({
+  id: prefix(),
+  name: attr('string'),
+});
+
 module('model-view', () => {
-  registerModels({ Duck });
+  registerModels({ Duck, Fish });
   store = createStore();
   db = store.get('db.main');
-  db.set('modelNames', [ 'duck' ]);
+  db.set('modelNames', [ 'duck', 'fish' ]);
   return cleanup(store, [ 'main' ]).then(() => {
     return all(docs.map(doc => {
       return db.get('documents').save(doc);
@@ -89,5 +99,34 @@ test('load mango', assert => {
     assert.ok(models.length === 1);
     assert.ok(db.existing('duck', 'yellow') === models[0]);
     assert.ok(models[0].get('name') === 'yellow');
+  });
+});
+
+test('load all', assert => {
+  return db.all({ model: 'duck', startkey: 'duck:', endkey: 'duck\uffff;' }).then(models => {
+    assert.ok(models.length === 3);
+    assert.deepEqual(models.mapBy('id'), [
+      "blue",
+      "green",
+      "yellow"
+    ]);
+  });
+});
+
+test('load all with multiple models', assert => {
+  return db.all({ optional: true }).then(models => {
+    assert.ok(models.length === 4);
+    assert.deepEqual(models.mapBy('id'), [
+      "blue",
+      "green",
+      "yellow",
+      "red"
+    ]);
+    assert.deepEqual(models.mapBy('modelName'), [
+      "duck",
+      "duck",
+      "duck",
+      "fish"
+    ]);
   });
 });
