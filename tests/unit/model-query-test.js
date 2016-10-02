@@ -74,7 +74,7 @@ let Fish = Model.extend({
   name: attr('string'),
 });
 
-module('model-view', () => {
+module('model-query', () => {
   registerModels({ Duck, Fish });
   store = createStore();
   db = store.get('db.main');
