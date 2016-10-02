@@ -9,7 +9,8 @@ const {
   RSVP: { Promise, resolve, all },
   Logger: { error },
   run,
-  String: { dasherize }
+  String: { dasherize },
+  copy
 } = Ember;
 
 let app;
@@ -124,4 +125,40 @@ export function cleanup(store, databaseNames) {
   return all(databaseNames.map(name => {
     return recreate(store.database(name));
   }));
+}
+
+function withoutUndefined(opts) {
+  let res = {}
+  for(let key in opts) {
+    let value = opts[key];
+    if(value !== undefined) {
+      res[key] = value;
+    }
+  }
+  return res;
+}
+
+function cleanupRequest(opts) {
+  opts = copy(opts);
+  if(opts.qs) {
+    opts.qs = withoutUndefined(opts.qs);
+    if(Object.keys(opts.qs).length === 0) {
+      delete opts.qs;
+    }
+  }
+  if(opts.data) {
+    opts.data = withoutUndefined(opts.data);
+  }
+  return opts;
+}
+
+export function intercept(db) {
+  let requests = [];
+  let docs = db.get('documents');
+  let request = docs.request;
+  docs.request = function(opts) {
+    requests.push(cleanupRequest(opts));
+    return request.call(docs, opts);
+  };
+  return requests;
 }

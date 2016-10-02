@@ -46,4 +46,10 @@ export default class Identifier extends Attribute {
     return this.valueForModelClass(internal.modelClass);
   }
 
+  getDocumentKeyValue(modelClass) {
+    let key = this.opts.key;
+    let value = this.valueForModelClass(modelClass);
+    return { key, value };
+  }
+
 }

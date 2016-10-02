@@ -7,7 +7,7 @@ export default Ember.Component.extend({
 
   actions: {
     load() {
-      this.get('store.db.main').find({ model: 'author', selector: { type: 'author' } }).then(models => {
+      this.get('store.db.main').find({ model: 'author', selector: {} }).then(models => {
         this.set('authors', models);
       });
     },

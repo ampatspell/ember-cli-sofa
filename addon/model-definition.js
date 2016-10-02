@@ -53,6 +53,11 @@ export default class Definition {
     return modelName;
   }
 
+  get type() {
+    let property = this.property('type');
+    return property.getDocumentKeyValue(this.modelClass);
+  }
+
   eachProperty(fn) {
     this.properties.all.forEach(fn);
   }

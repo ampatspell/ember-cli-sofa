@@ -1,6 +1,6 @@
 /* global emit */
 import Ember from 'ember';
-import { module, test, createStore, registerModels, cleanup } from '../helpers/setup';
+import { module, test, createStore, registerModels, cleanup, intercept } from '../helpers/setup';
 import { Model, prefix, attr } from 'sofa';
 
 const {
@@ -139,6 +139,7 @@ test('load by docId', assert => {
 });
 
 test('find', assert => {
+  let requests = intercept(db);
   return hash({
     byDocId: db.find({ id: 'duck:yellow' }).then(model => {
       assert.ok(model.get('id'), 'yellow');
@@ -154,14 +155,57 @@ test('find', assert => {
       assert.ok(arr.length === 1);
       assert.ok(arr[0].get('id'), 'yellow');
     }),
-    mango: db.find({ model: 'duck', selector: { type: 'duck', name: 'yellow' } }).then(arr => {
+    mango: db.find({ model: 'duck', selector: { name: 'yellow' } }).then(arr => {
       assert.ok(arr.length === 1);
       assert.ok(arr[0].get('id'), 'yellow');
-    }),
+    })
+  }).then(() => {
+    assert.deepEqual(requests, [
+      {
+        "json": true,
+        "type": "get",
+        "url": "duck%3Ayellow"
+      },
+      {
+        "json": true,
+        "type": "get",
+        "url": "duck%3Ayellow"
+      },
+      {
+        "json": true,
+        "qs": {
+          "include_docs": true,
+          "key": "\"duck:yellow\""
+        },
+        "type": "get",
+        "url": "_all_docs"
+      },
+      {
+        "json": true,
+        "qs": {
+          "include_docs": true,
+          "key": "\"yellow\""
+        },
+        "type": "get",
+        "url": "_design/duck/_view/by-name"
+      },
+      {
+        "data": {
+          "selector": {
+            "name": "yellow",
+            "type": "duck"
+          },
+        },
+        "json": true,
+        "type": "post",
+        "url": "_find"
+      }
+    ]);
   });
 });
 
 test('first', assert => {
+  let requests = intercept(db);
   return hash({
     byDocId: db.first({ id: 'duck:yellow' }).then(model => {
       assert.ok(model.get('id'), 'yellow');
@@ -175,8 +219,53 @@ test('first', assert => {
     view: db.first({ model: 'duck', ddoc: 'duck', view: 'by-name', key: 'yellow' }).then(model => {
       assert.ok(model.get('id'), 'yellow');
     }),
-    mango: db.first({ model: 'duck', selector: { type: 'duck', name: 'yellow' } }).then(model => {
+    mango: db.first({ model: 'duck', selector: { name: 'yellow' } }).then(model => {
       assert.ok(model.get('id'), 'yellow');
-    }),
+    })
+  }).then(() => {
+    assert.deepEqual(requests, [
+      {
+        "json": true,
+        "type": "get",
+        "url": "duck%3Ayellow"
+      },
+      {
+        "json": true,
+        "type": "get",
+        "url": "duck%3Ayellow"
+      },
+      {
+        "json": true,
+        "qs": {
+          "include_docs": true,
+          "key": "\"duck:yellow\"",
+          "limit": 1
+        },
+        "type": "get",
+        "url": "_all_docs"
+      },
+      {
+        "json": true,
+        "qs": {
+          "include_docs": true,
+          "key": "\"yellow\"",
+          "limit": 1
+        },
+        "type": "get",
+        "url": "_design/duck/_view/by-name"
+      },
+      {
+        "data": {
+          "limit": 1,
+          "selector": {
+            "name": "yellow",
+            "type": "duck"
+          }
+        },
+        "json": true,
+        "type": "post",
+        "url": "_find"
+      }
+    ]);
   });
 });

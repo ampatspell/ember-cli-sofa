@@ -325,6 +325,14 @@ export default Ember.Mixin.create({
     let expectedModelClass = this._expectedModelClassFromOpts(opts);
     let optional = this._optionalFromOpts(opts);
 
+    if(expectedModelClass) {
+      let definition = this._definitionForModelClass(expectedModelClass);
+      let type = definition.type;
+      if(!opts.selector[type.key]) {
+        opts.selector[type.key] = type.value;
+      }
+    }
+
     let documents = this.get('documents');
     return documents.mango(opts).then(json => {
       return this._deserializeDocuments(json.docs, expectedModelClass, optional);
