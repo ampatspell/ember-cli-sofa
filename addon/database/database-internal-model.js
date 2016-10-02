@@ -232,6 +232,53 @@ export default Ember.Mixin.create({
     }, err => {
       return this._onInternalModelDeleteFailed(internal, err);
     });
+  },
+
+  _deserializeDocuments(docs, expectedModelClass) {
+    return Ember.A(Ember.A(docs.map(doc => {
+      if(!doc) {
+        // on high load it is possible that view returns row with already deleted document's key, value but w/o doc
+        // see: https://issues.apache.org/jira/browse/COUCHDB-1797
+        return;
+      }
+      return this._deserializeDocumentToInternalModel(doc, expectedModelClass, false);
+    })).compact());
+  },
+
+  _expectedModelClassFromOpts(opts) {
+    let model = opts.model;
+    if(model) {
+      delete opts.model;
+      return this.modelClassForName(model);
+    }
+  },
+
+  _internalModelView(opts) {
+    opts = merge({ include_docs: true }, opts);
+
+    let ddoc = opts.ddoc;
+    delete opts.ddoc;
+
+    let view = opts.view;
+    delete opts.view;
+
+    let expectedModelClass = this._expectedModelClassFromOpts(opts);
+
+    let documents = this.get('documents');
+    return documents.view(ddoc, view, opts).then(json => {
+      return this._deserializeDocuments(Ember.A(json.rows).map(row => row.doc), expectedModelClass);
+    });
+  },
+
+  _internalModelMango(opts) {
+    opts = merge({}, opts);
+
+    let expectedModelClass = this._expectedModelClassFromOpts(opts);
+
+    let documents = this.get('documents');
+    return documents.mango(opts).then(json => {
+      return this._deserializeDocuments(json.docs, expectedModelClass);
+    });
   }
 
 });
