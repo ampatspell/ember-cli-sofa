@@ -69,7 +69,7 @@ export default class Definition {
   }
 
   serialize(internal, preview=false) {
-    let doc = {};
+    let doc = copy(internal.doc || {});
     this.eachProperty(property => {
       property.serialize(internal, doc, preview);
     });
@@ -78,11 +78,13 @@ export default class Definition {
 
   deserialize(internal, doc) {
     // TOOD: move up `changed` so it also includes isDirty, isNew, ...
+    doc = copy(doc);
     internal.withPropertyChanges(changed => {
       this.eachProperty(property => {
         property.deserialize(internal, doc, changed);
       });
     }, true);
+    internal.doc = doc;
   }
 
   // deserializeIdRev(model, json) {
