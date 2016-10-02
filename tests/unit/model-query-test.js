@@ -4,7 +4,7 @@ import { module, test, createStore, registerModels, cleanup } from '../helpers/s
 import { Model, prefix, attr } from 'sofa';
 
 const {
-  RSVP: { all }
+  RSVP: { all, hash }
 } = Ember;
 
 let store;
@@ -129,5 +129,54 @@ test('load all with multiple models', assert => {
       "duck",
       "fish"
     ]);
+  });
+});
+
+test('load by docId', assert => {
+  return db.load(null, 'duck:yellow').then(model => {
+    assert.ok(model.get('id'), 'yellow');
+  });
+});
+
+test('find', assert => {
+  return hash({
+    byDocId: db.find({ id: 'duck:yellow' }).then(model => {
+      assert.ok(model.get('id'), 'yellow');
+    }),
+    byId: db.find({ model: 'duck', id: 'yellow' }).then(model => {
+      assert.ok(model.get('id'), 'yellow');
+    }),
+    all: db.find({ model: 'duck', key: 'duck:yellow', all: true }).then(arr => {
+      assert.ok(arr.length === 1);
+      assert.ok(arr[0].get('id'), 'yellow');
+    }),
+    view: db.find({ model: 'duck', ddoc: 'duck', view: 'by-name', key: 'yellow' }).then(arr => {
+      assert.ok(arr.length === 1);
+      assert.ok(arr[0].get('id'), 'yellow');
+    }),
+    mango: db.find({ model: 'duck', selector: { type: 'duck', name: 'yellow' } }).then(arr => {
+      assert.ok(arr.length === 1);
+      assert.ok(arr[0].get('id'), 'yellow');
+    }),
+  });
+});
+
+test('first', assert => {
+  return hash({
+    byDocId: db.first({ id: 'duck:yellow' }).then(model => {
+      assert.ok(model.get('id'), 'yellow');
+    }),
+    byId: db.first({ model: 'duck', id: 'yellow' }).then(model => {
+      assert.ok(model.get('id'), 'yellow');
+    }),
+    all: db.first({ model: 'duck', key: 'duck:yellow', all: true }).then(model => {
+      assert.ok(model.get('id'), 'yellow');
+    }),
+    view: db.first({ model: 'duck', ddoc: 'duck', view: 'by-name', key: 'yellow' }).then(model => {
+      assert.ok(model.get('id'), 'yellow');
+    }),
+    mango: db.first({ model: 'duck', selector: { type: 'duck', name: 'yellow' } }).then(model => {
+      assert.ok(model.get('id'), 'yellow');
+    }),
   });
 });

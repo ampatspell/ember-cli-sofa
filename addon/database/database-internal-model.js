@@ -184,6 +184,17 @@ export default Ember.Mixin.create({
     return this._reloadInternalModel(internal);
   },
 
+  _loadInternalModelForDocId(docId, opts) {
+    let internal = this._internalModelWithDocId(docId);
+    if(internal) {
+      return this._loadInternalModel(internal, opts);
+    }
+
+    return this.get('documents').load(docId).then(doc => {
+      return this._deserializeSavedDocumentToInternalModel(doc, null, false);
+    });
+  },
+
   _loadInternalModelForModelName(modelName, modelId, opts) {
     let modelClass = this.modelClassForName(modelName);
     let internal = this._existingInternalModelForModelClass(modelClass, modelId, { deleted: true });
@@ -298,6 +309,62 @@ export default Ember.Mixin.create({
     let documents = this.get('documents');
     return documents.all(opts).then(json => {
       return this._deserializeDocuments(Ember.A(json.rows).map(row => row.doc), expectedModelClass, optional);
+    });
+  },
+
+  //
+  // { id }
+  // { id, model }
+  // { all: true, model, key, startkey, endkey, ... }
+  // { ddoc, view, model, key, ... }
+  // { selector, sort, fields, ... }
+  //
+  // result: { result, type }
+  _internalModelFind(opts) {
+    opts = merge({}, opts);
+
+    let all = opts.all;
+    let id = opts.id;
+    let model = opts.model;
+    let ddoc = opts.ddoc;
+    let selector = opts.selector;
+
+    let result = (type) => {
+      return (result) => {
+        return { result, type };
+      };
+    };
+
+    if(id) {
+      delete opts.id;
+      if(model) {
+        delete opts.model;
+        return this._loadInternalModelForModelName(model, id, opts).then(result('single'));
+      } else {
+        return this._loadInternalModelForDocId(id, opts).then(result('single'));
+      }
+    } else if(all) {
+      delete opts.all;
+      return this._internalModelAll(opts).then(result('array'));
+    } else if(ddoc) {
+      return this._internalModelView(opts).then(result('array'));
+    } else if(selector) {
+      return this._internalModelMango(opts).then(result('array'));
+    }
+
+    return reject(new Error({
+      error: 'invalid_query',
+      reason: 'opts must include either id, ddoc or selector'
+    }));
+  },
+
+  _internalModelFirst(opts) {
+    opts = merge({ limit: 1 }, opts);
+    return this._internalModelFind(opts).then(({ result, type }) => {
+      if(type === 'single') {
+        return result;
+      }
+      return result[0];
     });
   }
 

@@ -2,61 +2,75 @@ import Ember from 'ember';
 
 export default Ember.Mixin.create({
 
-  model(modelName, props) {
-    return this.get('store')._createModelForName(modelName, this, props);
-  },
-
-  existing(modelName, modelId, opts) {
-    let internal = this._existingInternalModelForModelName(modelName, modelId, opts);
-    if(internal) {
-      return internal.getModel();
-    }
-  },
-
-  load(modelName, modelId, opts) {
-    return this._loadInternalModelForModelName(modelName, modelId, opts).then(internal => {
-      return internal.getModel();
-    });
-  },
-
-  _internalModelsToModels(array) {
+  _internalArrayToModelsArray(array) {
     // TODO: ArrayProxy which lazy-creates models
     return Ember.A(array.map(internal => {
       return internal.getModel();
     }));
   },
 
+  _internalToModel(internal) {
+    if(internal) {
+      return internal.getModel();
+    }
+  },
+
+  model(modelName, props) {
+    return this.get('store')._createModelForName(modelName, this, props);
+  },
+
+  existing(modelName, modelId, opts) {
+    let internal = this._existingInternalModelForModelName(modelName, modelId, opts);
+    return this._internalToModel(internal);
+  },
+
+  load(modelName, id, opts) {
+    if(modelName === null) {
+      return this._loadInternalModelForDocId(id, opts).then(internal => {
+        return this._internalToModel(internal);
+      });
+    } else {
+      return this._loadInternalModelForModelName(modelName, id, opts).then(internal => {
+        return this._internalToModel(internal);
+      });
+    }
+  },
+
   // { model: 'duck', ddoc: 'ducks', view: 'by-name', key: 'yellow' }
   view(opts) {
     return this._internalModelView(opts).then(array => {
-      return this._internalModelsToModels(array);
+      return this._internalArrayToModelsArray(array);
     });
   },
 
   // { model: 'duck', selector: { type: 'duck', name: 'yellow' } }
   mango(opts) {
     return this._internalModelMango(opts).then(array => {
-      return this._internalModelsToModels(array);
+      return this._internalArrayToModelsArray(array);
     });
   },
 
   // { model: 'duck', key: 'yellow' }
   all(opts) {
     return this._internalModelAll(opts).then(array => {
-      return this._internalModelsToModels(array);
+      return this._internalArrayToModelsArray(array);
+    });
+  },
+
+  find(opts) {
+    return this._internalModelFind(opts).then(({ result, type }) => {
+      if(type === 'array') {
+        return this._internalArrayToModelsArray(result);
+      } else {
+        return this._internalToModel(result);
+      }
+    });
+  },
+
+  first(opts) {
+    return this._internalModelFirst(opts).then(internal => {
+      return this._internalToModel(internal);
     });
   }
-
-  /*
-    db.find({ model: 'author', id: 'ampatspell' })
-    db.find({ id: 'author:ampatspell' })
-
-    db.find({ model: 'author', ddoc: 'author', view: 'by-name', key: 'ampatspell' })
-    db.find({ model: 'author', selector: { type: 'author', name: 'ampatspell' } });
-
-    same goes for first
-
-    db.first({ id: 'author:ampatspell', optional: true });
-  */
 
 });
