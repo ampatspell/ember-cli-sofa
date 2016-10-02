@@ -6,4 +6,8 @@ export default Model.extend({
   name: attr('string'),
   email: attr('string'),
 
+  notifyPropertyChange() {
+    this._super(...arguments);
+  }
+
 });
