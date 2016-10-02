@@ -10,6 +10,9 @@ export default Store.extend({
     if(identifier === 'index65') {
       return { url, name: 'index65_prev' };
     }
+    if(identifier === 'test-main') {
+      return { url, name: 'ember-cli-sofa-test-main' };
+    }
   }
 
 });
