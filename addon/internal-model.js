@@ -37,7 +37,17 @@ export default class InternalModel {
   }
 
   get modelName() {
-    return get(this.modelClass, 'modelName');
+    let modelName = this._modelName;
+    if(!modelName) {
+      modelName = get(this.modelClass, 'modelName');
+      this._modelName = modelName;
+    }
+    return modelName;
+  }
+
+  get docId() {
+    let modelId = this.values.id;
+    return this.definition.docId(modelId);
   }
 
   get database() {
@@ -83,24 +93,28 @@ export default class InternalModel {
     }
   }
 
+  _setState(props, changed) {
+    let state = this.state;
+    for(let key in props) {
+      let value = props[key];
+      if(state[key] !== value) {
+        state[key] = value;
+        changed(key);
+      }
+    }
+    if(changed.any) {
+      changed('state');
+    }
+  }
+
   setState(props, notify) {
     this.withPropertyChanges(changed => {
-      let state = this.state;
-      for(let key in props) {
-        let value = props[key];
-        if(state[key] !== value) {
-          state[key] = value;
-          changed(key);
-        }
-      }
-      if(changed.any) {
-        changed('state');
-      }
+      this._setState(props, changed);
     }, notify);
   }
 
-  onLoaded(notify) {
-    this.setState({
+  onLoaded(changed) {
+    this._setState({
       isNew: false,
       isLoading: false,
       isLoaded: true,
@@ -109,7 +123,7 @@ export default class InternalModel {
       isDeleted: false,
       isError: false,
       error: null
-    }, notify);
+    }, changed);
   }
 
   onDirty(changed) {

@@ -1,10 +1,10 @@
 import Ember from 'ember';
 import Identifier from './identifier';
+import { assert } from '../util/assert';
 
 const {
   merge,
-  get,
-  assert
+  get
 } = Ember;
 
 export default class PrefixedIdentifier extends Identifier {
@@ -30,7 +30,10 @@ export default class PrefixedIdentifier extends Identifier {
       return undefined;
     }
     let prefix = this.prefix(modelClass);
-    assert(`document id '${docId}' must start with '${prefix}' prefix`, docId.indexOf(prefix) === 0);
+    assert({
+      error: 'invalid_document',
+      reason: `document _id '${docId}' must have '${prefix}' prefix`
+    }, docId.indexOf(prefix) === 0);
     return docId.substr(prefix.length);
   }
 

@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import { assert } from '../util/assert';
-import SofaModel from '../model';
+import SofaModel, { getDefinition } from '../model';
 
 const __sofa_type__ = '__sofa_type__';
 const __sofa_model_type__ = 'model';
@@ -25,6 +25,10 @@ export default Ember.Mixin.create({
       Extended.reopenClass({ store: this, [__sofa_type__]: __sofa_model_type__ });
       return Extended;
     });
+  },
+
+  _definitionForModelClass(modelClass) {
+    return getDefinition(modelClass);
   }
 
 });
