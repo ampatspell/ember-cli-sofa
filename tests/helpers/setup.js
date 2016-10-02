@@ -6,7 +6,7 @@ import extendAssert from './extend-assert';
 import params from './params';
 
 const {
-  RSVP: { Promise, resolve },
+  RSVP: { Promise, resolve, all },
   Logger: { error },
   run,
   String: { dasherize }
@@ -109,4 +109,19 @@ export function registerModels(hash) {
     let normalizedName = dasherize(name);
     app.register(`model:${normalizedName}`, Class, { instantiate: false });
   }
+}
+
+export function recreate(db) {
+  let docs = db.get('documents');
+  return docs.all().then(json => {
+    return all(json.rows.map(row => {
+      return docs.delete(row.id, row.value.rev);
+    }));
+  });
+}
+
+export function cleanup(store, databaseNames) {
+  return all(databaseNames.map(name => {
+    return recreate(store.database(name));
+  }));
 }
