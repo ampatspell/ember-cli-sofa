@@ -1,10 +1,5 @@
-import Ember from 'ember';
 import { module, test, createStore, registerModels } from '../helpers/setup';
 import { Model, prefix, type, attr } from 'sofa';
-
-const {
-  RSVP: { resolve }
-} = Ember;
 
 let store;
 let db;

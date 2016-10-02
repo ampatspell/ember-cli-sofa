@@ -38,7 +38,7 @@ const serialize = () => {
     let internal = getInternalModel(this);
     return definition.serialize(internal, preview);
   };
-}
+};
 
 const docId = () => {
   return computed('id', function() {
@@ -46,7 +46,7 @@ const docId = () => {
     let definition = getDefinition(this.constructor);
     return definition.docId(modelId);
   }).readOnly();
-}
+};
 
 const Model = Ember.Object.extend(ModelStateMixin, {
 

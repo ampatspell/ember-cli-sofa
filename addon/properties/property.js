@@ -162,7 +162,7 @@ export default class Property {
     if(!this.opts.deserialize) {
       return;
     }
-    return this._deserialize(internal, doc);
+    return this._deserialize(internal, doc, changed);
   }
 
 }

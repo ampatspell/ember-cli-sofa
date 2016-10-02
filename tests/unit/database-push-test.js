@@ -15,6 +15,6 @@ module('database-push', () => {
 });
 
 test('asd', assert => {
-  let model = db.push({ _id: 'duck:yellow', type: 'duck', name: 'Yellow Duck' });
+  db.push({ _id: 'duck:yellow', type: 'duck', name: 'Yellow Duck' });
   assert.ok(true);
 });

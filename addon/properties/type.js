@@ -36,7 +36,7 @@ export default class Identifier extends Attribute {
     return expected === value;
   }
 
-  setValue(internal, value, changed) {
+  setValue(internal, value) {
     var expected = this.valueForModelClass(internal.modelClass);
     assert(`Type value must be '${expected}'`, expected === value);
     return super.setValue(...arguments);
