@@ -8,6 +8,15 @@ export default Model.extend({
 
   notifyPropertyChange() {
     this._super(...arguments);
+  },
+
+  willCreate() {
+    let name = this.get('name');
+    if(!name) {
+      name = 'unnamed';
+    }
+    let id = name.trim().toLowerCase();
+    this.set('id', id);
   }
 
 });

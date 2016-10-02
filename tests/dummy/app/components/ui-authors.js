@@ -12,9 +12,17 @@ export default Ember.Component.extend({
       });
     },
     select(author) {
-      if(this.attrs.select) {
-        this.attrs.select(author);
-      }
+      this.select(author);
+    },
+    create() {
+      let model = this.get('store.db.main').model('author', { name: 'unnamed' });
+      this.select(model);
+    }
+  },
+
+  select(author) {
+    if(this.attrs.select) {
+      this.attrs.select(author);
     }
   }
 });
