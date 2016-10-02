@@ -231,6 +231,29 @@ export default Ember.Mixin.create({
     return reject(err);
   },
 
+  _invokeInternalWillDeleteCallbacks(internal) {
+    let model = internal.model;
+    if(!model) {
+      return resolve();
+    }
+
+    return resolve().then(() => {
+      return model.willDelete();
+    });
+  },
+
+  _onInternalModelWillDelete(internal) {
+    return resolve().then(() => {
+      return this._invokeInternalWillDeleteCallbacks(internal);
+    });
+  },
+
+  _onInternalModelDeleting(internal) {
+    internal.withPropertyChanges(changed => {
+      internal.onDeleting(changed);
+    }, true);
+  },
+
   _deleteInternalModel(internal) {
     if(internal.state.isNew) {
       return reject(new Error({ error: 'not_saved', reason: 'Model is not saved yet' }));
@@ -239,7 +262,13 @@ export default Ember.Mixin.create({
     let docId = internal.docId;
     let rev = internal.rev;
     let documents = this.get('documents');
-    return documents.delete(docId, rev).then(json => {
+
+    return resolve().then(() => {
+      return this._onInternalModelWillDelete(internal);
+    }).then(() => {
+      this._onInternalModelDeleting(internal);
+      return documents.delete(docId, rev);
+    }).then(json => {
       this._onInternalModelDeleted(internal, json);
       return internal;
     }, err => {

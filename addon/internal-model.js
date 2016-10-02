@@ -128,6 +128,10 @@ export default class InternalModel {
     }, changed);
   }
 
+  onDeleting(changed) {
+    this.onSaving(changed);
+  }
+
   onDeleted(changed) {
     this._setState({
       isNew: false,

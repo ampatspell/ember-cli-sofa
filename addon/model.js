@@ -90,6 +90,7 @@ const Model = Ember.Object.extend(ModelStateMixin, {
 
   willCreate: Ember.K,
   willSave: Ember.K,
+  willDelete: Ember.K,
 
 });
 
