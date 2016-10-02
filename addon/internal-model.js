@@ -139,6 +139,36 @@ export default class InternalModel {
     }, changed);
   }
 
+  onSaving(changed) {
+    this._setState({
+      isSaving: true,
+      isError: false,
+      error: null
+    }, changed);
+  }
+
+  onSaved(changed) {
+    this._setState({
+      isNew: false,
+      isLoading: false,
+      isLoaded: true,
+      isDirty: false,
+      isSaving: false,
+      isDeleted: false,
+      isError: false,
+      error: null
+    }, changed);
+  }
+
+  onError(error, changed) {
+    this._setState({
+      isLoading: false,
+      isSaving: false,
+      isError: true,
+      error
+    }, changed);
+  }
+
   onDirty(changed) {
     if(this.state.isDirty) {
       return;

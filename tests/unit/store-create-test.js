@@ -19,5 +19,7 @@ test('test database exists and is writable', assert => {
     assert.ok(json.db_name.indexOf('ember-cli-sofa') !== -1);
     assert.equal(json.db_name, db.get('name'));
     return db.save({ _id: 'test' });
+  }).then(json => {
+    assert.ok(json.rev);
   });
 });

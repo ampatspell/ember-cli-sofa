@@ -7,7 +7,9 @@ import ModelStateMixin from './model-state-mixin';
 
 const {
   computed,
-  get
+  get,
+  assert,
+  RSVP: { reject }
 } = Ember;
 
 export function getDefinition(modelClass) {
@@ -40,6 +42,24 @@ const serialize = () => {
   };
 };
 
+const databaseInternalPromise = (functionName) => {
+  return function(...args) {
+    let database = this.get('database');
+    if(!database) {
+      return reject(new Error({
+        error: 'no_database',
+        reason: `model ${this} doesn't have database assigned`
+      }));
+    }
+    let fn = database[functionName];
+    assert(`function ${functionName} not declared for database`, !!fn);
+    let internal = getInternalModel(this);
+    return fn.call(database, internal, ...args).then(() => {
+      return this;
+    });
+  };
+};
+
 const docId = () => {
   return computed('id', function() {
     let modelId = this.get('id');
@@ -61,7 +81,11 @@ const Model = Ember.Object.extend(ModelStateMixin, {
   modelName: constructor('modelName'),
   database: internal('database'),
 
+  save: databaseInternalPromise('_saveInternalModel'),
   serialize: serialize(),
+
+  willCreate: Ember.K,
+  willSave: Ember.K,
 
 });
 

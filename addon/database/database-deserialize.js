@@ -2,13 +2,16 @@ import Ember from 'ember';
 import { assert, isObject } from '../util/assert';
 
 const {
-  get
+  get,
+  merge
 } = Ember;
 
 export default Ember.Mixin.create({
 
   _createExistingInternalModel(modelClass, modelId) {
-    return this.get('store')._createExistingInternalModel(modelClass, this, modelId);
+    let internal = this.get('store')._createExistingInternalModel(modelClass, this, modelId);
+    this._storeCreatedInternalModel(internal);
+    return internal;
   },
 
   _deserializeDeletedDocumentToInternalModel(doc) {
@@ -56,7 +59,6 @@ export default Ember.Mixin.create({
     } else {
       let modelId = definition.modelId(docId);
       internal = this._createExistingInternalModel(modelClass, modelId);
-      this._storeCreatedInternalModel(internal);
     }
 
     internal.withPropertyChanges(changed => {
@@ -83,6 +85,33 @@ export default Ember.Mixin.create({
     } else {
       return this._deserializeSavedDocumentToInternalModel(doc, expectedModelClass, optional);
     }
+  },
+
+  _deserializeInternalModelSave(internal, json, changed) {
+    let definition = internal.definition;
+    definition.deserializeSaveOrUpdate(internal, json, changed);
+    this._storeSavedInternalModel(internal);
+  },
+
+  _existingInternalModel(modelName, modelId, opts) {
+    let { create, deleted } = merge({ create: false, deleted: false }, opts);
+
+    let modelClass = this.modelClassForName(modelName);
+    let definition = this._definitionForModelClass(modelClass);
+
+    let docId = definition.docId(modelId);
+
+    let internal = this._internalModelWithDocId(docId, deleted);
+    if(!internal && create) {
+      if(!deleted) {
+        internal = this._internalModelWithDocId(docId, true);
+      }
+      if(!internal) {
+        internal = this._createExistingInternalModel(modelClass, modelId);
+      }
+    }
+
+    return internal;
   }
 
 });

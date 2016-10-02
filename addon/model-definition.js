@@ -96,9 +96,9 @@ export default class Definition {
     this.deserializeProperty(internal, 'rev', json.rev, changed);
   }
 
-  // deserializeSaveOrUpdate(model, json) {
-  //   this.deserializeIdRev(model, json);
-  // }
+  deserializeSaveOrUpdate(model, json, changed) {
+    this.deserializeIdRev(model, json, changed);
+  }
 
   deserializeDelete(internal, json, changed) {
     if(!json) {
