@@ -11,37 +11,31 @@ let Duck = Model.extend({
 
 });
 
-module('model-save', () => {
+module('model-existing', () => {
   registerModels({ Duck });
   store = createStore();
   db = store.get('db.main');
   return cleanup(store, [ 'main' ]);
 });
 
-test('save model', assert => {
-  let model = db.model('duck', { id: 'yellow', name: 'Yellow Ducky' });
+test('existing model after save', assert => {
+  assert.ok(!db.existing('duck', 'yellow'));
+  return db.model('duck', { id: 'yellow' }).save().then(model => {
+    assert.ok(db.existing('duck', 'yellow') === model);
+  });
+});
+
+test('existing model is created', assert => {
+  let model = db.existing('duck', 'yellow', { create: true });
+  assert.ok(model);
   assert.deepEqual(model.get('state'), {
     "error": null,
     "isDeleted": false,
-    "isDirty": true,
+    "isDirty": false,
     "isError": false,
     "isLoaded": false,
     "isLoading": false,
-    "isNew": true,
+    "isNew": false,
     "isSaving": false
-  });
-
-  return model.save().then(() => {
-    assert.deepEqual(model.get('state'), {
-      "error": null,
-      "isDeleted": false,
-      "isDirty": false,
-      "isError": false,
-      "isLoaded": true,
-      "isLoading": false,
-      "isNew": false,
-      "isSaving": false
-    });
-    assert.ok(db.get('_modelIdentity').saved['duck:yellow']);
   });
 });
