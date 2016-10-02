@@ -15,7 +15,7 @@ export default class InternalModel {
     this.modelClass = modelClass;
     this.definition = getDefinition(modelClass);
     this.values = new EmptyObject();
-    this.doc = null;
+    this.raw = null;
     this._database = database;
     this.model = null;
     this.boundNotifyPropertyChange = this.notifyPropertyChange.bind(this);

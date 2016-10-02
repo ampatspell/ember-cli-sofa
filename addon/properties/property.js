@@ -156,6 +156,7 @@ export default class Property {
   _deserialize(internal, doc, changed) {
     let value = this.getDocValue(doc);
     this.setValue(internal, value, changed);
+    return this.opts.key;
   }
 
   deserialize(internal, doc, changed) {

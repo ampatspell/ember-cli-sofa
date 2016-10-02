@@ -79,7 +79,7 @@ export default class Definition {
   }
 
   serialize(internal, preview=false) {
-    let doc = copy(internal.doc || {});
+    let doc = copy(internal.raw || {});
     this.eachProperty(property => {
       property.serialize(internal, doc, preview);
     });
@@ -87,11 +87,14 @@ export default class Definition {
   }
 
   deserialize(internal, doc, changed) {
-    doc = copy(doc);
+    let raw = copy(doc);
     this.eachProperty(property => {
-      property.deserialize(internal, doc, changed);
+      let key = property.deserialize(internal, doc, changed);
+      if(key) {
+        delete raw[key];
+      }
     });
-    internal.doc = doc;
+    internal.raw = raw;
   }
 
   deserializeProperty(internal, name, value, changed) {

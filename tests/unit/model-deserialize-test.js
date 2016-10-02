@@ -29,12 +29,17 @@ test('deserialize', assert => {
   let internal = model.get('_internal');
   let definition = get(model.constructor, 'definition');
 
+  let keys = [];
+  let changed = (key) => {
+    keys.push(key);
+  };
+
   definition.deserialize(internal, {
     "_id": "duck:yellow",
     "age": "10",
     "name": "Yellow Duck",
     "type": "the-duck"
-  });
+  }, changed);
 
   assert.deepEqual(Ember.copy(model.get('_internal').values), {
     "age": 10,
@@ -49,6 +54,13 @@ test('deserialize', assert => {
     "name": "Yellow Duck",
     "type": "the-duck"
   });
+
+  assert.deepEqual(keys, [
+    "age",
+    "name",
+    "type",
+    "id"
+  ]);
 });
 
 test('deserialize and serialize keeps additional doc props', assert => {
@@ -56,6 +68,11 @@ test('deserialize and serialize keeps additional doc props', assert => {
   let internal = model.get('_internal');
   let definition = get(model.constructor, 'definition');
 
+  let keys = [];
+  let changed = (key) => {
+    keys.push(key);
+  };
+
   definition.deserialize(internal, {
     "_id": "duck:yellow",
     "age": "10",
@@ -63,7 +80,7 @@ test('deserialize and serialize keeps additional doc props', assert => {
     "type": "the-duck",
     "additional": true,
     "obj": { ok: true }
-  });
+  }, changed);
 
   assert.deepEqual(Ember.copy(model.get('_internal').values), {
     "age": 10,
@@ -80,4 +97,11 @@ test('deserialize and serialize keeps additional doc props', assert => {
     "additional": true,
     "obj": { ok: true }
   });
+
+  assert.deepEqual(keys, [
+    "age",
+    "name",
+    "type",
+    "id"
+  ]);
 });
