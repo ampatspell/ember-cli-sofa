@@ -187,11 +187,12 @@ export default class InternalModel {
     return this.values[key];
   }
 
-  setValue(key, value) {
+  setValue(key, value, changed) {
     if(this.values[key] === value) {
       return value;
     }
     this.values[key] = value;
+    changed(key);
     return value;
   }
 
