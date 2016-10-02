@@ -86,6 +86,7 @@ const Model = Ember.Object.extend(ModelStateMixin, {
   save:   databaseInternalPromise('_saveInternalModel'),
   load:   databaseInternalPromise('_loadInternalModel'),
   reload: databaseInternalPromise('_reloadInternalModel'),
+  delete: databaseInternalPromise('_deleteInternalModel'),
 
   willCreate: Ember.K,
   willSave: Ember.K,

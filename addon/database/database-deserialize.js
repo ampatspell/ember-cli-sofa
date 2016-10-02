@@ -98,6 +98,7 @@ export default Ember.Mixin.create({
   _deserializeInternalModelSave(internal, json, changed) {
     let definition = internal.definition;
     definition.deserializeSaveOrUpdate(internal, json, changed);
+    internal.onSaved(changed);
     this._storeSavedInternalModel(internal);
   },
 

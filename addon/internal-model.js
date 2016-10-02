@@ -40,6 +40,10 @@ export default class InternalModel {
     return this.definition.docId(modelId);
   }
 
+  get rev() {
+    return this.values.rev;
+  }
+
   get database() {
     return this._database;
   }

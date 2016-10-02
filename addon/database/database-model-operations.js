@@ -66,7 +66,6 @@ export default Ember.Mixin.create({
   _onInternalModelSavedOrUpdated(internal, json) {
     internal.withPropertyChanges(changed => {
       this._deserializeInternalModelSave(internal, json, changed);
-      internal.onSaved(changed);
     }, true);
   },
 
@@ -127,8 +126,16 @@ export default Ember.Mixin.create({
     }, true);
   },
 
+  _isNotFoundDeleted(err) {
+    return err.error === 'not_found' && err.reason === 'deleted';
+  },
+
+  _isNotFoundMissing(err) {
+    return err.error === 'not_found' && err.reason === 'missing';
+  },
+
   _isNotFoundMissingOrDeleted(err) {
-    return err.error === 'not_found' && (err.reason === 'deleted' || err.reason === 'missing');
+    return this._isNotFoundMissing(err) || this._isNotFoundDeleted(err);
   },
 
   _onInternalModelLoadFailed(internal, err) {
@@ -190,6 +197,40 @@ export default Ember.Mixin.create({
     return this.get('documents').load(docId).then(doc => {
       internal = this._createExistingInternalModel(modelClass, modelId);
       return this._onInternalModelLoaded(internal, doc);
+    });
+  },
+
+  _onInternalModelDeleted(internal, json) {
+    internal.withPropertyChanges(changed => {
+      this._deserializeInternalModelDelete(internal, json, changed);
+    }, true);
+  },
+
+  _onInternalModelDeleteFailed(internal, err) {
+    if(this._isNotFoundDeleted(err)) {
+      internal.withPropertyChanges(changed => {
+        this._deserializeInternalModelDelete(internal, null, changed);
+        internal.onError(err, changed);
+      });
+      return resolve(internal);
+    }
+    internal.onError(err);
+    return reject(err);
+  },
+
+  _deleteInternalModel(internal) {
+    if(internal.state.isNew) {
+      return reject(new Error({ error: 'not_saved', reason: 'Model is not saved yet' }));
+    }
+
+    let docId = internal.docId;
+    let rev = internal.rev;
+    let documents = this.get('documents');
+    return documents.delete(docId, rev).then(json => {
+      this._onInternalModelDeleted(internal, json);
+      return internal;
+    }, err => {
+      return this._onInternalModelDeleteFailed(internal, err);
     });
   }
 
