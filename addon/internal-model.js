@@ -126,6 +126,19 @@ export default class InternalModel {
     }, changed);
   }
 
+  onDeleted(changed) {
+    this._setState({
+      isNew: false,
+      isLoading: false,
+      isLoaded: true,
+      isDirty: false,
+      isSaving: false,
+      isDeleted: true,
+      isError: false,
+      error: null
+    }, changed);
+  }
+
   onDirty(changed) {
     if(this.state.isDirty) {
       return;

@@ -55,6 +55,24 @@ export default Ember.Mixin.create({
 
   _storeLoadedInternalModel(internal) {
     this._storeSavedInternalModel(internal);
+  },
+
+  _storeDeletedInternalModel(internal) {
+    let docId = internal.docId;
+    let storage = this.get('__modelIdentity');
+
+    isString('internal.docId', docId);
+
+    delete storage.saved[docId];
+    storage.deleted[docId] = internal;
+
+    storage.all.removeObject(internal);
+
+    let name = internal.modelName;
+    let array = storage.type[name];
+    if(array) {
+      array.removeObject(internal);
+    }
   }
 
 });

@@ -84,22 +84,28 @@ export default class Definition {
     internal.doc = doc;
   }
 
-  // deserializeIdRev(model, json) {
-  //   let id = this.modelId(json.id);
-  //   let rev = json.rev;
-  //   model.setProperties({ id, rev });
-  // }
+  deserializeProperty(internal, name, value, changed) {
+    let property = this.property(name);
+    let key = property.opts.key;
+    let doc = { [key]: value };
+    property.deserialize(internal, doc, changed);
+  }
+
+  deserializeIdRev(internal, json, changed) {
+    this.deserializeProperty(internal, 'id', json.id, changed);
+    this.deserializeProperty(internal, 'rev', json.rev, changed);
+  }
 
   // deserializeSaveOrUpdate(model, json) {
   //   this.deserializeIdRev(model, json);
   // }
 
-  // deserializeDelete(model, json) {
-  //   if(!json) {
-  //     return;
-  //   }
-  //   this.deserializeIdRev(model, json);
-  // }
+  deserializeDelete(internal, json, changed) {
+    if(!json) {
+      return;
+    }
+    this.deserializeIdRev(internal, json, changed);
+  }
 
   docId(modelId) {
     return this.property('id').docId(this.modelClass, modelId);

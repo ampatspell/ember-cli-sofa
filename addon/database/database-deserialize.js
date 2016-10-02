@@ -11,8 +11,23 @@ export default Ember.Mixin.create({
     return this.get('store')._createExistingInternalModel(modelClass, this, modelId);
   },
 
-  _deserializeDeletedDocumentToInternalModel(/*doc*/) {
-    throw new Error('not implemented');
+  _deserializeDeletedDocumentToInternalModel(doc) {
+    let docId = doc._id;
+
+    let internal = this._internalModelWithDocId(docId, true);
+    if(!internal) {
+      return;
+    }
+
+    let definition = internal.definition;
+
+    internal.withPropertyChanges(changed => {
+      definition.deserializeDelete(internal, { id: docId, rev: doc._rev });
+      internal.onDeleted(changed);
+      this._storeDeletedInternalModel(internal);
+    });
+
+    return internal;
   },
 
   _deserializeSavedDocumentToInternalModel(doc, expectedModelClass, optional=true) {
