@@ -101,20 +101,17 @@ export default class Definition {
     property.deserialize(internal, doc, changed);
   }
 
-  deserializeIdRev(internal, json, changed) {
+  deserializeSaveOrUpdate(internal, json, changed) {
     this.deserializeProperty(internal, 'id', json.id, changed);
     this.deserializeProperty(internal, 'rev', json.rev, changed);
-  }
-
-  deserializeSaveOrUpdate(model, json, changed) {
-    this.deserializeIdRev(model, json, changed);
   }
 
   deserializeDelete(internal, json, changed) {
     if(!json) {
       return;
     }
-    this.deserializeIdRev(internal, json, changed);
+    this.deserializeProperty(internal, 'id', json.id, changed);
+    this.deserializeProperty(internal, 'rev', null, changed);
   }
 
   docId(modelId) {

@@ -60,3 +60,20 @@ test('delete already deleted', assert => {
     assert.ok(db.existing('duck', 'yellow', { deleted: true }));
   });
 });
+
+test('save delete save delete', assert => {
+  return db.model('duck', { id: 'yellow' }).save().then(model => {
+    assert.ok(db.existing('duck', 'yellow'));
+    return model.delete();
+  }).then(model => {
+    assert.ok(!db.existing('duck', 'yellow'));
+    assert.ok(db.existing('duck', 'yellow', { deleted: true }));
+    return model.save();
+  }).then(model => {
+    assert.ok(db.existing('duck', 'yellow'));
+    return model.delete();
+  }).then(model => {
+    assert.ok(!db.existing('duck', 'yellow'));
+    assert.ok(db.existing('duck', 'yellow', { deleted: true }));
+  });
+});

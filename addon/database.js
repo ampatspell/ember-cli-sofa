@@ -5,8 +5,8 @@ import DatabaseModel from './database/database-model';
 import DatabasePush from './database/database-push';
 import DatabaseDeserialize from './database/database-deserialize';
 import DatabaseSerialize from './database/database-serialize';
-import DatabaseModelIdentity from './database/database-model-identity';
-import DatabaseModelOperations from './database/database-model-operations';
+import DatabaseInternalModelIdentity from './database/database-internal-model-identity';
+import DatabaseInternalModel from './database/database-internal-model';
 
 export default Ember.Object.extend(
   DatabaseModelClass,
@@ -14,8 +14,8 @@ export default Ember.Object.extend(
   DatabasePush,
   DatabaseDeserialize,
   DatabaseSerialize,
-  DatabaseModelIdentity,
-  DatabaseModelOperations, {
+  DatabaseInternalModelIdentity,
+  DatabaseInternalModel, {
 
   store:      null,
   identifier: null,
