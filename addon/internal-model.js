@@ -65,24 +65,32 @@ export default class InternalModel {
 
   withPropertyChanges(cb, notify) {
     let model = this.model;
+    let notifyModel = notify;
     if(!model) {
-      notify = false;
+      notifyModel = false;
     }
 
-    if(notify) {
+    if(notifyModel) {
       model.beginPropertyChanges();
     }
 
+    let props = [];
+
     let changed = key => {
-      if(notify) {
+      if(notifyModel) {
         model.notifyPropertyChange(key);
       }
       changed.any = true;
+      if(notify && props.indexOf(key) === -1) {
+        props.push(key);
+      }
     };
+
+    changed.props = props;
 
     cb(changed);
 
-    if(notify) {
+    if(notifyModel) {
       model.endPropertyChanges();
     }
   }
