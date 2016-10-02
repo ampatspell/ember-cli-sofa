@@ -225,7 +225,9 @@ export default Ember.Mixin.create({
       });
       return resolve(internal);
     }
-    internal.onError(err);
+    internal.withPropertyChanges(changed => {
+      internal.onError(err, changed);
+    });
     return reject(err);
   },
 
