@@ -192,9 +192,20 @@ export default Ember.Object.extend({
 
   mango(opts) {
     opts = merge({}, opts);
+
+    let explain = opts.explain;
+    delete opts.explain;
+
+    let url;
+    if(explain) {
+      url = '_explain';
+    } else {
+      url = '_find';
+    }
+
     return this.request({
       type: 'post',
-      url: '_find',
+      url: url,
       json: true,
       data: {
         selector:  opts.selector,
