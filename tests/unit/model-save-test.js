@@ -11,8 +11,12 @@ let Duck = Model.extend({
 
 });
 
+let Pigeon = Model.extend({
+  id: prefix()
+});
+
 module('model-save', () => {
-  registerModels({ Duck });
+  registerModels({ Duck, Pigeon });
   store = createStore();
   db = store.get('db.main');
   return cleanup(store, [ 'main' ]);
@@ -55,5 +59,14 @@ test('attempt to save known conflict', assert => {
       "error": "conflict",
       "reason": "Document update conflict"
     });
+  });
+});
+
+test('save database-less model', assert => {
+  let model = store.model('pigeon', { id: 'yellow' });
+  model.set('database', db);
+  return model.save().then(() => {
+    assert.ok(model.get('database'), db);
+    assert.ok(db.existing('pigeon', 'yellow'));
   });
 });

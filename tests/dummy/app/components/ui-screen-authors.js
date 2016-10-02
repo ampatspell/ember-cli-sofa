@@ -6,6 +6,9 @@ export default Ember.Component.extend({
   actions: {
     select(author) {
       this.set('author', author);
+    },
+    close() {
+      this.set('author', null);
     }
   }
 });
