@@ -128,7 +128,7 @@ export function cleanup(store, databaseNames) {
 }
 
 function withoutUndefined(opts) {
-  let res = {}
+  let res = {};
   for(let key in opts) {
     let value = opts[key];
     if(value !== undefined) {
