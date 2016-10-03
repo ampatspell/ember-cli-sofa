@@ -59,4 +59,8 @@ export default class Relationship extends Property {
     return this.opts.key;
   }
 
+  onDeleted(internal) {
+    this.getRelation(internal).onDeleted();
+  }
+
 }

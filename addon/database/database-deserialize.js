@@ -22,12 +22,9 @@ export default Ember.Mixin.create({
       return;
     }
 
-    let definition = internal.definition;
-
     internal.withPropertyChanges(changed => {
-      definition.deserializeDelete(internal, { id: docId, rev: doc._rev });
-      internal.onDeleted(changed);
-      this._storeDeletedInternalModel(internal);
+      let json = { id: docId, rev: doc._rev };
+      this._deserializeInternalModelDelete(internal, json, changed);
     });
 
     return internal;
@@ -43,8 +40,7 @@ export default Ember.Mixin.create({
   _deserializeDocument(internal, doc) {
     let definition = internal.definition;
     internal.withPropertyChanges(changed => {
-      definition.deserialize(internal, doc, changed);
-      internal.onLoaded(changed);
+      definition.onLoaded(internal, doc, changed);
       this._storeLoadedInternalModel(internal);
     }, true);
   },
@@ -116,16 +112,12 @@ export default Ember.Mixin.create({
   },
 
   _deserializeInternalModelSave(internal, json, changed) {
-    let definition = internal.definition;
-    definition.deserializeSaveOrUpdate(internal, json, changed);
-    internal.onSaved(changed);
+    internal.definition.onSaved(internal, json, changed);
     this._storeSavedInternalModel(internal);
   },
 
   _deserializeInternalModelDelete(internal, json, changed) {
-    let definition = internal.definition;
-    definition.deserializeDelete(internal, json, changed);
-    internal.onDeleted(changed);
+    internal.definition.onDeleted(internal, json, changed);
     this._storeDeletedInternalModel(internal);
   },
 

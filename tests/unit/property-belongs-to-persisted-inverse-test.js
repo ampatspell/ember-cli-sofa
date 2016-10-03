@@ -126,3 +126,14 @@ test('load', assert => {
     });
   });
 });
+
+test('delete unsets inverse', assert => {
+  let duck = db.model('duck', { id: 'duck' });
+  let house = db.model('house', { id: 'house', duck });
+  return all([ duck.save(), house.save() ]).then(() => {
+    return duck.delete();
+  }).then(() => {
+    assert.ok(duck.get('house') === house);
+    assert.ok(house.get('duck') === null);
+  });
+});

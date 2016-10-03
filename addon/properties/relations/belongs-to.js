@@ -8,11 +8,13 @@ export default class BelongsToRelation extends Relation {
     }, true);
   }
 
-  inverseDidChange(internal) {
+  inverseDidChange(internal, local) {
     this.withPropertyChange(changed => {
-      this.setValue(internal, changed);
+      this.setValue(internal, changed, local);
     }, true);
   }
+
+  //
 
   willSetValue() {
     let inverse = this.getInverseRelation(this.value);
@@ -28,6 +30,15 @@ export default class BelongsToRelation extends Relation {
     }
   }
 
+  onDeleted() {
+    let inverse = this.getInverseRelation(this.value);
+    if(inverse) {
+      inverse.inverseDidChange(null, true);
+    }
+  }
+
+  //
+
   getValue() {
     let internal = this.value;
     if(!internal) {
@@ -36,7 +47,7 @@ export default class BelongsToRelation extends Relation {
     return internal.getModel();
   }
 
-  setValue(value, changed) {
+  setValue(value, changed, local) {
     if(this.isSettingValue) {
       return;
     }
@@ -45,10 +56,18 @@ export default class BelongsToRelation extends Relation {
 
     let internal = this.toInternalModel(value);
     if(this.value !== internal) {
-      this.willSetValue();
+
+      if(!local) {
+        this.willSetValue();
+      }
+
       this.value = internal;
       changed();
-      this.didSetValue();
+
+      if(!local) {
+        this.didSetValue();
+      }
+
     }
 
     this.isSettingValue = false;
