@@ -1,8 +1,23 @@
 import Ember from 'ember';
+import createTransform from './array-transform-mixin';
+import { getInternalModel } from '../../../internal-model';
 
-export default Ember.ArrayProxy.extend({
+const Transform = createTransform({
+  internal(model) {
+    if(!model) {
+      return null;
+    }
+    return getInternalModel(model);
+  },
+  public(internal) {
+    return internal.getModel();
+  }
+});
 
-  // content stores internal models
-  // public stuff is models
+export default Ember.ArrayProxy.extend(Transform, {
+
+  _relation: null,
+
+
 
 });

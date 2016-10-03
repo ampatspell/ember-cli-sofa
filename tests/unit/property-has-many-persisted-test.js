@@ -28,5 +28,8 @@ test('hello', assert => {
   let house = db.model('house', { id: 'big' });
   house.get('ducks').pushObject(red);
   house.get('ducks').pushObject(yellow);
-  assert.ok(house.get('ducks').mapBy('docId'), [ 'duck:red', 'duck:yellow' ]);
+  assert.deepEqual(house.get('ducks').mapBy('docId'), [ 'duck:red', 'duck:yellow' ]);
+  assert.deepEqual(house.get('ducks.content').map(internal => {
+    return internal.docId;
+  }), [ 'duck:red', 'duck:yellow' ]);
 });
