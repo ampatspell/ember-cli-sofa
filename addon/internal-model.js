@@ -1,6 +1,7 @@
 import EmptyObject from './util/empty-object';
 import { assert } from './util/assert';
 import { getDefinition } from './model';
+import Relationship from './properties/relationship';
 
 export const internalPropertyName = '_internal';
 
@@ -202,6 +203,17 @@ export default class InternalModel {
     this.values[key] = value;
     changed(key);
     return value;
+  }
+
+  getRelation(key) {
+    let property = this.definition.property(key);
+    if(!property) {
+      return;
+    }
+    if(!(property instanceof Relationship)) {
+      return;
+    }
+    return property.getRelation(this);
   }
 
   getModel(props) {
