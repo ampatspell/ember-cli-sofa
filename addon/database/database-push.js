@@ -1,17 +1,29 @@
 import Ember from 'ember';
 
+const {
+  merge
+} = Ember;
+
 export default Ember.Mixin.create({
 
-  push(doc, expectedModelName, optional=true) {
+  push(doc, opts) {
+    opts = merge({ optional: true, instantiate: true }, opts);
+
     let ExpectedModelClass;
-    if(expectedModelName) {
-      ExpectedModelClass = this.modelClassForName(expectedModelName);
+    if(opts.model) {
+      ExpectedModelClass = this.modelClassForName(opts.model);
     }
-    let internal = this._deserializeDocumentToInternalModel(doc, ExpectedModelClass, optional);
+
+    let internal = this._deserializeDocumentToInternalModel(doc, ExpectedModelClass, opts.optional);
     if(!internal) {
       return;
     }
-    return internal.getModel();
+
+    if(opts.instantiate) {
+      return internal.getModel();
+    } else {
+      return { model: internal.modelName, id: internal.values.id, deleted: internal.state.isDeleted };
+    }
   }
 
 });
