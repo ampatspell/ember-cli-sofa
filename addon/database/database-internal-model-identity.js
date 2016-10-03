@@ -3,25 +3,23 @@ import EmptyObject from '../util/empty-object';
 import { isString } from '../util/assert';
 
 const {
-  computed
+  on
 } = Ember;
 
 export default Ember.Mixin.create({
 
-  _modelIdentity: computed(function() {
-    if(!this.__modelIdentity) {
-      this.__modelIdentity = new EmptyObject();
-      this.__modelIdentity.all = Ember.A([]);           // all new and saved models
-      this.__modelIdentity.saved = new EmptyObject();   // all saved
-      this.__modelIdentity.deleted = new EmptyObject(); // all deleted
-      this.__modelIdentity.type = new EmptyObject();    // saved by type
-    }
-    return this.__modelIdentity;
+  _createModelIdentity: on('init', function() {
+    let identity = new EmptyObject();
+    identity.all = Ember.A([]);           // all new and saved models
+    identity.saved = new EmptyObject();   // all saved
+    identity.deleted = new EmptyObject(); // all deleted
+    identity.type = new EmptyObject();    // saved by type
+    this._modelIdentity = identity;
   }),
 
   _internalModelWithDocId(docId, includingDeleted=false) {
     isString('docId', docId);
-    let storage = this.get('_modelIdentity');
+    let storage = this._modelIdentity;
     let internal = storage.saved[docId];
     if(!internal && includingDeleted) {
       internal = storage.deleted[docId];
@@ -31,7 +29,7 @@ export default Ember.Mixin.create({
 
   _storeSavedInternalModel(internal) {
     let docId = internal.docId;
-    let storage = this.get('_modelIdentity');
+    let storage = this._modelIdentity;
 
     isString('internal.docId', docId);
 
@@ -59,7 +57,7 @@ export default Ember.Mixin.create({
 
   _storeDeletedInternalModel(internal) {
     let docId = internal.docId;
-    let storage = this.get('__modelIdentity');
+    let storage = this._modelIdentity;
 
     isString('internal.docId', docId);
 
