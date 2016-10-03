@@ -4,7 +4,7 @@ export default {
     let store = app.lookup('service:store');
     window.store = store;
     window.db = store.get('db.main');
-    window.db.set('modelNames', [ 'author' ]);
+    window.db.set('modelNames', [ 'author', 'blog' ]);
     window.log = console.log.bind(console);
     window.set = (key) => {
       return function(arg) {
