@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import { module, test, createStore, registerModels, cleanup } from '../helpers/setup';
-import { Model, prefix, attr } from 'sofa';
+import { Model, prefix, attr, belongsTo } from 'sofa';
 
 const {
   RSVP: { all }
@@ -10,7 +10,8 @@ let store;
 let db;
 
 let Duck = Model.extend({
-  id: prefix()
+  id: prefix(),
+  house: belongsTo('house')
 });
 
 let House = Model.extend({
@@ -25,10 +26,13 @@ module('property-belongs-to-persisted', () => {
   return cleanup(store, [ 'main' ]);
 });
 
-test('hello', assert => {
-  let duck = db.model('duck', { id: 'yellow' });
+test('serialize relationship', assert => {
   let house = db.model('house', { id: 'big' });
-  return all([ duck.save(), house.save() ]).then(() => {
-
+  let duck = db.model('duck', { id: 'yellow', house });
+  console.log(duck.get('_internal.values'));
+  assert.deepEqual(duck.serialize(), {
+    "_id": "duck:yellow",
+    "type": "duck",
+    "house": "house:big"
   });
 });
