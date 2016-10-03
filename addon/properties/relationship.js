@@ -3,7 +3,7 @@ import Property from './property';
 
 const {
   merge,
-  K: k
+  K
 } = Ember;
 
 export default class Relationship extends Property {
@@ -25,7 +25,7 @@ export default class Relationship extends Property {
     let relation = this.getInternalValue(internal);
     if(!relation) {
       relation = this.createRelation(internal);
-      this.setInternalValue(internal, relation, k);
+      this.setInternalValue(internal, relation, K);
     }
     return relation;
   }
