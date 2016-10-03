@@ -36,7 +36,11 @@ export default class Relationship extends Property {
     return relation.getValue();
   }
 
-  _setValue(internal, value, changed) {
+  _setValue(internal, value, changed_) {
+    let changed = () => {
+      this.dirty(internal, changed_);
+      changed_(this.opts.name);
+    };
     let relation = this.getRelation(internal);
     return relation.setValue(value, changed);
   }

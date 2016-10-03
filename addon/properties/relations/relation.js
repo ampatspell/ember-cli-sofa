@@ -6,6 +6,8 @@ export default class Relation {
     this.value = null;
   }
 
+  // TODO: too complicated for relation.
+  // move to database._deserializeDocIdToInternalModel(modelClass, docId);
   internalModelWithDocId(docId) {
     if(!docId) {
       return null;

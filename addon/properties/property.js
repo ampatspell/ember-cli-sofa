@@ -104,6 +104,7 @@ export default class Property {
 
   _setValue(internal, value, changed) {
     this.setInternalValue(internal, value, changed);
+    this.dirty(internal, changed);
     return value;
   }
 
@@ -111,9 +112,7 @@ export default class Property {
     let transformed = this.transformValueToInternalModel(internal, value);
     let current = this.getInternalValue(internal);
     if(current !== transformed) {
-      let result = this._setValue(internal, transformed, changed);
-      this.dirty(internal, changed);
-      return result;
+      return this._setValue(internal, transformed, changed);
     }
     return current;
   }
