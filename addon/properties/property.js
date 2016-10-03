@@ -165,7 +165,4 @@ export default class Property {
     return this._deserialize(internal, doc, changed);
   }
 
-  onDeleted() {
-  }
-
 }

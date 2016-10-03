@@ -160,9 +160,6 @@ export default class Definition {
   onDeleted(internal, json, changed) {
     this.deserializeDelete(internal, json, changed);
     internal.onDeleted(changed);
-    this.eachProperty(property => {
-      property.onDeleted(internal, changed);
-    });
   }
 
 }
