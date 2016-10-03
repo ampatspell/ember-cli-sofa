@@ -1,4 +1,4 @@
-import Store from 'sofa/store';
+import { Store } from 'sofa';
 
 export default Store.extend({
 
