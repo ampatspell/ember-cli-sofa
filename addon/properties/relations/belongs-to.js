@@ -1,4 +1,9 @@
+import Ember from 'ember';
 import Relation from './relation';
+
+const {
+  assert
+} = Ember;
 
 export default class BelongsToRelation extends Relation {
 
@@ -56,6 +61,7 @@ export default class BelongsToRelation extends Relation {
   }
 
   internalModelDidChange(internal, props) {
+    assert(`internalModelDidChange internal must be this.value`, internal === this.value);
     if(internal.state.isDeleted && props.includes('isDeleted')) {
       this.onValueDeleted();
     }
