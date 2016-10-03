@@ -20,13 +20,14 @@ function lookupProperties(modelClass) {
   let all = Ember.A();
   let byName = new EmptyObject();
 
+  let store = get(modelClass, 'store');
   modelClass.eachComputedProperty((name, meta) => {
     if(!meta || meta[sofaKey] !== true) {
       return;
     }
 
     let property = meta.property;
-    property.prepareModelClass(name, modelClass);
+    property.prepareModelClass(name, modelClass, store);
 
     all.push(property);
     byName[name] = property;
