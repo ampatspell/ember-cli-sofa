@@ -2,7 +2,7 @@ import Relation from './relation';
 
 export default class BelongsToRelation extends Relation {
 
-  inverseWillChange(internal) {
+  inverseWillChange() {
     this.withPropertyChange(changed => {
       this.setValue(null, changed);
     }, true);
