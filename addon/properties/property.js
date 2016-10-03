@@ -3,8 +3,7 @@ import { getInternalModel } from '../internal-model';
 
 const {
   merge,
-  assert,
-  get
+  assert
 } = Ember;
 
 function expandPersist(opts) {

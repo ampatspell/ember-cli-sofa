@@ -1,10 +1,5 @@
-import Ember from 'ember';
 import { module, test, createStore, registerModels, cleanup } from '../helpers/setup';
-import { Model, prefix, attr, belongsTo } from 'sofa';
-
-const {
-  RSVP: { all }
-} = Ember;
+import { Model, prefix, belongsTo } from 'sofa';
 
 let store;
 let db;
@@ -29,7 +24,6 @@ module('property-belongs-to-persisted', () => {
 test('serialize relationship', assert => {
   let house = db.model('house', { id: 'big' });
   let duck = db.model('duck', { id: 'yellow', house });
-  console.log(duck.get('_internal.values'));
   assert.deepEqual(duck.serialize(), {
     "_id": "duck:yellow",
     "type": "duck",

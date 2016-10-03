@@ -2,10 +2,9 @@ import Ember from 'ember';
 import Property from './property';
 
 const {
-  merge
+  merge,
+  K: k
 } = Ember;
-
-const noop = () => {};
 
 export default class Relationship extends Property {
 
@@ -26,7 +25,7 @@ export default class Relationship extends Property {
     let relation = this.getInternalValue(internal);
     if(!relation) {
       relation = this.createRelation(internal);
-      this.setInternalValue(internal, relation, noop);
+      this.setInternalValue(internal, relation, k);
     }
     return relation;
   }
