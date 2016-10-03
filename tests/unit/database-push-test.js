@@ -60,7 +60,7 @@ test('deserialize wrong type', assert => {
 
 test('deserialize wrong expected modelClass', assert => {
   return resolve().then(() => {
-    db.push({ _id: 'the-duck:yellow', type: 'duck', name: 'Yellow Duck' }, 'fish', false);
+    db.push({ _id: 'the-duck:yellow', type: 'duck', name: 'Yellow Duck' }, { model: 'fish', optional: false });
   }).then(() => {
     assert.ok(false, 'should reject');
   }, err => {
