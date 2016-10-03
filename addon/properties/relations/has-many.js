@@ -22,7 +22,7 @@ export default class HasManyRelation extends Relation {
     return proxy;
   }
 
-  setValue(value, changed) {
+  setValue(/*value, changed*/) {
   }
 
 }
