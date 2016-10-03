@@ -8,32 +8,56 @@ export default class BelongsToRelation extends Relation {
     }, true);
   }
 
-  inverseDidChange(internal, local) {
+  inverseDidChange(internal) {
     this.withPropertyChange(changed => {
-      this.setValue(internal, changed, local);
+      this.setValue(internal, changed);
     }, true);
   }
 
   //
 
   willSetValue() {
-    let inverse = this.getInverseRelation(this.value);
+    let value = this.value;
+    if(!value) {
+      return;
+    }
+
+    value.removeObserver(this);
+
+    let inverse = this.getInverseRelation(value);
     if(inverse) {
       inverse.inverseWillChange(this.internal);
     }
   }
 
   didSetValue() {
-    let inverse = this.getInverseRelation(this.value);
+    let value = this.value;
+    if(!value) {
+      return;
+    }
+
+    value.addObserver(this);
+
+    let inverse = this.getInverseRelation(value);
     if(inverse) {
       inverse.inverseDidChange(this.internal);
     }
   }
 
-  onDeleted() {
-    let inverse = this.getInverseRelation(this.value);
-    if(inverse) {
-      inverse.inverseDidChange(null, true);
+  //
+
+  onValueDeleted() {
+    this.withPropertyChange(changed => {
+      let value = this.value;
+      value.removeObserver(this);
+      this.value = null;
+      changed();
+    });
+  }
+
+  internalModelDidChange(internal, props) {
+    if(props.indexOf('isDeleted') !== -1) {
+      this.onValueDeleted();
     }
   }
 
@@ -47,7 +71,7 @@ export default class BelongsToRelation extends Relation {
     return internal.getModel();
   }
 
-  setValue(value, changed, local) {
+  setValue(value, changed) {
     if(this.isSettingValue) {
       return;
     }
@@ -56,18 +80,10 @@ export default class BelongsToRelation extends Relation {
 
     let internal = this.toInternalModel(value);
     if(this.value !== internal) {
-
-      if(!local) {
-        this.willSetValue();
-      }
-
+      this.willSetValue();
       this.value = internal;
       changed();
-
-      if(!local) {
-        this.didSetValue();
-      }
-
+      this.didSetValue();
     }
 
     this.isSettingValue = false;
