@@ -9,6 +9,14 @@ const {
 
 export default class HasManyRelation extends Relation {
 
+  dirty() {
+    let internal = this.internal;
+    let relationship = this.relationship;
+    internal.withPropertyChanges(changed => {
+      relationship.dirty(internal, changed);
+    }, true);
+  }
+
   inverseWillChange(internal) {
     if(this.isProxyModelsChanging) {
       return;
@@ -76,6 +84,7 @@ export default class HasManyRelation extends Relation {
       this.didAddInternalModel(internal);
     });
     this.isProxyModelsChanging = false;
+    this.dirty();
   }
 
 }
