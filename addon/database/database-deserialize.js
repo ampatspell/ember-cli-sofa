@@ -95,6 +95,21 @@ export default Ember.Mixin.create({
     }
   },
 
+  _deserializeDocIdToInternalModel(modelClass, docId) {
+    if(!docId) {
+      return null;
+    }
+
+    let internal = this._internalModelWithDocId(docId, true);
+    if(internal) {
+      return internal;
+    }
+
+    let definition = this._definitionForModelClass(modelClass);
+    let modelId = definition.modelId(docId);
+    return this._createExistingInternalModel(modelClass, modelId);
+  },
+
   _deserializeInternalModelSave(internal, json, changed) {
     let definition = internal.definition;
     definition.deserializeSaveOrUpdate(internal, json, changed);
