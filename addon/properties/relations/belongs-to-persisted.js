@@ -3,11 +3,7 @@ import BelongsToRelation from './belongs-to';
 export default class BelongsToPersistedRelation extends BelongsToRelation {
 
   serialize() {
-    let value = this.value;
-    if(value) {
-      return value.docId;
-    }
-    return null;
+    return this.serializeInternalModelToDocId(this.value);
   }
 
   deserialize(value, changed) {

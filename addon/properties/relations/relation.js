@@ -18,7 +18,17 @@ export default class Relation {
   }
 
   deserializeDocIdToInternalModel(docId) {
+    // TODO: deleted models
     return this.database._deserializeDocIdToInternalModel(this.relationshipModelClass, docId);
+  }
+
+  serializeInternalModelToDocId(internal) {
+    if(!internal) {
+      return null;
+    }
+    // TODO: deleted models
+    let docId = internal.docId;
+    return docId || null;
   }
 
   toInternalModel(object) {
