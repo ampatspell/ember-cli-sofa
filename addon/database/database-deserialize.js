@@ -102,6 +102,11 @@ export default Ember.Mixin.create({
 
     let internal = this._internalModelWithDocId(docId, true);
     if(internal) {
+      let definition = internal.definition;
+      assert({
+        error: 'invalid_document',
+        reason: `document '${docId} is expected to be ${get(modelClass, 'modelName')} not ${definition.modelName}`
+      }, definition.is(modelClass));
       return internal;
     }
 

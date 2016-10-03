@@ -2,24 +2,21 @@ import Relation from './relation';
 
 export default class BelongsToRelation extends Relation {
 
-  // TODO: internal -> model
   getValue() {
-    return this.value;
+    let internal = this.value;
+    if(!internal) {
+      return null;
+    }
+    return internal.getModel();
   }
 
-  // TODO: model -> internal
   setValue(value, changed) {
+    let internal = this.toInternalModel(value);
     if(this.value === value) {
       return;
     }
-    this.value = value || null;
+    this.value = internal;
     changed();
-  }
-
-  serialize() {
-  }
-
-  deserialize() {
   }
 
 }

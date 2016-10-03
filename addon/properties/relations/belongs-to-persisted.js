@@ -5,19 +5,17 @@ export default class BelongsToPersistedRelation extends BelongsToRelation {
   serialize() {
     let value = this.value;
     if(value) {
-      return value.get('docId');
+      return value.docId;
     }
     return null;
   }
 
   deserialize(value, changed) {
-    let model = null;
+    let internal = null;
     if(value) {
-      // TODO: skip getModel();
-      let internal = this.deserializeDocIdToInternalModel(value);
-      model = internal.getModel();
+      internal = this.deserializeDocIdToInternalModel(value);
     }
-    this.setValue(model, changed);
+    this.setValue(internal, changed);
   }
 
 }

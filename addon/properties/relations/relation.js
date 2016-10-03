@@ -1,3 +1,6 @@
+import InternalModel, { getInternalModel } from '../../internal-model';
+import Model from '../../model';
+
 export default class Relation {
 
   constructor(relationship, internal) {
@@ -16,6 +19,16 @@ export default class Relation {
 
   deserializeDocIdToInternalModel(docId) {
     return this.database._deserializeDocIdToInternalModel(this.relationshipModelClass, docId);
+  }
+
+  toInternalModel(object) {
+    if(object instanceof InternalModel) {
+      return object;
+    }
+    if(Model.detectInstance(object)) {
+      return getInternalModel(object);
+    }
+    return null;
   }
 
 }
