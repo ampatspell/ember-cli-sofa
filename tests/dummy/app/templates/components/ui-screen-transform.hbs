@@ -1,0 +1,15 @@
+{{#ui-block title='all'}}
+
+  {{#each array as |item|}}
+    <div>{{item}} {{item.name}} {{item.isNice}}</div>
+  {{/each}}
+
+{{/ui-block}}
+
+{{#ui-block title='nice'}}
+
+  {{#each nice as |item|}}
+    <div>{{item}} {{item.name}} {{item.isNice}}</div>
+  {{/each}}
+
+{{/ui-block}}
