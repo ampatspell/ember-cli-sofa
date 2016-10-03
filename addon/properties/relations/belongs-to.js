@@ -7,6 +7,18 @@ const {
 
 export default class BelongsToRelation extends Relation {
 
+  withPropertyChange(cb) {
+    let internal = this.internal;
+    let relationship = this.relationship;
+    internal.withPropertyChanges(changed_ => {
+      let changed = () => {
+        relationship.dirty(internal, changed_);
+        changed_(relationship.name);
+      };
+      cb(changed);
+    }, true);
+  }
+
   inverseWillChange() {
     this.withPropertyChange(changed => {
       this.setValue(null, changed);

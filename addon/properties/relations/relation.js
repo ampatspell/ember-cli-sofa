@@ -17,18 +17,6 @@ export default class Relation {
     return this.internal.database;
   }
 
-  withPropertyChange(cb) {
-    let internal = this.internal;
-    let relationship = this.relationship;
-    internal.withPropertyChanges(changed_ => {
-      let changed = () => {
-        relationship.dirty(internal, changed_);
-        changed_(relationship.name);
-      };
-      cb(changed);
-    }, true);
-  }
-
   getInverseRelation(internal) {
     if(!internal) {
       return;
