@@ -6,16 +6,16 @@ export default class Relation {
     this.value = null;
   }
 
-  // TODO: too complicated for relation.
-  // move to database._deserializeDocIdToInternalModel(modelClass, docId);
-  internalModelWithDocId(docId) {
-    if(!docId) {
-      return null;
-    }
-    let database = this.internal.database;
-    let modelClass = this.relationship.relationshipModelClass;
-    let modelId = database._definitionForModelClass(modelClass).modelId(docId);
-    return database._existingInternalModelForModelClass(modelClass, modelId, { create: true, deleted: true });
+  get relationshipModelClass() {
+    return this.relationship.relationshipModelClass;
+  }
+
+  get database() {
+    return this.internal.database;
+  }
+
+  deserializeDocIdToInternalModel(docId) {
+    return this.database._deserializeDocIdToInternalModel(this.relationshipModelClass, docId);
   }
 
 }

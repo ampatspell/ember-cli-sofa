@@ -39,10 +39,10 @@ test('serialize relationship', assert => {
 
 test('deserialize relationship', assert => {
   let model = db.push({ _id: 'duck:yellow', type: 'duck', house: 'house:big' });
-  console.log(model.get('_internal.values'));
   assert.deepEqual(model.serialize(), {
     "_id": "duck:yellow",
     "type": "duck",
     "house": "house:big"
   });
+  assert.ok(db.existing('house', 'big'));
 });
