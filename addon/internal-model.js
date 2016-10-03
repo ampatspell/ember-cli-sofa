@@ -1,3 +1,4 @@
+import Ember from 'ember';
 import EmptyObject from './util/empty-object';
 import { assert } from './util/assert';
 import { getDefinition } from './model';
@@ -20,6 +21,7 @@ export default class InternalModel {
     this._database = database;
     this.model = null;
     this.boundNotifyPropertyChange = this.notifyPropertyChange.bind(this);
+    this.observers = Ember.A();
     this.state = {
       isNew: true,
       isLoading: false,
@@ -94,6 +96,24 @@ export default class InternalModel {
     if(notifyModel) {
       model.endPropertyChanges();
     }
+
+    if(props.length) {
+      this.notifyObservers(changed.props);
+    }
+  }
+
+  notifyObservers(props) {
+    this.observers.forEach(observer => {
+      observer.internalModelDidChange(this, props);
+    });
+  }
+
+  addObserver(object) {
+    this.observers.addObject(object);
+  }
+
+  removeObserver(object) {
+    this.observers.removeObject(object);
   }
 
   _setState(props, changed) {
