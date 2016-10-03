@@ -32,9 +32,26 @@ test('serialize persist:false relationship', assert => {
 });
 
 test('set sets inverse', assert => {
-  let duck = db.model('duck');
-  let house = db.model('house');
+  let duck = db.model('duck', { id: 'duck' });
+  let house = db.model('house', { id: 'house' });
   duck.set('house', house);
+  assert.ok(duck.get('house') === house);
+  assert.ok(house.get('duck') === duck);
+});
+
+test('set sets inverse and unsets', assert => {
+  let duck = db.model('duck', { id: 'duck' });
+  let house = db.model('house', { id: 'house' });
+
+  duck.set('house', house);
+  assert.ok(duck.get('house') === house);
+  assert.ok(house.get('duck') === duck);
+
+  duck.set('house');
+  assert.ok(duck.get('house') === null);
+  assert.ok(house.get('duck') === null);
+
+  house.set('duck', duck);
   assert.ok(duck.get('house') === house);
   assert.ok(house.get('duck') === duck);
 });
