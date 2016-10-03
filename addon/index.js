@@ -7,6 +7,7 @@ import {
   rev,
   type,
   attr,
+  belongsTo
 } from './properties/helpers';
 
 export {
@@ -17,7 +18,8 @@ export {
   prefix,
   rev,
   type,
-  attr
+  attr,
+  belongsTo
 };
 
 export default Store;
