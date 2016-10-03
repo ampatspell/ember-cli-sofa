@@ -1,5 +1,5 @@
 {{#each models as |model|}}
-  {{component (ui-join 'ui-model-' model.modelName) model=model}}
+  {{component (ui-join 'ui-model-' model.modelName) model=model models=models}}
 {{/each}}
 
 {{#ui-block}}

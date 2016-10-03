@@ -15,7 +15,7 @@ export default Ember.Component.extend({
 
   actions: {
     loadAll() {
-      this.get('store.db.main').find({ all: true, optional: true });
+      this.get('store.db.main').find({ selector: { type: { $gt: null } } });
     },
     select(model) {
       console.log(`window.model = ${model}`);
