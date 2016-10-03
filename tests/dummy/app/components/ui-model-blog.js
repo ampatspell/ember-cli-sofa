@@ -9,7 +9,7 @@ export default Base.extend({
   classNameBindings: [':blog'],
 
   authors: computed('models.@each.modelName', function() {
-    return Ember.A(this.get('models')).filterBy('modelName', 'author')
+    return Ember.A(this.get('models')).filterBy('modelName', 'author');
   }),
 
   actions: {
