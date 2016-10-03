@@ -10,14 +10,15 @@ const Transform = createTransform({
     return getInternalModel(model);
   },
   public(internal) {
+    if(!internal) {
+      return null;
+    }
     return internal.getModel();
   }
 });
 
 export default Ember.ArrayProxy.extend(Transform, {
 
-  _relation: null,
-
-
+  _relation: null
 
 });
