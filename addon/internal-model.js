@@ -77,7 +77,7 @@ export default class InternalModel {
       model.beginPropertyChanges();
     }
 
-    let props = [];
+    let props = Ember.A();
 
     let changed = key => {
       if(notifyModel) {

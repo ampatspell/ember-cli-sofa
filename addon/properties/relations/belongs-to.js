@@ -56,7 +56,7 @@ export default class BelongsToRelation extends Relation {
   }
 
   internalModelDidChange(internal, props) {
-    if(props.indexOf('isDeleted') !== -1) {
+    if(internal.state.isDeleted && props.includes('isDeleted')) {
       this.onValueDeleted();
     }
   }
