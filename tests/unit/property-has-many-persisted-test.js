@@ -23,5 +23,10 @@ module('property-has-many-persisted', () => {
 });
 
 test('hello', assert => {
-
+  let yellow = db.model('duck', { id: 'yellow' });
+  let red = db.model('duck', { id: 'red' });
+  let house = db.model('house', { id: 'big' });
+  house.get('ducks').pushObject(red);
+  house.get('ducks').pushObject(yellow);
+  assert.ok(house.get('ducks').mapBy('docId'), [ 'duck:red', 'duck:yellow' ]);
 });

@@ -5,7 +5,7 @@ import Revision from './revision';
 import Type from './type';
 import Attribute from './attribute';
 import BelongsToPersisted from './belongs-to-persisted';
-// import HasManyPersisted from './has-many-persisted';
+import HasManyPersisted from './has-many-persisted';
 
 const {
   computed
@@ -48,9 +48,9 @@ function belongsTo(modelName, opts) {
   return make(new BelongsToPersisted(modelName, opts));
 }
 
-// function hasMany(modelName, opts) {
-//   return make(new HasManyPersisted(modelName, opts));
-// }
+function hasMany(modelName, opts) {
+  return make(new HasManyPersisted(modelName, opts));
+}
 
 export {
   id,
@@ -58,6 +58,6 @@ export {
   rev,
   type,
   attr,
-  belongsTo
-  // hasMany
+  belongsTo,
+  hasMany
 };
