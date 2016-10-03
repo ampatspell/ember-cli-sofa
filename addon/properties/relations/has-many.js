@@ -7,6 +7,21 @@ const {
   getOwner
 } = Ember;
 
+class ArrayWrapper {
+  constructor(array, fn) {
+    this.array = array;
+    this.fn = fn;
+  }
+
+  addObject(internal) {
+    this.array.addObject(this.fn(internal));
+  }
+
+  removeObject(internal) {
+    this.array.removeObject(this.fn(internal));
+  }
+}
+
 export default class HasManyRelation extends Relation {
 
   dirty() {
@@ -18,38 +33,50 @@ export default class HasManyRelation extends Relation {
   }
 
   inverseWillChange(internal) {
-    if(this.isProxyModelsChanging) {
+    if(this.isValueChanging) {
       return;
     }
-    // this wakes up models and proxy. bad
-    this.getValue().removeObject(internal.getModel());
+    this.getWrappedContent().removeObject(internal);
   }
 
   inverseDidChange(internal) {
-    if(this.isProxyModelsChanging) {
+    if(this.isValueChanging) {
       return;
     }
-    // this wakes up models and proxy. bad
-    this.getValue().addObject(internal.getModel());
+    this.getWrappedContent().addObject(internal);
+  }
+
+  getWrappedContent() {
+    let value = this.value;
+    if(value) {
+      return new ArrayWrapper(value, internal => internal.getModel());
+    }
+    let content = this.getContent();
+    return new ArrayWrapper(content, internal => internal);
+  }
+
+  getContent() {
+    let content = this.content;
+    if(!content) {
+      content = Ember.A();
+      this.content = content;
+    }
+    return content;
   }
 
   getValue() {
     let value = this.value;
     if(!value) {
-      value = Ember.A();
+      let content = this.getContent();
+      let owner = getOwner(this.relationship.store);
+      value = this.createArrayProxy(owner, content);
+      value.addEnumerableObserver(this, {
+        willChange: this.valueWillChange,
+        didChange: this.valueDidChange
+      });
       this.value = value;
     }
-    let proxy = this.proxy;
-    if(!proxy) {
-      let owner = getOwner(this.relationship.store);
-      proxy = this.createArrayProxy(owner, value);
-      proxy.addEnumerableObserver(this, {
-        willChange: this.proxyModelsWillChange,
-        didChange: this.proxyModelsDidChange
-      });
-      this.proxy = proxy;
-    }
-    return proxy;
+    return value;
   }
 
   setValue(/*value, changed*/) {
@@ -70,20 +97,20 @@ export default class HasManyRelation extends Relation {
     }
   }
 
-  proxyModelsWillChange(proxy, removing) {
-    this.isProxyModelsChanging = true;
+  valueWillChange(proxy, removing) {
+    this.isValueChanging = true;
     removing.forEach(model => {
       let internal = getInternalModel(model);
       this.willRemoveInternalModel(internal);
     });
   }
 
-  proxyModelsDidChange(proxy, removeCount, adding) {
+  valueDidChange(proxy, removeCount, adding) {
     adding.forEach(model => {
       let internal = getInternalModel(model);
       this.didAddInternalModel(internal);
     });
-    this.isProxyModelsChanging = false;
+    this.isValueChanging = false;
     this.dirty();
   }
 
