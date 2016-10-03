@@ -12,11 +12,11 @@ export default class BelongsToRelation extends Relation {
 
   setValue(value, changed) {
     let internal = this.toInternalModel(value);
-    if(this.value === value) {
-      return;
+    if(this.value !== internal) {
+      this.value = internal;
+      changed();
     }
-    this.value = internal;
-    changed();
+    return value;
   }
 
 }
