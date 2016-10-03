@@ -1,4 +1,4 @@
-import { Model, prefix, attr } from 'sofa';
+import { Model, prefix, attr, hasOne } from 'sofa';
 
 export default Model.extend({
 
@@ -6,9 +6,7 @@ export default Model.extend({
   name: attr('string'),
   email: attr('string'),
 
-  notifyPropertyChange() {
-    this._super(...arguments);
-  },
+  blog: hasOne('blog', { inverse: 'author', persist: false }),
 
   willCreate() {
     let name = this.get('name');

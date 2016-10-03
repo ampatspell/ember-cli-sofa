@@ -7,7 +7,10 @@ import {
   rev,
   type,
   attr,
+  belongsTo
 } from './properties/helpers';
+
+const hasOne = belongsTo;
 
 export {
   Store,
@@ -17,7 +20,9 @@ export {
   prefix,
   rev,
   type,
-  attr
+  attr,
+  belongsTo,
+  hasOne
 };
 
 export default Store;

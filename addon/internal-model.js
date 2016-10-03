@@ -1,6 +1,8 @@
+import Ember from 'ember';
 import EmptyObject from './util/empty-object';
 import { assert } from './util/assert';
 import { getDefinition } from './model';
+import Relationship from './properties/relationship';
 
 export const internalPropertyName = '_internal';
 
@@ -19,6 +21,7 @@ export default class InternalModel {
     this._database = database;
     this.model = null;
     this.boundNotifyPropertyChange = this.notifyPropertyChange.bind(this);
+    this.observers = Ember.A();
     this.state = {
       isNew: true,
       isLoading: false,
@@ -74,7 +77,7 @@ export default class InternalModel {
       model.beginPropertyChanges();
     }
 
-    let props = [];
+    let props = Ember.A();
 
     let changed = key => {
       if(notifyModel) {
@@ -93,6 +96,24 @@ export default class InternalModel {
     if(notifyModel) {
       model.endPropertyChanges();
     }
+
+    if(props.length) {
+      this.notifyObservers(changed.props);
+    }
+  }
+
+  notifyObservers(props) {
+    this.observers.forEach(observer => {
+      observer.internalModelDidChange(this, props);
+    });
+  }
+
+  addObserver(object) {
+    this.observers.addObject(object);
+  }
+
+  removeObserver(object) {
+    this.observers.removeObject(object);
   }
 
   _setState(props, changed) {
@@ -202,6 +223,17 @@ export default class InternalModel {
     this.values[key] = value;
     changed(key);
     return value;
+  }
+
+  getRelation(key) {
+    let property = this.definition.property(key);
+    if(!property) {
+      return;
+    }
+    if(!(property instanceof Relationship)) {
+      return;
+    }
+    return property.getRelation(this);
   }
 
   getModel(props) {

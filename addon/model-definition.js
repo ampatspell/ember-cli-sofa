@@ -20,13 +20,14 @@ function lookupProperties(modelClass) {
   let all = Ember.A();
   let byName = new EmptyObject();
 
+  let store = get(modelClass, 'store');
   modelClass.eachComputedProperty((name, meta) => {
     if(!meta || meta[sofaKey] !== true) {
       return;
     }
 
     let property = meta.property;
-    property.prepareModelClass(name, modelClass);
+    property.prepareModelClass(name, modelClass, store);
 
     all.push(property);
     byName[name] = property;
@@ -144,6 +145,21 @@ export default class Definition {
       }
     }
     return false;
+  }
+
+  onLoaded(internal, doc, changed) {
+    this.deserialize(internal, doc, changed);
+    internal.onLoaded(changed);
+  }
+
+  onSaved(internal, json, changed) {
+    this.deserializeSaveOrUpdate(internal, json, changed);
+    internal.onSaved(changed);
+  }
+
+  onDeleted(internal, json, changed) {
+    this.deserializeDelete(internal, json, changed);
+    internal.onDeleted(changed);
   }
 
 }

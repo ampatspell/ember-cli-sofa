@@ -1,0 +1,14 @@
+{{#ui-block title=(ui-join 'blog' model.id model.rev delimiter=' ')}}
+  {{ui-input title='name' value=model.name}}
+  {{#if model.author}}
+    <div>author: {{model.author.docId}}</div>
+  {{else}}
+    {{#each authors as |author|}}
+      <div {{action 'selectAuthor' author}}>{{author.docId}}</div>
+    {{else}}
+      <div>No authors</div>
+    {{/each}}
+  {{/if}}
+  {{ui-json value=model.state}}
+  <div>{{ui-button title='Save' action=(action 'save')}} {{ui-button title='Delete' action=(action 'delete')}}</div>
+{{/ui-block}}

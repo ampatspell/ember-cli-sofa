@@ -1,0 +1,7 @@
+{{#each models as |model|}}
+  {{component (ui-join 'ui-model-' model.modelName) model=model models=models}}
+{{/each}}
+
+{{#ui-block}}
+  {{ui-button title='Load all' action=(action 'loadAll')}}
+{{/ui-block}}

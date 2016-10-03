@@ -3,8 +3,7 @@ import { getInternalModel } from '../internal-model';
 
 const {
   merge,
-  assert,
-  get
+  assert
 } = Ember;
 
 function expandPersist(opts) {
@@ -39,11 +38,12 @@ export default class Property {
     }
   }
 
-  prepareModelClass(name, declaringModelClass) {
+  prepareModelClass(name, declaringModelClass, store) {
     this.validatePropertyName(name);
     this.name = name;
     this.opts.key = this.opts.key || this.name;
     this.declaringModelClass = declaringModelClass;
+    this.store = store;
   }
 
   prepareInternalModel(internal, opts, changed) {
@@ -60,8 +60,7 @@ export default class Property {
   //
 
   transform() {
-    let store = get(this.declaringModelClass, 'store');
-    return store._transformForName(this.opts.transform);
+    return this.store._transformForName(this.opts.transform);
   }
 
   transformValueToInternalModel(internal, value) {
