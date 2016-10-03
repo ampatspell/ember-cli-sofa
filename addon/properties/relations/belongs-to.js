@@ -17,4 +17,7 @@ export default class BelongsToRelation extends Relation {
   serialize() {
   }
 
+  deserialize() {
+  }
+
 }

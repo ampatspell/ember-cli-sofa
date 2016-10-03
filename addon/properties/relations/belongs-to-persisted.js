@@ -10,4 +10,13 @@ export default class BelongsToPersistedRelation extends BelongsToRelation {
     return null;
   }
 
+  deserialize(value, changed) {
+    let model = null;
+    if(value) {
+      let internal = this.internalModelWithDocId(value);
+      model = internal.getModel();
+    }
+    this.setValue(model, changed);
+  }
+
 }

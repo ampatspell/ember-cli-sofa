@@ -13,6 +13,15 @@ export default class Relationship extends Property {
     super(merge({ relationshipModelName }, opts));
   }
 
+  get relationshipModelClass() {
+    let modelClass = this.opts.relationshipModelClass;
+    if(!modelClass) {
+      modelClass = this.store.modelClassForName(this.opts.relationshipModelName);
+      this.opts.relationshipModelClass = modelClass;
+    }
+    return modelClass;
+  }
+
   getRelation(internal) {
     let relation = this.getInternalValue(internal);
     if(!relation) {
@@ -38,6 +47,13 @@ export default class Relationship extends Property {
     if(value !== undefined) {
       this.setDocValue(doc, value);
     }
+  }
+
+  _deserialize(internal, doc, changed) {
+    let value = this.getDocValue(doc);
+    let relation = this.getRelation(internal);
+    relation.deserialize(value, changed);
+    return this.opts.key;
   }
 
 }
