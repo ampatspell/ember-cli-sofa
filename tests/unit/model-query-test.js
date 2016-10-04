@@ -4,7 +4,7 @@ import { module, test, createStore, registerModels, cleanup, intercept } from '.
 import { Model, prefix, attr } from 'sofa';
 
 const {
-  RSVP: { all, hash }
+  RSVP: { resolve, all }
 } = Ember;
 
 let store;
@@ -140,25 +140,29 @@ test('load by docId', assert => {
 
 test('find', assert => {
   let requests = intercept(db);
-  return hash({
-    byDocId: db.find({ id: 'duck:yellow' }).then(model => {
+  return resolve().then(() => {
+    return db.find({ id: 'duck:yellow' }).then(model => {
       assert.ok(model.get('id'), 'yellow');
-    }),
-    byId: db.find({ model: 'duck', id: 'yellow' }).then(model => {
+    });
+  }).then(() => {
+    return db.find({ model: 'duck', id: 'yellow', force: true }).then(model => {
       assert.ok(model.get('id'), 'yellow');
-    }),
-    all: db.find({ model: 'duck', key: 'duck:yellow', all: true }).then(arr => {
+    });
+  }).then(() => {
+    return db.find({ model: 'duck', key: 'duck:yellow', all: true }).then(arr => {
       assert.ok(arr.length === 1);
       assert.ok(arr[0].get('id'), 'yellow');
-    }),
-    view: db.find({ model: 'duck', ddoc: 'duck', view: 'by-name', key: 'yellow' }).then(arr => {
+    });
+  }).then(() => {
+    return db.find({ model: 'duck', ddoc: 'duck', view: 'by-name', key: 'yellow' }).then(arr => {
       assert.ok(arr.length === 1);
       assert.ok(arr[0].get('id'), 'yellow');
-    }),
-    mango: db.find({ model: 'duck', selector: { name: 'yellow' } }).then(arr => {
+    });
+  }).then(() => {
+    return db.find({ model: 'duck', selector: { name: 'yellow' } }).then(arr => {
       assert.ok(arr.length === 1);
       assert.ok(arr[0].get('id'), 'yellow');
-    })
+    });
   }).then(() => {
     assert.deepEqual(requests, [
       {
@@ -206,22 +210,26 @@ test('find', assert => {
 
 test('first', assert => {
   let requests = intercept(db);
-  return hash({
-    byDocId: db.first({ id: 'duck:yellow' }).then(model => {
+  return resolve().then(() => {
+    return db.first({ id: 'duck:yellow' }).then(model => {
       assert.ok(model.get('id'), 'yellow');
-    }),
-    byId: db.first({ model: 'duck', id: 'yellow' }).then(model => {
+    });
+  }).then(() => {
+    return db.first({ model: 'duck', id: 'yellow', force: true }).then(model => {
       assert.ok(model.get('id'), 'yellow');
-    }),
-    all: db.first({ model: 'duck', key: 'duck:yellow', all: true }).then(model => {
+    });
+  }).then(() => {
+    return db.first({ model: 'duck', key: 'duck:yellow', all: true }).then(model => {
       assert.ok(model.get('id'), 'yellow');
-    }),
-    view: db.first({ model: 'duck', ddoc: 'duck', view: 'by-name', key: 'yellow' }).then(model => {
+    });
+  }).then(() => {
+    return db.first({ model: 'duck', ddoc: 'duck', view: 'by-name', key: 'yellow' }).then(model => {
       assert.ok(model.get('id'), 'yellow');
-    }),
-    mango: db.first({ model: 'duck', selector: { name: 'yellow' } }).then(model => {
+    });
+  }).then(() => {
+    return db.first({ model: 'duck', selector: { name: 'yellow' } }).then(model => {
       assert.ok(model.get('id'), 'yellow');
-    })
+    });
   }).then(() => {
     assert.deepEqual(requests, [
       {
