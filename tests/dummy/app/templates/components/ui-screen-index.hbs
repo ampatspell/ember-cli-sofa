@@ -1,0 +1,21 @@
+{{#ui-block title='ember-cli-sofa'}}
+  {{#ui-row title='store'}}
+    {{store}}
+  {{/ui-row}}
+  {{#ui-row title='models'}}
+    {{#each store.modelNames as |modelName|}}
+      <div>{{modelName}}</div>
+    {{/each}}
+  {{/ui-row}}
+  {{#ui-row title='store.db.main' value=store.db.main showValue=true}}
+    {{store.db.main.documents.url}}
+    {{#ui-row}}
+      {{#if info}}
+        {{ui-json value=info.couch}}
+        {{ui-json value=info.db}}
+      {{else}}
+        {{ui-button title='get info' action=(action 'info')}}
+      {{/if}}
+    {{/ui-row}}
+  {{/ui-row}}
+{{/ui-block}}

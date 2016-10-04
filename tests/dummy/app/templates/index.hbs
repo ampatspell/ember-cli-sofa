@@ -1,13 +1,1 @@
-{{#ui-block title='ember-cli-sofa'}}
-  {{#ui-row title='store'}}
-    {{store}}
-  {{/ui-row}}
-  {{#ui-row title='models'}}
-    {{#each store.modelNames as |modelName|}}
-      <div>{{modelName}}</div>
-    {{/each}}
-  {{/ui-row}}
-  {{#ui-row title='store.db.main' value=store.db.main showValue=true}}
-    {{store.db.main.documents.url}}
-  {{/ui-row}}
-{{/ui-block}}
+{{ui-screen-index}}
