@@ -67,6 +67,7 @@ export default class HasManyRelation extends Relation {
       return;
     }
     this.getWrappedContent().removeObject(internal);
+    this.dirty();
   }
 
   inverseDidChange(internal) {
@@ -74,6 +75,7 @@ export default class HasManyRelation extends Relation {
       return;
     }
     this.getWrappedContent().addObject(internal);
+    this.dirty();
   }
 
   getWrappedContent() {
@@ -125,7 +127,7 @@ export default class HasManyRelation extends Relation {
     return value;
   }
 
-  setValue(value /*, changed*/) {
+  setValue(value) {
     this.ignoreValueChanges = true;
 
     let curr = this.getContent();
@@ -145,10 +147,6 @@ export default class HasManyRelation extends Relation {
     });
 
     this.ignoreValueChanges = false;
-
-    // TODO: not sure about `changed` apart from dirty()
-    // changed();
-    // TODO: Is it ok not to return anything?
   }
 
   valueWillChange(proxy, removing) {
