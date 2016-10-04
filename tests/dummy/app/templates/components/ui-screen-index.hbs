@@ -8,11 +8,17 @@
     {{/each}}
   {{/ui-row}}
   {{#ui-row title='store.db.main' value=store.db.main showValue=true}}
-    {{store.db.main.documents.url}}
+    {{#ui-row}}
+      {{store.db.main.documents.url}}
+    {{/ui-row}}
     {{#ui-row}}
       {{#if info}}
-        {{ui-json value=info.couch}}
-        {{ui-json value=info.db}}
+        {{#ui-row title='CouchDB'}}
+          {{ui-json value=info.couch}}
+        {{/ui-row}}
+        {{#ui-row title='Database'}}
+          {{ui-json value=info.db}}
+        {{/ui-row}}
       {{else}}
         {{ui-button title='get info' action=(action 'info')}}
       {{/if}}
