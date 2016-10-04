@@ -7,7 +7,6 @@ export default class Relation {
     this.relationship = relationship;
     this.internal = internal;
     this.value = null;
-    internal.addObserver(this);
   }
 
   get relationshipModelClass() {

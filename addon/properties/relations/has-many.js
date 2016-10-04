@@ -49,6 +49,11 @@ class ArrayWrapper {
 
 export default class HasManyRelation extends Relation {
 
+  constructor(relationship, internal) {
+    super(...arguments);
+    internal.addObserver(this);
+  }
+
   dirty() {
     let internal = this.internal;
     let relationship = this.relationship;
@@ -123,7 +128,7 @@ export default class HasManyRelation extends Relation {
   setValue(value /*, changed*/) {
     let next = Ember.A(value).map(model => getInternalModel(model));
     if(next.length > 0) {
-      this.isReplacingContent = true;
+      this.ignoreValueChanges = true;
 
       let curr = this.getContent();
 
@@ -140,7 +145,7 @@ export default class HasManyRelation extends Relation {
         this.didAddInternalModel(internal);
       });
 
-      this.isReplacingContent = false;
+      this.ignoreValueChanges = false;
 
       // TODO: not sure about `changed` apart from dirty()
       // changed();
@@ -149,7 +154,7 @@ export default class HasManyRelation extends Relation {
   }
 
   valueWillChange(proxy, removing) {
-    if(this.isReplacingContent) {
+    if(this.ignoreValueChanges) {
       return;
     }
     this.isValueChanging = true;
@@ -160,7 +165,7 @@ export default class HasManyRelation extends Relation {
   }
 
   valueDidChange(proxy, removeCount, adding) {
-    if(this.isReplacingContent) {
+    if(this.ignoreValueChanges) {
       return;
     }
     adding.forEach(model => {
@@ -172,10 +177,9 @@ export default class HasManyRelation extends Relation {
   }
 
   onContentInternalModelDeleted(internal) {
-    this.isReplacingContent = true;
-    // TODO: possibly don't touch wrapped content
+    this.ignoreValueChanges = true;
     this.getWrappedContent().removeObject(internal);
-    this.isReplacingContent = false;
+    this.ignoreValueChanges = false;
   }
 
   onInternalModelDeleted(internal) {
