@@ -1,18 +1,20 @@
 import Ember from 'ember';
 
 const {
+  inject: { service },
   computed,
-  getOwner,
   computed: { oneWay },
   merge
 } = Ember;
 
 const routes = [
-  { title: 'index', route: 'index' },
-  { title: 'about', route: 'about' }
+  { title: 'index' },
+  { title: 'authors' }
 ];
 
 const Route = Ember.Object.extend({
+
+  route: oneWay('title'),
 
   isCurrent: computed('router.currentRouteName', function() {
     return this.get('router.currentRouteName').indexOf(this.get('route')) === 0;
@@ -23,9 +25,7 @@ const Route = Ember.Object.extend({
 export default Ember.Component.extend({
   classNameBindings: [':ui-navigation'],
 
-  router: computed(function() {
-    return getOwner(this).lookup('router:main');
-  }),
+  router: service(),
 
   routes: computed(function() {
     let router = this.get('router');

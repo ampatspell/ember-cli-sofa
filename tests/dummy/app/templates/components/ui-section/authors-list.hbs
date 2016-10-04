@@ -1,0 +1,9 @@
+{{#ui-block title='authors'}}
+  {{#each authors as |author|}}
+    {{#ui-row action=(action attrs.select author)}}
+      {{author.name}}
+    {{/ui-row}}
+  {{/each}}
+{{/ui-block}}
+
+{{ui-button title='Create new author' action=(action attrs.createNew)}}

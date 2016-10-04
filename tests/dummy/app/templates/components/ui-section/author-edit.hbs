@@ -1,0 +1,17 @@
+{{#ui-block title=(if author.isNew 'Create new author' 'Edit author')}}
+  {{ui-model-error model=author}}
+  {{#ui-row title='Name'}}
+    {{ui-input value=author.name}}
+  {{/ui-row}}
+  {{#ui-row title='Email'}}
+    {{ui-input value=author.email}}
+  {{/ui-row}}
+  {{#ui-row title='Blogs'}}
+    {{#ui-select array=blogs selected=author.blogs action=(action 'updateBlogSelection') as |blog|}}
+      {{blog.name}}
+    {{/ui-select}}
+  {{/ui-row}}
+  {{#ui-row}}
+    {{ui-button title='Save' action=(action attrs.save author)}}
+  {{/ui-row}}
+{{/ui-block}}

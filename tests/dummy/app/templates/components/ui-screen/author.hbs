@@ -1,0 +1,24 @@
+{{#ui-block title=author.name}}
+
+  {{#ui-row title='Name'}}
+    {{author.name}}
+  {{/ui-row}}
+
+  {{#ui-row title='Email'}}
+    {{author.email}}
+  {{/ui-row}}
+
+  {{#ui-row title='Blogs'}}
+    {{#each author.blogs as |blog|}}
+      <div>{{blog.id}}: {{blog.name}}</div>
+    {{else}}
+      <div>No blogs</div>
+    {{/each}}
+  {{/ui-row}}
+
+  {{#ui-row}}
+    {{ui-button title='Edit' action=(action 'edit')}}
+    {{ui-button title='Delete' action=(action 'delete')}}
+  {{/ui-row}}
+
+{{/ui-block}}

@@ -1,0 +1,5 @@
+{{#each array as |item|}}
+  {{#ui-select-item array=array selected=selected item=item toggle=(action attrs.action item)}}
+    {{yield item}}
+  {{/ui-select-item}}
+{{/each}}

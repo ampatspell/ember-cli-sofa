@@ -5,7 +5,7 @@ const {
 } = Ember;
 
 export default Ember.Component.extend({
-  classNameBindings: [':ui-row'],
+  classNameBindings: [':ui-row', 'attrs.action:action'],
 
   showValue: false,
 
@@ -24,6 +24,12 @@ export default Ember.Component.extend({
       return '(NaN)';
     }
     return value;
-  })
+  }),
+
+  click() {
+    if(this.attrs.action) {
+      this.attrs.action();
+    }
+  }
 
 });

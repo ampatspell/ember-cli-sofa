@@ -259,6 +259,10 @@ export default Ember.Mixin.create({
       return reject(new Error({ error: 'not_saved', reason: 'Model is not saved yet' }));
     }
 
+    if(internal.state.isDeleted) {
+      return reject(new Error({ error: 'deleted', reason: 'Model is already deleted' }));
+    }
+
     let docId = internal.docId;
     let rev = internal.rev;
     let documents = this.get('documents');

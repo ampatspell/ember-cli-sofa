@@ -1,0 +1,8 @@
+<div class="ui-master-detail">
+  <div class="master">
+    {{ui-section/authors-list authors=authors select=(action 'selectAuthor') createNew=(action 'createNewAuthor')}}
+  </div>
+  <div class="detail">
+    {{yield}}
+  </div>
+</div>

@@ -1,6 +1,8 @@
 export default {
   name: 'dummy:develop',
   initialize(app) {
+    app.inject('component', 'router', 'service:router');
+
     let store = app.lookup('service:store');
     store.set('_applicationName', 'dummy');
     window.store = store;

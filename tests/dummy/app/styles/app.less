@@ -24,7 +24,7 @@ body {
   cursor: pointer;
 }
 
-input {
+input[type=text] {
   display: block;
   width: 100%;
   -webkit-appearance: none;
@@ -58,10 +58,23 @@ button {
 }
 
 .ui-application {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   > .navigation {
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 36px;
   }
   > .content {
-    padding: 10px;
+    position: absolute;
+    top: 56px;
+    left: 10px;
+    right: 10px;
+    bottom: 0;
   }
 }
 
@@ -123,9 +136,44 @@ button {
       padding: 5px 0 0 0;
     }
   }
+  &.action {
+    cursor: pointer;
+  }
 }
 
-.ui-section {
-  border: 1px solid #eee;
-  margin-bottom: 10px;
+.ui-master-detail {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  @width: 300px;
+  > .master {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: @width;
+    bottom: 0;
+  }
+  > .detail {
+    position: absolute;
+    top: 0;
+    left: @width + 10px;
+    right: 0;
+    bottom: 0;
+  }
+}
+
+.ui-select {
+  > .ui-select-item {
+    > input {
+      outline: none;
+      width: 16px;
+      height: 16px;
+      margin: 0;
+    }
+    > .content {
+      display: inline-block;
+    }
+  }
 }
