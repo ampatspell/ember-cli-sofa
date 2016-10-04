@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import { module, test, createStore, registerModels, cleanup } from '../helpers/setup';
-import { Model, prefix, belongsTo, hasMany } from 'sofa';
+import { Model, prefix, hasMany } from 'sofa';
 
 const {
   RSVP: { all }
@@ -54,4 +54,128 @@ test('add remove updates inverse', assert => {
   assert.deepEqual(small.get('ducks').mapBy('id'), [ 'green' ]);
   assert.deepEqual(yellow.get('houses').mapBy('id'), [ 'big' ]);
   assert.deepEqual(green.get('houses').mapBy('id'), [ 'big', 'small' ]);
+});
+
+test('save', assert => {
+  let yellow = db.model('duck', { id: 'yellow' });
+  let green  = db.model('duck', { id: 'green' });
+  let big    = db.model('house', { id: 'big' });
+  let small  = db.model('house', { id: 'small' });
+
+  big.get('ducks').pushObjects([ yellow, green ]);
+  small.get('ducks').pushObject(green);
+
+  return all([ yellow, green, big, small ].map(model => model.save())).then(() => {
+    return db.get('documents').mango({ selector: { type: { $gt: null } }});
+  }).then(json => {
+    assert.deepEqual_(json.docs, [
+      {
+        "_id": "duck:green",
+        "_rev": "ignored",
+        "houses": [
+          "house:big",
+          "house:small"
+        ],
+        "type": "duck"
+      },
+      {
+        "_id": "duck:yellow",
+        "_rev": "ignored",
+        "houses": [
+          "house:big"
+        ],
+        "type": "duck"
+      },
+      {
+        "_id": "house:big",
+        "_rev": "ignored",
+        "ducks": [
+          "duck:yellow",
+          "duck:green"
+        ],
+        "type": "house"
+      },
+      {
+        "_id": "house:small",
+        "_rev": "ignored",
+        "ducks": [
+          "duck:green"
+        ],
+        "type": "house"
+      }
+    ]);
+  });
+});
+
+test('load', assert => {
+  db.push({
+    "_id": "duck:green",
+    "_rev": "ignored",
+    "houses": [
+      "house:big",
+      "house:small"
+    ],
+    "type": "duck"
+  });
+
+  assert.deepEqual(db.existing('duck', 'green').get('houses').mapBy('id'), [ 'big', 'small' ]);
+  assert.deepEqual(db.existing('house', 'big').get('ducks').mapBy('id'), [ 'green' ]);
+  assert.deepEqual(db.existing('house', 'small').get('ducks').mapBy('id'), [ 'green' ]);
+
+  db.push({
+    "_id": "duck:yellow",
+    "_rev": "ignored",
+    "houses": [
+      "house:big"
+    ],
+    "type": "duck"
+  });
+
+  assert.deepEqual(db.existing('duck', 'green').get('houses').mapBy('id'), [ 'big', 'small' ]);
+  assert.deepEqual(db.existing('duck', 'yellow').get('houses').mapBy('id'), [ 'big' ]);
+  assert.deepEqual(db.existing('house', 'big').get('ducks').mapBy('id'), [ 'green', 'yellow' ]);
+  assert.deepEqual(db.existing('house', 'small').get('ducks').mapBy('id'), [ 'green' ]);
+
+  db.push({
+    "_id": "house:big",
+    "_rev": "ignored",
+    "ducks": [
+      "duck:yellow"
+    ],
+    "type": "house"
+  });
+
+  assert.deepEqual(db.existing('duck', 'green').get('houses').mapBy('id'), [ 'small' ]);
+  assert.deepEqual(db.existing('duck', 'yellow').get('houses').mapBy('id'), [ 'big' ]);
+  assert.deepEqual(db.existing('house', 'big').get('ducks').mapBy('id'), [ 'yellow' ]);
+  assert.deepEqual(db.existing('house', 'small').get('ducks').mapBy('id'), [ 'green' ]);
+
+  db.push({
+    "_id": "house:small",
+    "_rev": "ignored",
+    "ducks": [
+      "duck:green",
+      "duck:yellow"
+    ],
+    "type": "house"
+  });
+
+  assert.deepEqual(db.existing('duck', 'green').get('houses').mapBy('id'), [ 'small' ]);
+  assert.deepEqual(db.existing('duck', 'yellow').get('houses').mapBy('id'), [ 'big', 'small' ]);
+  assert.deepEqual(db.existing('house', 'big').get('ducks').mapBy('id'), [ 'yellow' ]);
+  assert.deepEqual(db.existing('house', 'small').get('ducks').mapBy('id'), [ 'green', 'yellow' ]);
+
+  db.push({
+    "_id": "house:small",
+    "_rev": "ignored",
+    "ducks": [
+      "duck:green"
+    ],
+    "type": "house"
+  });
+
+  assert.deepEqual(db.existing('duck', 'green').get('houses').mapBy('id'), [ 'small' ]);
+  assert.deepEqual(db.existing('duck', 'yellow').get('houses').mapBy('id'), [ 'big' ]);
+  assert.deepEqual(db.existing('house', 'big').get('ducks').mapBy('id'), [ 'yellow' ]);
+  assert.deepEqual(db.existing('house', 'small').get('ducks').mapBy('id'), [ 'green' ]);
 });
