@@ -202,4 +202,24 @@ export default class HasManyRelation extends Relation {
     }
   }
 
+  enqueueLazyLoadModelIfNeeded() {
+    let content = this.content;
+    console.log('lazy-load', content.map(internal => internal.docId))
+  }
+
+  internalModelFromModel(model) {
+    if(!model) {
+      return null;
+    }
+    return getInternalModel(model);
+  }
+
+  modelFromInternalModel(internal) {
+    if(!internal) {
+      return null;
+    }
+    this.enqueueLazyLoadModelIfNeeded();
+    return internal.getModel();
+  }
+
 }

@@ -1,19 +1,16 @@
 import Ember from 'ember';
 import createTransform from './array-transform-mixin';
-import { getInternalModel } from '../../../internal-model';
+
+const {
+  get
+} = Ember;
 
 const Transform = createTransform({
   internal(model) {
-    if(!model) {
-      return null;
-    }
-    return getInternalModel(model);
+    return get(this, '_relation').internalModelFromModel(model);
   },
   public(internal) {
-    if(!internal) {
-      return null;
-    }
-    return internal.getModel();
+    return get(this, '_relation').modelFromInternalModel(internal);
   }
 });
 
