@@ -16,7 +16,7 @@ export default class HasManyPersistedRelation extends HasManyRelation {
   }
 
   deserialize(value, changed) {
-    let internals = Ember.A(value).map(docId => this.deserializeDocIdToInternalModel(docId));
+    let internals = Ember.A(Ember.A(value).map(docId => this.deserializeDocIdToInternalModel(docId))).compact();
     this.setValue(internals, changed);
   }
 

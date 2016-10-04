@@ -206,5 +206,4 @@ export default class HasManyRelation extends Relation {
     }
   }
 
-
 }
