@@ -125,3 +125,35 @@ test('load', assert => {
   assert.ok(yellow.get('house') === big);
   assert.ok(red.get('house') === big);
 });
+
+test('load while proxy is present', assert => {
+  let green = db.existing('duck', 'green', { create: true });
+  let yellow = db.existing('duck', 'yellow', { create: true });
+  let big = db.existing('house', 'big', { create: true });
+
+  big.get('ducks').pushObject(yellow);
+  big.get('ducks').pushObject(green);
+  assert.deepEqual(big.get('ducks').mapBy('id'), [ 'yellow', 'green' ]);
+
+  big = db.push({
+    "_id": "house:big",
+    "_rev": "ignored",
+    "ducks": [
+      "duck:yellow",
+      "duck:red"
+    ],
+    "type": "house"
+  });
+
+  assert.ok(big);
+  assert.deepEqual(big.get('ducks').mapBy('id'), [ 'yellow', 'red' ]);
+
+  let red = db.existing('duck', 'red');
+
+  assert.ok(yellow);
+  assert.ok(red);
+
+  assert.ok(yellow.get('house') === big);
+  assert.ok(red.get('house') === big);
+  assert.ok(green.get('house') === null);
+});
