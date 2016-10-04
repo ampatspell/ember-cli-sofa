@@ -6,6 +6,7 @@ import StoreInternalModel from './store/store-internal-model';
 import StoreModel from './store/store-model';
 import StoreTransform from './store/store-transform';
 import StoreDestroy from './store/store-destroy';
+import StoreModelNames from './store/store-model-names';
 
 const {
   Logger: { warn }
@@ -18,6 +19,7 @@ export default Ember.Service.extend(
   StoreInternalModel,
   StoreModel,
   StoreTransform,
+  StoreModelNames,
   StoreDestroy, {
 
   find() {

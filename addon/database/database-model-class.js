@@ -1,12 +1,13 @@
 import Ember from 'ember';
 
 const {
-  computed
+  computed,
+  computed: { alias }
 } = Ember;
 
 export default Ember.Mixin.create({
 
-  modelNames: null,
+  modelNames: alias('store.modelNames'),
 
   modelClasses: computed('modelNames', function() {
     return Ember.A(this.get('modelNames')).map(modelName => {
