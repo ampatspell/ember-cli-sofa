@@ -49,6 +49,7 @@ export default class PrefixedIdentifier extends Identifier {
     let docId = this.getDocValue(doc);
     let modelId = this.modelId(internal.modelClass, docId);
     this.setInternalValue(internal, modelId, changed);
+    return this.opts.key;
   }
 
 }
