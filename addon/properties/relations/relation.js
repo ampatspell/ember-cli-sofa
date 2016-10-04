@@ -40,7 +40,9 @@ export default class Relation {
     if(!internal) {
       return null;
     }
-    // TODO: deleted models
+    if(internal.state.isDeleted) {
+      return null;
+    }
     let docId = internal.docId;
     return docId || null;
   }

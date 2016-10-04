@@ -1,10 +1,5 @@
-import Ember from 'ember';
 import { module, test, createStore, registerModels, cleanup } from '../helpers/setup';
 import { Model, prefix, hasOne, hasMany } from 'sofa';
-
-const {
-  RSVP: { all }
-} = Ember;
 
 let store;
 let db;
@@ -19,7 +14,7 @@ let House = Model.extend({
   ducks: hasMany('duck', { inverse: 'house' })
 });
 
-module('relation-deleted-deserialize', () => {
+module('relation-deleted-serialize-deserialize', () => {
   registerModels({ Duck, House });
   store = createStore();
   db = store.get('db.main');
@@ -47,4 +42,29 @@ test('deserialize deleted hasMany item', assert => {
 
   assert.ok(green.get('house') === house);
   assert.ok(yellow.get('house') === null);
+});
+
+test('serialize deleted belongsTo', assert => {
+  let house = db.push({ _id: 'house:big', type: 'house' });
+  let duck = db.push({ _id: 'duck:yellow', type: 'duck' });
+
+  db.push({ _id: 'house:big', _deleted: true });
+  assert.ok(duck.get('house') === null);
+
+  duck.set('house', house);
+  assert.ok(duck.get('house') === house);
+
+  assert.deepEqual(duck.serialize(), {
+    "_id": "duck:yellow",
+    "house": null,
+    "type": "duck"
+  });
+
+  db.push({ _id: 'house:big', type: 'house', ducks: [ 'duck:yellow' ] });
+
+  assert.deepEqual(duck.serialize(), {
+    "_id": "duck:yellow",
+    "house": "house:big",
+    "type": "duck"
+  });
 });

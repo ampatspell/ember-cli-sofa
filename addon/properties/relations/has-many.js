@@ -126,31 +126,29 @@ export default class HasManyRelation extends Relation {
   }
 
   setValue(value /*, changed*/) {
+    this.ignoreValueChanges = true;
+
+    let curr = this.getContent();
     let next = Ember.A(value).map(model => getInternalModel(model));
-    if(next.length > 0) {
-      this.ignoreValueChanges = true;
 
-      let curr = this.getContent();
+    let { remove, add } = getDiff(curr, next);
 
-      let { remove, add } = getDiff(curr, next);
+    remove.forEach(internal => {
+      this.willRemoveInternalModel(internal);
+    });
 
-      remove.forEach(internal => {
-        this.willRemoveInternalModel(internal);
-      });
+    curr.removeObjects(remove);
+    curr.pushObjects(add);
 
-      curr.removeObjects(remove);
-      curr.pushObjects(add);
+    add.forEach(internal => {
+      this.didAddInternalModel(internal);
+    });
 
-      add.forEach(internal => {
-        this.didAddInternalModel(internal);
-      });
+    this.ignoreValueChanges = false;
 
-      this.ignoreValueChanges = false;
-
-      // TODO: not sure about `changed` apart from dirty()
-      // changed();
-    }
-    // Not returning anything
+    // TODO: not sure about `changed` apart from dirty()
+    // changed();
+    // TODO: Is it ok not to return anything?
   }
 
   valueWillChange(proxy, removing) {
