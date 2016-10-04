@@ -258,9 +258,28 @@ export default class InternalModel {
     return model;
   }
 
-  shouldLazyLoad() {
+  reportLazyLoadError(message, err) {
+    let info = err.toJSON ? err.toJSON() : err.stack;
+    error(`Lazy load failed for ${message}`, info);
+  }
+
+  shouldLazyLoad(checkForExistingLoad) {
+    if(checkForExistingLoad && this.loadPromise) {
+      return;
+    }
     let state = this.state;
     return !state.isNew && !state.isLoaded && !state.isLoading && !state.isDeleted && !state.isSaving;
+  }
+
+  setLazyLoadModelPromise(promise) {
+    if(this.loadPromise) {
+      return;
+    }
+    this.loadPromise = promise.finally(() => {
+      if(this.loadPromise === promise) {
+        this.loadPromise = null;
+      }
+    });
   }
 
   createLazyLoadPromise() {
@@ -271,24 +290,16 @@ export default class InternalModel {
       }
       return model.load();
     }, null).then(() => undefined, err => {
-      let info = err.toJSON ? err.toJSON() : err.stack;
-      error(`Lazy load failed for ${model.get('modelName')} '${model.get('docId')}'`, info);
-    }).finally(() => {
-      if(this.loadPromise === promise) {
-        this.loadPromise = null;
-      }
+      this.reportLazyLoadError(`{ model: '${model.get('modelName')}', _id: '${model.get('docId')}' }`, err);
     });
     return promise;
   }
 
   enqueueLazyLoadModelIfNeeded() {
-    if(this.loadPromise) {
+    if(!this.shouldLazyLoad(true)) {
       return;
     }
-    if(!this.shouldLazyLoad()) {
-      return;
-    }
-    this.loadPromise = this.createLazyLoadPromise();
+    this.setLazyLoadModelPromise(this.createLazyLoadPromise());
   }
 
 }

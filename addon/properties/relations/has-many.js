@@ -4,7 +4,8 @@ import { getInternalModel, internalModelDidChangeIsDeleted } from '../../interna
 
 const {
   getOwner,
-  assert
+  assert,
+  Logger: { error }
 } = Ember;
 
 const getDiff = (curr, next) => {
@@ -51,6 +52,7 @@ export default class HasManyRelation extends Relation {
 
   constructor(relationship, internal) {
     super(...arguments);
+    this.needsLazyLoad = true;
     internal.addObserver(this);
   }
 
@@ -78,6 +80,9 @@ export default class HasManyRelation extends Relation {
     this.dirty();
   }
 
+  inverseDeleted(inverse) {
+  }
+
   getWrappedContent() {
     let value = this.value;
     if(value) {
@@ -102,6 +107,7 @@ export default class HasManyRelation extends Relation {
     if(inverse) {
       inverse.inverseWillChange(this.internal);
     }
+    this.needsLazyLoad = true;
   }
 
   didAddInternalModel(internal) {
@@ -110,6 +116,7 @@ export default class HasManyRelation extends Relation {
     if(inverse) {
       inverse.inverseDidChange(this.internal);
     }
+    this.needsLazyLoad = true;
   }
 
   getValue() {
@@ -203,8 +210,34 @@ export default class HasManyRelation extends Relation {
   }
 
   enqueueLazyLoadModelIfNeeded() {
+    if(!this.needsLazyLoad) {
+      return;
+    }
+
+    this.needsLazyLoad = false;
+
     let content = this.content;
-    console.log('lazy-load', content.map(internal => internal.docId))
+    var dbs = new Map();
+
+    content.forEach(internal => {
+      if(!internal.shouldLazyLoad(true)) {
+        return;
+      }
+      let db = internal.database;
+      let arr = dbs.get(db);
+      if(!arr) {
+        arr = [];
+        dbs.set(db, arr);
+      }
+      arr.push(internal);
+    });
+
+    for(let [db, arr] of dbs) {
+      let promise = db._reloadInternalModels(arr).then(() => undefined, err => {
+        this.internal.reportLazyLoadError(`{ database: '${db.get('identifier')}', _ids: [ ${arr.map(internal => `'${internal.docId}'`).join(', ')} ] }`, err);
+      });
+      arr.forEach(internal => internal.setLazyLoadModelPromise(promise));
+    }
   }
 
   internalModelFromModel(model) {

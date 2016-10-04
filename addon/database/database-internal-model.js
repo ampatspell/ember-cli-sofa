@@ -1,9 +1,9 @@
 import Ember from 'ember';
-import Error from '../util/error';
+import Error, { Errors } from '../util/error';
 
 const {
   merge,
-  RSVP: { resolve, reject }
+  RSVP: { resolve, reject, allSettled }
 } = Ember;
 
 export default Ember.Mixin.create({
@@ -192,6 +192,38 @@ export default Ember.Mixin.create({
       return resolve(internal);
     }
     return this._reloadInternalModel(internal);
+  },
+
+  _reloadInternalModels(array) {
+    let documents = this.get('documents');
+    let ids = Ember.A(array.map(internal => internal.docId));
+    // TODO: needs multiple requests if array contains more than 300(?) ids
+    return documents.all({ include_docs: true, keys: ids }).then(json => {
+      let rows = json.rows;
+      return allSettled(array.map((internal, idx) => {
+        let row = rows[idx];
+        let doc = row.doc;
+        if(doc) {
+          return this._onInternalModelLoaded(internal, doc);
+        } else {
+          let error = row.error;
+          let reason = row.error === 'not_found' ? 'missing' : undefined;
+          let id = internal.docId;
+          let err = new Error({ error, reason, id });
+          this._onInternalModelLoadFailed(internal, err);
+          return reject(err);
+        }
+      }));
+    }).then(hash => {
+      let rejected = hash.filter(item => item.state === 'rejected');
+      if(rejected.length) {
+        if(rejected.length === 1) {
+          return reject(rejected[0].reason);
+        }
+        return reject(new Errors(rejected.map(rejection => rejection.reason)));
+      }
+      return array;
+    });
   },
 
   _loadInternalModelForDocId(docId, opts) {

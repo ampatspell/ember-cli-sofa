@@ -25,7 +25,7 @@ export default function SofaError(opts) {
 SofaError.prototype = Object.create(Ember.Error.prototype);
 
 SofaError.prototype.toJSON = function() {
-  let { status, error, reason } = this;
+  let { status, error, reason, id } = this;
 
   let hash = {
     error,
@@ -36,5 +36,27 @@ SofaError.prototype.toJSON = function() {
     hash.status = status;
   }
 
+  if(id) {
+    hash.id = id;
+  }
+
   return hash;
 };
+
+export function Errors(array) {
+  Ember.Error.call(this, 'Multiple errors');
+  this.errors = array;
+}
+
+Errors.prototype = Object.create(Ember.Error.prototype);
+
+Errors.prototype.toJSON = function() {
+  let { message, errors } = this;
+
+  errors = Ember.A(errors).map(error => error.toJSON ? error.toJSON() : error);
+
+  return {
+    message,
+    errors
+  };
+}
