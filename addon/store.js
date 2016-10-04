@@ -22,6 +22,8 @@ export default Ember.Service.extend(
   StoreModelNames,
   StoreDestroy, {
 
+  isLazyLoadEnabled: true,
+
   find() {
     warn(this+'', '`find`', ...arguments);
   }

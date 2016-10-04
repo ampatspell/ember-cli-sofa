@@ -1,9 +1,9 @@
 import Ember from 'ember';
-import Error from '../util/error';
+import Error, { Errors } from '../util/error';
 
 const {
   merge,
-  RSVP: { resolve, reject }
+  RSVP: { resolve, reject, allSettled }
 } = Ember;
 
 export default Ember.Mixin.create({
@@ -138,6 +138,12 @@ export default Ember.Mixin.create({
     return this._isNotFoundMissing(err) || this._isNotFoundDeleted(err);
   },
 
+  _onInternalModelError(internal, err) {
+    internal.withPropertyChanges(changed => {
+      internal.onError(err, changed);
+    }, true);
+  },
+
   _onInternalModelLoadFailed(internal, err) {
     internal.withPropertyChanges(changed => {
       if(this._isNotFoundMissingOrDeleted(err)) {
@@ -148,10 +154,14 @@ export default Ember.Mixin.create({
   },
 
   _onInternalModelLoaded(internal, doc) {
-    let definition = internal.definition;
-    this._assertDefinitionMatchesDocument(definition, doc);
-    this._deserializeDocument(internal, doc);
-    return internal;
+    return resolve().then(() => {
+      let definition = internal.definition;
+      this._assertDefinitionMatchesDocument(definition, doc);
+      this._deserializeDocument(internal, doc);
+    }).then(() => internal, err => {
+      this._onInternalModelError(internal, err);
+      return reject(err);
+    });
   },
 
   _reloadInternalModel(internal) {
@@ -162,7 +172,7 @@ export default Ember.Mixin.create({
     let docId = internal.docId;
     let documents = this.get('documents');
 
-    return resolve().then(() => {
+    return resolve(null, `sofa:database load { database: '${this.get('identifier')}', model: '${internal.modelName}', _id: '${docId}' }`).then(() => {
       this._onInternalModelLoading(internal);
       return documents.load(docId);
     }).then(doc => {
@@ -184,13 +194,47 @@ export default Ember.Mixin.create({
     return this._reloadInternalModel(internal);
   },
 
+  _reloadInternalModels(array) {
+    let documents = this.get('documents');
+    let ids = Ember.A(array.map(internal => internal.docId));
+    // TODO: needs multiple requests if array contains more than 300(?) ids
+    return documents.all({ include_docs: true, keys: ids }).then(json => {
+      let rows = json.rows;
+      return allSettled(array.map((internal, idx) => {
+        let row = rows[idx];
+        let doc = row.doc;
+        if(doc) {
+          return this._onInternalModelLoaded(internal, doc);
+        } else {
+          let error = row.error;
+          let reason = row.error === 'not_found' ? 'missing' : undefined;
+          let id = internal.docId;
+          let err = new Error({ error, reason, id });
+          this._onInternalModelLoadFailed(internal, err);
+          return reject(err);
+        }
+      }));
+    }).then(hash => {
+      let rejected = hash.filter(item => item.state === 'rejected');
+      if(rejected.length) {
+        if(rejected.length === 1) {
+          return reject(rejected[0].reason);
+        }
+        return reject(new Errors(rejected.map(rejection => rejection.reason)));
+      }
+      return array;
+    });
+  },
+
   _loadInternalModelForDocId(docId, opts) {
     let internal = this._internalModelWithDocId(docId);
     if(internal) {
       return this._loadInternalModel(internal, opts);
     }
 
-    return this.get('documents').load(docId).then(doc => {
+    return resolve(null, `sofa:database load { database: '${this.get('identifier')}', _id: '${docId}' }`).then(() => {
+      return this.get('documents').load(docId);
+    }).then(doc => {
       return this._deserializeSavedDocumentToInternalModel(doc, null, false);
     });
   },

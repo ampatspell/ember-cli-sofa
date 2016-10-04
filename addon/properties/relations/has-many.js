@@ -51,7 +51,12 @@ export default class HasManyRelation extends Relation {
 
   constructor(relationship, internal) {
     super(...arguments);
+    this.needsLazyLoad = true;
     internal.addObserver(this);
+  }
+
+  get lazyLoadEnabled() {
+    return this.internal.lazyLoadEnabled;
   }
 
   dirty() {
@@ -78,6 +83,9 @@ export default class HasManyRelation extends Relation {
     this.dirty();
   }
 
+  inverseDeleted() {
+  }
+
   getWrappedContent() {
     let value = this.value;
     if(value) {
@@ -102,6 +110,7 @@ export default class HasManyRelation extends Relation {
     if(inverse) {
       inverse.inverseWillChange(this.internal);
     }
+    this.needsLazyLoad = true;
   }
 
   didAddInternalModel(internal) {
@@ -110,6 +119,7 @@ export default class HasManyRelation extends Relation {
     if(inverse) {
       inverse.inverseDidChange(this.internal);
     }
+    this.needsLazyLoad = true;
   }
 
   getValue() {
@@ -200,6 +210,60 @@ export default class HasManyRelation extends Relation {
         this.onContentInternalModelDeleted(internal);
       }
     }
+  }
+
+  enqueueLazyLoadModelIfNeeded() {
+    if(!this.lazyLoadEnabled) {
+      return;
+    }
+
+    if(!this.needsLazyLoad) {
+      return;
+    }
+
+    this.needsLazyLoad = false;
+
+    let content = this.content;
+    var dbs = new Map();
+
+    content.forEach(internal => {
+      if(!internal.shouldLazyLoad(true)) {
+        return;
+      }
+      let db = internal.database;
+      let arr = dbs.get(db);
+      if(!arr) {
+        arr = [];
+        dbs.set(db, arr);
+      }
+      arr.push(internal);
+    });
+
+    const map = (db, arr) => {
+      let promise = db._reloadInternalModels(arr).then(() => undefined, err => {
+        this.internal.reportLazyLoadError(`{ database: '${db.get('identifier')}', _ids: [ ${arr.map(internal => `'${internal.docId}'`).join(', ')} ] }`, err);
+      });
+      arr.forEach(internal => internal.setLazyLoadModelPromise(promise));
+    };
+
+    for(let [db, arr] of dbs) {
+      map(db, arr);
+    }
+  }
+
+  internalModelFromModel(model) {
+    if(!model) {
+      return null;
+    }
+    return getInternalModel(model);
+  }
+
+  modelFromInternalModel(internal) {
+    if(!internal) {
+      return null;
+    }
+    this.enqueueLazyLoadModelIfNeeded();
+    return internal.getModel();
   }
 
 }
