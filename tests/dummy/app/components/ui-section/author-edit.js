@@ -5,7 +5,6 @@ export default Ember.Component.extend({
 
   actions: {
     updateBlogSelection(blog, select) {
-      console.log(this.get('author.blogs').mapBy('id'), blog.get('id'), select);
       if(select) {
         this.get('author.blogs').pushObject(blog);
       } else {

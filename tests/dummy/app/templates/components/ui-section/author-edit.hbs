@@ -15,3 +15,16 @@
     {{ui-button title='Save' action=(action attrs.save author)}}
   {{/ui-row}}
 {{/ui-block}}
+
+{{#ui-block title='Internals'}}
+  {{#ui-row title='Selected blogs'}}
+    {{#each author.blogs as |blog|}}
+      <div>{{blog.id}}: {{blog.name}} isDirty={{blog.isDirty}}</div>
+    {{else}}
+      <div>No blogs selected</div>
+    {{/each}}
+  {{/ui-row}}
+  {{#ui-row title='State'}}
+    {{ui-json value=author.state}}
+  {{/ui-row}}
+{{/ui-block}}
