@@ -1,11 +1,22 @@
 import Ember from 'ember';
 import Relation from './relation';
-import assert from '../../util/assert';
 import { getInternalModel } from '../../internal-model';
 
 const {
   getOwner
 } = Ember;
+
+const getDiff = (curr, next) => {
+  let remove = curr.filter(item => {
+    return !next.includes(item);
+  });
+
+  let add = next.filter(model => {
+    return !curr.includes(model);
+  });
+
+  return { remove, add };
+};
 
 class ArrayWrapper {
 
@@ -23,22 +34,6 @@ class ArrayWrapper {
 
   addObjects(array) {
     this.array.addObjects(this._array(array));
-  }
-
-  replaceObjects(array) {
-    let curr = this.array;
-    let next = this._array(array);
-
-    let remove = curr.filter(item => {
-      return !next.includes(item);
-    });
-
-    let add = next.filter(model => {
-      return !curr.includes(model);
-    });
-
-    curr.removeObjects(remove);
-    curr.pushObjects(add);
   }
 
   addObject(internal) {
@@ -108,16 +103,27 @@ export default class HasManyRelation extends Relation {
     return value;
   }
 
-  setValue(value, changed) {
-    let internal = Ember.A(value).map(model => getInternalModel(model));
-    if(internal.length > 0) {
-      this.getWrappedContent().replaceObjects(internal);
+  setValue(value /*, changed*/) {
+    let next = Ember.A(value).map(model => getInternalModel(model));
+    if(next.length > 0) {
+      this.isReplacingContent = true;
 
-      // TODO: needs inverse updates when there is no proxy
+      let curr = this.getContent();
 
-      // if proxy is alive, valueWillChange and valueDidChange will update inverses
-      // otherwise needs to be done manually
-      // isn't this forcing unnecessary model creation?
+      let { remove, add } = getDiff(curr, next);
+
+      remove.forEach(internal => {
+        this.willRemoveInternalModel(internal);
+      });
+
+      curr.removeObjects(remove);
+      curr.pushObjects(add);
+
+      add.forEach(internal => {
+        this.didAddInternalModel(internal);
+      });
+
+      this.isReplacingContent = false;
 
       // TODO: not sure about `changed` apart from dirty()
       // changed();
@@ -140,6 +146,9 @@ export default class HasManyRelation extends Relation {
   }
 
   valueWillChange(proxy, removing) {
+    if(this.isReplacingContent) {
+      return;
+    }
     this.isValueChanging = true;
     removing.forEach(model => {
       let internal = getInternalModel(model);
@@ -148,6 +157,9 @@ export default class HasManyRelation extends Relation {
   }
 
   valueDidChange(proxy, removeCount, adding) {
+    if(this.isReplacingContent) {
+      return;
+    }
     adding.forEach(model => {
       let internal = getInternalModel(model);
       this.didAddInternalModel(internal);
