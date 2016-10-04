@@ -3,6 +3,7 @@
 ## TODO
 
 ```
+* hasMany removes deleted models (internal.addObserver and so on)
 * model.load calls from prop access
 * belongsTo({ selector: {} }) loaded
 * hasMany loaded
