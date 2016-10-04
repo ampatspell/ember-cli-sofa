@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import Relation from './relation';
-import Error from '../../util/error';
+import assert from '../../util/assert';
 import { getInternalModel } from '../../internal-model';
 
 const {
@@ -8,9 +8,37 @@ const {
 } = Ember;
 
 class ArrayWrapper {
-  constructor(array, fn) {
+
+  constructor(array, fn, name) {
     this.array = array;
     this.fn = fn;
+    this.name = name;
+  }
+
+  _array(array) {
+    return Ember.A(array).map(model => {
+      return this.fn(model);
+    });
+  }
+
+  addObjects(array) {
+    this.array.addObjects(this._array(array));
+  }
+
+  replaceObjects(array) {
+    let curr = this.array;
+    let next = this._array(array);
+
+    let remove = curr.filter(item => {
+      return !next.includes(item);
+    });
+
+    let add = next.filter(model => {
+      return !curr.includes(model);
+    });
+
+    curr.removeObjects(remove);
+    curr.pushObjects(add);
   }
 
   addObject(internal) {
@@ -20,6 +48,7 @@ class ArrayWrapper {
   removeObject(internal) {
     this.array.removeObject(this.fn(internal));
   }
+
 }
 
 export default class HasManyRelation extends Relation {
@@ -49,10 +78,10 @@ export default class HasManyRelation extends Relation {
   getWrappedContent() {
     let value = this.value;
     if(value) {
-      return new ArrayWrapper(value, internal => internal.getModel());
+      return new ArrayWrapper(value, internal => internal.getModel(), 'proxy');
     }
     let content = this.getContent();
-    return new ArrayWrapper(content, internal => internal);
+    return new ArrayWrapper(content, internal => internal, 'internal');
   }
 
   getContent() {
@@ -79,8 +108,21 @@ export default class HasManyRelation extends Relation {
     return value;
   }
 
-  setValue(/*value, changed*/) {
-    throw new Error({ error: 'invalid_state', reason: `Please don't replace hasMany relationship content` });
+  setValue(value, changed) {
+    let internal = Ember.A(value).map(model => getInternalModel(model));
+    if(internal.length > 0) {
+      this.getWrappedContent().replaceObjects(internal);
+
+      // TODO: needs inverse updates when there is no proxy
+
+      // if proxy is alive, valueWillChange and valueDidChange will update inverses
+      // otherwise needs to be done manually
+      // isn't this forcing unnecessary model creation?
+
+      // TODO: not sure about `changed` apart from dirty()
+      // changed();
+    }
+    // Not returning anything
   }
 
   willRemoveInternalModel(internal) {

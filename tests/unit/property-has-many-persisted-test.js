@@ -75,3 +75,53 @@ test('set inverse adds/removes', assert => {
   assert.deepEqual(big.get('ducks').mapBy('id'), []);
   assert.deepEqual(small.get('ducks').mapBy('id'), [ 'red', 'yellow' ]);
 });
+
+test('set value', assert => {
+  let yellow = db.model('duck', { id: 'yellow' });
+  let red = db.model('duck', { id: 'red' });
+  let big = db.model('house', { id: 'big', ducks: [ yellow, red ] });
+  assert.deepEqual(big.get('ducks').mapBy('id'), [ 'yellow', 'red' ]);
+});
+
+test('save', assert => {
+  let yellow = db.model('duck', { id: 'yellow' });
+  let red = db.model('duck', { id: 'red' });
+  let big = db.model('house', { id: 'big', ducks: [ yellow, red ] });
+  return big.save().then(() => {
+    return db.get('documents').load('house:big');
+  }).then(doc => {
+    assert.deepEqual_(doc, {
+      "_id": "house:big",
+      "_rev": "ignored",
+      "ducks": [
+        "duck:yellow",
+        "duck:red"
+      ],
+      "type": "house"
+    });
+  });
+});
+
+test('load', assert => {
+  let big = db.push({
+    "_id": "house:big",
+    "_rev": "ignored",
+    "ducks": [
+      "duck:yellow",
+      "duck:red"
+    ],
+    "type": "house"
+  });
+
+  assert.ok(big);
+  assert.deepEqual(big.get('ducks').mapBy('id'), [ 'yellow', 'red' ]);
+
+  let yellow = db.existing('duck', 'yellow');
+  let red = db.existing('duck', 'red');
+
+  assert.ok(yellow);
+  assert.ok(red);
+
+  assert.ok(yellow.get('house') === big);
+  assert.ok(red.get('house') === big);
+});
