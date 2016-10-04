@@ -7,7 +7,7 @@ export default Ember.Component.extend({
     saveAuthor(author) {
       author.save().then(() => {
         this.get('router').transitionTo('authors.author', author);
-      }, err => undefined);
+      }, () => undefined);
     }
   }
 });

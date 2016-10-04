@@ -59,4 +59,4 @@ Errors.prototype.toJSON = function() {
     message,
     errors
   };
-}
+};

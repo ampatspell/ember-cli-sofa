@@ -1,7 +1,7 @@
 import Ember from 'ember';
 
 const {
-  RSVP: { hash, all }
+  RSVP: { hash }
 } = Ember;
 
 export default Ember.Route.extend({

@@ -4,8 +4,7 @@ import { getInternalModel, internalModelDidChangeIsDeleted } from '../../interna
 
 const {
   getOwner,
-  assert,
-  Logger: { error }
+  assert
 } = Ember;
 
 const getDiff = (curr, next) => {
@@ -80,7 +79,7 @@ export default class HasManyRelation extends Relation {
     this.dirty();
   }
 
-  inverseDeleted(inverse) {
+  inverseDeleted() {
   }
 
   getWrappedContent() {
@@ -232,11 +231,15 @@ export default class HasManyRelation extends Relation {
       arr.push(internal);
     });
 
-    for(let [db, arr] of dbs) {
+    const map = (db, arr) => {
       let promise = db._reloadInternalModels(arr).then(() => undefined, err => {
         this.internal.reportLazyLoadError(`{ database: '${db.get('identifier')}', _ids: [ ${arr.map(internal => `'${internal.docId}'`).join(', ')} ] }`, err);
       });
       arr.forEach(internal => internal.setLazyLoadModelPromise(promise));
+    };
+
+    for(let [db, arr] of dbs) {
+      map(db, arr);
     }
   }
 

@@ -5,7 +5,7 @@ import { getDefinition } from './model';
 import Relationship from './properties/relationship';
 
 const {
-  RSVP: { resolve, reject },
+  RSVP: { resolve },
   Logger: { error }
 } = Ember;
 
