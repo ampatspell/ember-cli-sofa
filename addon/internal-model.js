@@ -47,6 +47,10 @@ export default class InternalModel {
     };
   }
 
+  get lazyLoadEnabled() {
+    return this.store.get('isLazyLoadEnabled');
+  }
+
   get modelName() {
     return this.definition.modelName;
   }
@@ -264,6 +268,9 @@ export default class InternalModel {
   }
 
   shouldLazyLoad(checkForExistingLoad) {
+    if(!this.lazyLoadEnabled) {
+      return;
+    }
     if(checkForExistingLoad && this.loadPromise) {
       return;
     }

@@ -55,6 +55,10 @@ export default class HasManyRelation extends Relation {
     internal.addObserver(this);
   }
 
+  get lazyLoadEnabled() {
+    return this.internal.lazyLoadEnabled;
+  }
+
   dirty() {
     let internal = this.internal;
     let relationship = this.relationship;
@@ -209,6 +213,10 @@ export default class HasManyRelation extends Relation {
   }
 
   enqueueLazyLoadModelIfNeeded() {
+    if(!this.lazyLoadEnabled) {
+      return;
+    }
+
     if(!this.needsLazyLoad) {
       return;
     }
