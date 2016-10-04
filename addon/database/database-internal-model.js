@@ -138,6 +138,12 @@ export default Ember.Mixin.create({
     return this._isNotFoundMissing(err) || this._isNotFoundDeleted(err);
   },
 
+  _onInternalModelError(internal, err) {
+    internal.withPropertyChanges(changed => {
+      internal.onError(err, changed);
+    }, true);
+  },
+
   _onInternalModelLoadFailed(internal, err) {
     internal.withPropertyChanges(changed => {
       if(this._isNotFoundMissingOrDeleted(err)) {
@@ -148,10 +154,14 @@ export default Ember.Mixin.create({
   },
 
   _onInternalModelLoaded(internal, doc) {
-    let definition = internal.definition;
-    this._assertDefinitionMatchesDocument(definition, doc);
-    this._deserializeDocument(internal, doc);
-    return internal;
+    return resolve().then(() => {
+      let definition = internal.definition;
+      this._assertDefinitionMatchesDocument(definition, doc);
+      this._deserializeDocument(internal, doc);
+    }).then(() => internal, err => {
+      this._onInternalModelError(internal, err);
+      return reject(err);
+    });
   },
 
   _reloadInternalModel(internal) {
