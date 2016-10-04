@@ -15,4 +15,8 @@ export default class Revision extends Attribute {
     return 'rev';
   }
 
+  get lazyLoadsModel() {
+    return false;
+  }
+
 }

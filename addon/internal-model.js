@@ -4,6 +4,11 @@ import { assert } from './util/assert';
 import { getDefinition } from './model';
 import Relationship from './properties/relationship';
 
+const {
+  RSVP: { resolve, reject },
+  Logger: { error }
+} = Ember;
+
 export const internalPropertyName = '_internal';
 
 export function getInternalModel(model) {
@@ -27,6 +32,7 @@ export default class InternalModel {
     this.raw = null;
     this._database = database;
     this.model = null;
+    this.loadPromise = null;
     this.boundNotifyPropertyChange = this.notifyPropertyChange.bind(this);
     this.observers = Ember.A();
     this.state = {
@@ -250,6 +256,39 @@ export default class InternalModel {
       this.model = model;
     }
     return model;
+  }
+
+  shouldLazyLoad() {
+    let state = this.state;
+    return !state.isNew && !state.isLoaded && !state.isLoading && !state.isDeleted && !state.isSaving;
+  }
+
+  createLazyLoadPromise() {
+    let model = this.model;
+    let promise = resolve(null, `sofa:model lazy load { model: '${model.get('modelName')}' _id: '${model.get('docId')}' }`).then(() => {
+      if(!this.shouldLazyLoad()) {
+        return;
+      }
+      return model.load();
+    }, null).then(() => undefined, err => {
+      let info = err.toJSON ? err.toJSON() : err.stack;
+      error(`Lazy load failed for ${model.get('modelName')} '${model.get('docId')}'`, info);
+    }).finally(() => {
+      if(this.loadPromise === promise) {
+        this.loadPromise = null;
+      }
+    });
+    return promise;
+  }
+
+  enqueueLazyLoadModelIfNeeded() {
+    if(this.loadPromise) {
+      return;
+    }
+    if(!this.shouldLazyLoad()) {
+      return;
+    }
+    this.loadPromise = this.createLazyLoadPromise();
   }
 
 }

@@ -21,6 +21,10 @@ export default class Identifier extends Attribute {
     return false;
   }
 
+  get lazyLoadsModel() {
+    return false;
+  }
+
   valueForModelClass(modelClass) {
     return this.opts.value || get(modelClass, 'modelName');
   }

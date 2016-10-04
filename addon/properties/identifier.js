@@ -18,6 +18,10 @@ export default class Identifier extends Attribute {
     return 'id';
   }
 
+  get lazyLoadsModel() {
+    return false;
+  }
+
   docId(modelClass, modelId) {
     return modelId;
   }

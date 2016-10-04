@@ -27,6 +27,10 @@ export default class Property {
     }
   }
 
+  get lazyLoadsModel() {
+    return true;
+  }
+
   get setsModelInitialValueFromOptions() {
     return true;
   }
@@ -120,6 +124,7 @@ export default class Property {
 
   getPropertyValue(model) {
     let internal = getInternalModel(model);
+    this.enqueueLazyLoadModelIfNeeded(internal);
     return this.getValue(internal);
   }
 
@@ -163,6 +168,15 @@ export default class Property {
       return;
     }
     return this._deserialize(internal, doc, changed);
+  }
+
+  //
+
+  enqueueLazyLoadModelIfNeeded(internal) {
+    if(!this.lazyLoadsModel) {
+      return;
+    }
+    internal.enqueueLazyLoadModelIfNeeded();
   }
 
 }

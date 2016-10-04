@@ -172,7 +172,7 @@ export default Ember.Mixin.create({
     let docId = internal.docId;
     let documents = this.get('documents');
 
-    return resolve().then(() => {
+    return resolve(null, `sofa:database load { database: '${this.get('identifier')}', model: '${internal.modelName}', _id: '${docId}' }`).then(() => {
       this._onInternalModelLoading(internal);
       return documents.load(docId);
     }).then(doc => {
@@ -200,7 +200,9 @@ export default Ember.Mixin.create({
       return this._loadInternalModel(internal, opts);
     }
 
-    return this.get('documents').load(docId).then(doc => {
+    return resolve(null, `sofa:database load { database: '${this.get('identifier')}', _id: '${docId}' }`).then(() => {
+      return this.get('documents').load(docId);
+    }).then(doc => {
       return this._deserializeSavedDocumentToInternalModel(doc, null, false);
     });
   },
