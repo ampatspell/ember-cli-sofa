@@ -1,1 +1,3 @@
-# CouchDB persistence library
+# Sofa
+
+More info coming soon
