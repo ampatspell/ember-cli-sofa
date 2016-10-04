@@ -7,7 +7,8 @@ import {
   rev,
   type,
   attr,
-  belongsTo
+  belongsTo,
+  hasMany
 } from './properties/helpers';
 
 const hasOne = belongsTo;
@@ -22,7 +23,8 @@ export {
   type,
   attr,
   belongsTo,
-  hasOne
+  hasOne,
+  hasMany
 };
 
 export default Store;

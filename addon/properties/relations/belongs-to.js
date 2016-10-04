@@ -1,11 +1,24 @@
 import Ember from 'ember';
 import Relation from './relation';
+import { internalModelDidChangeIsDeleted } from '../../internal-model';
 
 const {
   assert
 } = Ember;
 
 export default class BelongsToRelation extends Relation {
+
+  withPropertyChange(cb) {
+    let internal = this.internal;
+    let relationship = this.relationship;
+    internal.withPropertyChanges(changed_ => {
+      let changed = () => {
+        relationship.dirty(internal, changed_);
+        changed_(relationship.name);
+      };
+      cb(changed);
+    }, true);
+  }
 
   inverseWillChange() {
     this.withPropertyChange(changed => {
@@ -17,6 +30,12 @@ export default class BelongsToRelation extends Relation {
     this.withPropertyChange(changed => {
       this.setValue(internal, changed);
     }, true);
+  }
+
+  inverseDeleted() {
+    this.withPropertyChange(changed => {
+      this.setValue(null, changed);
+    });
   }
 
   //
@@ -62,7 +81,7 @@ export default class BelongsToRelation extends Relation {
 
   internalModelDidChange(internal, props) {
     assert(`internalModelDidChange internal must be this.value`, internal === this.value);
-    if(internal.state.isDeleted && props.includes('isDeleted')) {
+    if(internalModelDidChangeIsDeleted(internal, props)) {
       this.onValueDeleted();
     }
   }
@@ -88,7 +107,7 @@ export default class BelongsToRelation extends Relation {
     if(this.value !== internal) {
       this.willSetValue();
       this.value = internal;
-      changed();
+      changed(); // TODO: shouldn't this be called with property name?
       this.didSetValue();
     }
 

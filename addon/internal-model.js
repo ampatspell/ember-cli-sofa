@@ -7,7 +7,14 @@ import Relationship from './properties/relationship';
 export const internalPropertyName = '_internal';
 
 export function getInternalModel(model) {
+  if(model instanceof InternalModel) {
+    return model;
+  }
   return model.get('_internal');
+}
+
+export function internalModelDidChangeIsDeleted(internal, props) {
+  return internal.state.isDeleted && props.includes('isDeleted');
 }
 
 export default class InternalModel {

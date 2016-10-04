@@ -13,6 +13,7 @@ export default Ember.Mixin.create({
   }),
 
   modelNames: computed(function() {
+    /* global require */
     let name = this.get('_applicationName');
     let prefix = `${name}/models/`;
     let entries = require.entries;
