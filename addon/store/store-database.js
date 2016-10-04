@@ -4,7 +4,8 @@ import { assert } from '../util/assert';
 
 const {
   typeOf,
-  getOwner
+  getOwner,
+  Logger: { warn }
 } = Ember;
 
 const lookupWithStore = (name) => {
@@ -19,6 +20,7 @@ export default Ember.Mixin.create({
   _databases: object(),
 
   databaseOptionsForIdentifier(/*identifier*/) {
+    warn('override Store.databaseOptionsForIdentifier(identifier) and return { url, name } for given identifier');
   },
 
   _databaseOptionsForIdentifier(identifier) {
