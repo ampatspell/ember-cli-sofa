@@ -179,3 +179,17 @@ test('load', assert => {
   assert.deepEqual(db.existing('house', 'big').get('ducks').mapBy('id'), [ 'yellow' ]);
   assert.deepEqual(db.existing('house', 'small').get('ducks').mapBy('id'), [ 'green' ]);
 });
+
+
+test('deleted hasMany model is removed from hasMany', assert => {
+  let yellow = db.model('duck', { id: 'yellow' });
+  let red = db.model('duck', { id: 'red' });
+  let big = db.model('house', { id: 'big', ducks: [ yellow, red ] });
+
+  return all([ yellow, red, big ].map(model => model.save())).then(() => {
+    return big.delete();
+  }).then(() => {
+    assert.deepEqual(yellow.get('_internal').values.houses.content.map(internal => internal.docId), []);
+    assert.deepEqual(red.get('_internal').values.houses.content.map(internal => internal.docId), []);
+  });
+});

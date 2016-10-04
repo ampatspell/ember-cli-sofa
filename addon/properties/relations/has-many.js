@@ -83,7 +83,9 @@ export default class HasManyRelation extends Relation {
     this.dirty();
   }
 
-  inverseDeleted() {
+  inverseDeleted(internal) {
+    this.getWrappedContent().removeObject(internal);
+    this.dirty();
   }
 
   getWrappedContent() {
@@ -110,7 +112,6 @@ export default class HasManyRelation extends Relation {
     if(inverse) {
       inverse.inverseWillChange(this.internal);
     }
-    this.needsLazyLoad = true;
   }
 
   didAddInternalModel(internal) {
