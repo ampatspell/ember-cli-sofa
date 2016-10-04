@@ -199,3 +199,43 @@ test('deleted model is removed from array when relation doesnt have proxy', asse
     assert.ok(red.get('house') === big);
   });
 });
+
+test('deleted model with has many removes self from content items (no proxy)', assert => {
+  let yellow = db.model('duck', { id: 'yellow' });
+  let red = db.model('duck', { id: 'red' });
+  let big = db.model('house', { id: 'big', ducks: [ yellow, red ] });
+
+  let relation = big.get('_internal').values.ducks;
+
+  return all([ yellow.save(), red.save(), big.save() ]).then(() => {
+    assert.ok(!relation.value);
+    assert.ok(yellow.get('house') === big);
+    assert.ok(red.get('house') === big);
+    return big.delete();
+  }).then(() => {
+    assert.ok(!relation.value);
+    assert.deepEqual(relation.content.map(internal => internal.docId), [ "duck:yellow", "duck:red" ]);
+    assert.ok(yellow.get('house') === null);
+    assert.ok(red.get('house') === null);
+  });
+});
+
+test('deleted model with has many removes self from content items (has proxy)', assert => {
+  let yellow = db.model('duck', { id: 'yellow' });
+  let red = db.model('duck', { id: 'red' });
+  let big = db.model('house', { id: 'big', ducks: [ yellow, red ] });
+
+  let relation = big.get('_internal').values.ducks;
+  big.get('ducks');
+  assert.ok(relation.value);
+
+  return all([ yellow.save(), red.save(), big.save() ]).then(() => {
+    assert.ok(yellow.get('house') === big);
+    assert.ok(red.get('house') === big);
+    return big.delete();
+  }).then(() => {
+    assert.deepEqual(relation.content.map(internal => internal.docId), [ "duck:yellow", "duck:red" ]);
+    assert.ok(yellow.get('house') === null);
+    assert.ok(red.get('house') === null);
+  });
+});

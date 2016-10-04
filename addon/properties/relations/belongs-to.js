@@ -32,6 +32,13 @@ export default class BelongsToRelation extends Relation {
     }, true);
   }
 
+  inverseDeleted(internal) {
+    console.log(this.internal.docId, internal.docId, 'deleted');
+    this.withPropertyChange(changed => {
+      this.setValue(null, changed);
+    });
+  }
+
   //
 
   willSetValue() {
@@ -74,9 +81,13 @@ export default class BelongsToRelation extends Relation {
   }
 
   internalModelDidChange(internal, props) {
-    assert(`internalModelDidChange internal must be this.value`, internal === this.value);
-    if(internalModelDidChangeIsDeleted(internal, props)) {
-      this.onValueDeleted();
+    if(internal === this.internal) {
+      // TODO: observe self, notify inverse
+    } else {
+      assert(`internalModelDidChange internal must be this.value`, internal === this.value);
+      if(internalModelDidChangeIsDeleted(internal, props)) {
+        this.onValueDeleted();
+      }
     }
   }
 

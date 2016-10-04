@@ -173,14 +173,32 @@ export default class HasManyRelation extends Relation {
 
   onContentInternalModelDeleted(internal) {
     this.isReplacingContent = true;
+    // TODO: possibly don't touch wrapped content
     this.getWrappedContent().removeObject(internal);
     this.isReplacingContent = false;
   }
 
+  onInternalModelDeleted(internal) {
+    this.isValueChanging = true;
+    this.getContent().forEach(contentInternal => {
+      let inverse = this.getInverseRelation(contentInternal);
+      if(inverse) {
+        inverse.inverseDeleted(internal);
+      }
+    });
+    this.isValueChanging = false;
+  }
+
   internalModelDidChange(internal, props) {
-    assert(`internalModelDidChange content must include internal`, this.getContent().includes(internal));
-    if(internalModelDidChangeIsDeleted(internal, props)) {
-      this.onContentInternalModelDeleted(internal);
+    if(internal === this.internal) {
+      if(internalModelDidChangeIsDeleted(internal, props)) {
+        this.onInternalModelDeleted(internal);
+      }
+    } else {
+      assert(`internalModelDidChange content must include internal`, this.getContent().includes(internal));
+      if(internalModelDidChangeIsDeleted(internal, props)) {
+        this.onContentInternalModelDeleted(internal);
+      }
     }
   }
 
