@@ -7,6 +7,11 @@
 
 body {
   .font;
+  cursor: default;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 *[data-ember-action] {
@@ -28,8 +33,8 @@ input {
   border-radius: 0;
   outline: none;
   margin: 0;
-  border: 1px solid #eee;
   padding: 5px;
+  border: 1px solid #eee;
   .font;
 }
 
@@ -41,21 +46,20 @@ button {
   margin: 0;
   .font;
   padding: 5px 10px;
-  background: #eee;
-  border: 1px solid #ddd;
+  background: lighten(#000, 95%);
+  border: 1px solid lighten(#000, 92%);
+  transition: background 0.2s ease,
+    border-color 0.2s ease;
+  &:hover {
+    background: lighten(#000, 92%);
+    border-color: lighten(#000, 89%);
+  }
+  &:active {
+    background: lighten(#000, 85%);
+  }
 }
 
 .ui-input {
-  padding: 10px 0;
-  > .title {
-    padding: 0 5px;
-    > .detail {
-      .font(12px);
-    }
-  }
-  > .value {
-
-  }
 }
 
 .ui-button {
@@ -63,13 +67,25 @@ button {
 }
 
 .ui-block {
+  border: 1px solid lighten(#000, 93%);
+  > .title {
+    padding: 10px;
+    background: lighten(#000, 95%);
+  }
+  > .content {
+  }
+}
+
+.ui-row {
   padding: 10px;
   > .title {
-    .font(12px);
-    padding-bottom: 5px;
+    padding: 0 0 5px 0;
+    .font(14px);
+    > .detail {
+      .font(12px);
+    }
   }
-  &.pb {
-    padding-bottom: 20px;
+  > .value {
   }
 }
 

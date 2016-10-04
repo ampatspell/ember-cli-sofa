@@ -1,6 +1,0 @@
-{{#ui-block title=(ui-join 'author' model.id model.rev delimiter=' ')}}
-  {{ui-input title='name' value=model.name}}
-  {{ui-input title='email' value=model.email}}
-  {{ui-json value=model.state}}
-  <div>{{ui-button title='Save' action=(action 'save')}} {{ui-button title='Delete' action=(action 'delete')}}</div>
-{{/ui-block}}

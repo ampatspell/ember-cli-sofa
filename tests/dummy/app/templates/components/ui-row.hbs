@@ -1,0 +1,9 @@
+{{#if title}}
+  <div class="title">
+    {{title}}
+    {{#if showValue}}
+      <span class="detail">{{detailedValue}}</span>
+    {{/if}}
+  </div>
+{{/if}}
+<div class="value">{{yield}}</div>
