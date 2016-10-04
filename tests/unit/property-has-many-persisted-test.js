@@ -1,5 +1,10 @@
+import Ember from 'ember';
 import { module, test, createStore, registerModels, cleanup } from '../helpers/setup';
 import { Model, prefix, belongsTo, hasMany } from 'sofa';
+
+const {
+  RSVP: { all }
+} = Ember;
 
 let store;
 let db;
@@ -156,4 +161,41 @@ test('load while proxy is present', assert => {
   assert.ok(yellow.get('house') === big);
   assert.ok(red.get('house') === big);
   assert.ok(green.get('house') === null);
+});
+
+test('deleted model is removed from array', assert => {
+  let yellow = db.model('duck', { id: 'yellow' });
+  let red = db.model('duck', { id: 'red' });
+  let big = db.model('house', { id: 'big', ducks: [ yellow, red ] });
+  return all([ yellow.save(), red.save(), big.save() ]).then(() => {
+    assert.deepEqual(big.get('ducks').mapBy('id'), [ 'yellow', 'red' ]);
+    return yellow.delete();
+  }).then(() => {
+    assert.deepEqual(big.get('ducks').mapBy('id'), [ 'red' ]);
+    assert.ok(yellow.get('house') === big);
+  });
+});
+
+test('deleted model is removed from array when relation doesnt have proxy', assert => {
+  let yellow = db.model('duck', { id: 'yellow' });
+  let red = db.model('duck', { id: 'red' });
+  let big = db.model('house', { id: 'big', ducks: [ yellow, red ] });
+
+  assert.ok(yellow.get('house') === big);
+  assert.ok(red.get('house') === big);
+
+  let relation = big.get('_internal').values.ducks;
+
+  return all([ yellow.save(), red.save(), big.save() ]).then(() => {
+    assert.deepEqual(relation.content.map(internal => internal.docId), [ "duck:yellow", "duck:red" ]);
+    assert.ok(!relation.value);
+    assert.ok(yellow.get('house') === big);
+    assert.ok(red.get('house') === big);
+    return yellow.delete();
+  }).then(() => {
+    assert.deepEqual(relation.content.map(internal => internal.docId), [ "duck:red" ]);
+    assert.ok(!relation.value);
+    assert.ok(yellow.get('house') === big);
+    assert.ok(red.get('house') === big);
+  });
 });

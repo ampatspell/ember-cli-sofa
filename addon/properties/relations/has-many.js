@@ -1,9 +1,10 @@
 import Ember from 'ember';
 import Relation from './relation';
-import { getInternalModel } from '../../internal-model';
+import { getInternalModel, internalModelDidChangeIsDeleted } from '../../internal-model';
 
 const {
-  getOwner
+  getOwner,
+  assert
 } = Ember;
 
 const getDiff = (curr, next) => {
@@ -88,6 +89,22 @@ export default class HasManyRelation extends Relation {
     return content;
   }
 
+  willRemoveInternalModel(internal) {
+    internal.removeObserver(this);
+    let inverse = this.getInverseRelation(internal);
+    if(inverse) {
+      inverse.inverseWillChange(this.internal);
+    }
+  }
+
+  didAddInternalModel(internal) {
+    internal.addObserver(this);
+    let inverse = this.getInverseRelation(internal);
+    if(inverse) {
+      inverse.inverseDidChange(this.internal);
+    }
+  }
+
   getValue() {
     let value = this.value;
     if(!value) {
@@ -131,20 +148,6 @@ export default class HasManyRelation extends Relation {
     // Not returning anything
   }
 
-  willRemoveInternalModel(internal) {
-    let inverse = this.getInverseRelation(internal);
-    if(inverse) {
-      inverse.inverseWillChange(this.internal);
-    }
-  }
-
-  didAddInternalModel(internal) {
-    let inverse = this.getInverseRelation(internal);
-    if(inverse) {
-      inverse.inverseDidChange(this.internal);
-    }
-  }
-
   valueWillChange(proxy, removing) {
     if(this.isReplacingContent) {
       return;
@@ -167,5 +170,19 @@ export default class HasManyRelation extends Relation {
     this.isValueChanging = false;
     this.dirty();
   }
+
+  onContentInternalModelDeleted(internal) {
+    this.isReplacingContent = true;
+    this.getWrappedContent().removeObject(internal);
+    this.isReplacingContent = false;
+  }
+
+  internalModelDidChange(internal, props) {
+    assert(`internalModelDidChange content must include internal`, this.getContent().includes(internal));
+    if(internalModelDidChangeIsDeleted(internal, props)) {
+      this.onContentInternalModelDeleted(internal);
+    }
+  }
+
 
 }

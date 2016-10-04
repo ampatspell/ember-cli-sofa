@@ -13,6 +13,10 @@ export function getInternalModel(model) {
   return model.get('_internal');
 }
 
+export function internalModelDidChangeIsDeleted(internal, props) {
+  return internal.state.isDeleted && props.includes('isDeleted');
+}
+
 export default class InternalModel {
 
   constructor(store, modelClass, database = null) {
