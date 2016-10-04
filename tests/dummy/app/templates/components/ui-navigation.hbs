@@ -1,0 +1,7 @@
+<div class="title" {{action 'transition' routes.firstObject}}>ember-cli-sofa</div>
+<div class="items">
+  {{#each routes as |route|}}
+    <div class="item {{if route.isCurrent 'current'}}" {{action 'transition' route}}>{{route.title}}</div>
+  {{/each}}
+</div>
+

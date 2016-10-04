@@ -58,8 +58,29 @@ button {
 }
 
 .ui-application {
+  > .navigation {
+  }
   > .content {
     padding: 10px;
+  }
+}
+
+.ui-navigation {
+  padding: 20px 20px 10px 20px;
+  > .title {
+    display: inline-block;
+    padding-right: 20px;
+    font-weight: bold;
+  }
+  > .items {
+    display: inline-block;
+    > .item {
+      display: inline-block;
+      padding-right: 10px;
+      &.current {
+        text-decoration: underline;
+      }
+    }
   }
 }
 
