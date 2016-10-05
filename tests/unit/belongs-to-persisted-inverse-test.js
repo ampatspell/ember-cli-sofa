@@ -19,7 +19,7 @@ let House = Model.extend({
   duck: belongsTo('duck', { inverse: 'house', persist: false })
 });
 
-module('property-belongs-to-persisted-inverse', () => {
+module('belongs-to-persisted-inverse', () => {
   registerModels({ Duck, House });
   store = createStore();
   db = store.get('db.main');

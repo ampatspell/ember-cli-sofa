@@ -7,7 +7,7 @@ let db;
 let Duck = Model.extend({
 });
 
-module('property-identifier', () => {
+module('identifier', () => {
   registerModels({ Duck });
   store = createStore();
   db = store.get('db.main');

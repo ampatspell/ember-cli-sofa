@@ -19,7 +19,7 @@ let House = Model.extend({
   ducks: hasMany('duck', { inverse: 'houses' })
 });
 
-module('property-has-many-to-has-many', () => {
+module('has-many-to-has-many', () => {
   registerModels({ Duck, House });
   store = createStore();
   db = store.get('db.main');

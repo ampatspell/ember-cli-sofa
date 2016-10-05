@@ -15,7 +15,7 @@ let Duck = Model.extend({
 
 });
 
-module('property-prefix', () => {
+module('prefix', () => {
   registerModels({ Duck });
   store = createStore();
   db = store.get('db.main');

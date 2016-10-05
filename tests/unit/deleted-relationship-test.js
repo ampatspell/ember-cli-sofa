@@ -14,7 +14,7 @@ let House = Model.extend({
   ducks: hasMany('duck', { inverse: 'house' })
 });
 
-module('relation-deleted-serialize-deserialize', () => {
+module('deleted-relationship-test', () => {
   registerModels({ Duck, House });
   store = createStore();
   db = store.get('db.main');

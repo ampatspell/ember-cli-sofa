@@ -13,7 +13,7 @@ let House = Model.extend({
   id: prefix()
 });
 
-module('property-belongs-to-persisted', () => {
+module('belongs-to-persisted', () => {
   registerModels({ Duck, House });
   store = createStore();
   db = store.get('db.main');
