@@ -24,6 +24,12 @@ export default class BelongsToLoadedRelation extends BelongsToProxiedRelation {
     });
   }
 
+  queryNeedsReload() {
+    let value = this.value;
+    this.needsReload = true;
+    value.notifyPropertyChange('promise');
+  }
+
   createLoadPromise() {
     let query = this.getQuery();
     return query._find().then(internal => {
@@ -37,9 +43,10 @@ export default class BelongsToLoadedRelation extends BelongsToProxiedRelation {
   getLoadPromise() {
     let promise = this.loadPromise;
     if(!promise) {
-      if(this.content) {
+      if(this.content && !this.needsReload) {
         return resolve(this.getValue());
       }
+      this.needsReload = false;
       promise = this.createLoadPromise().finally(() => {
         this.loadPromise = null;
       });

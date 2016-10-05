@@ -2,7 +2,9 @@ import Ember from 'ember';
 
 const {
   computed,
-  assert
+  assert,
+  observer,
+  run: { next, cancel }
 } = Ember;
 
 const relation = (prop) => {
@@ -13,9 +15,7 @@ const relation = (prop) => {
 
 const model = () => {
   return computed(function() {
-    // TODO: returns proxy
-    // might be nicer to return model itself. then notifyPropertyChange in relation is needed
-    return this._relation.getValue();
+    return this._relation.internal.getModel();
   }).readOnly();
 };
 
@@ -40,6 +40,13 @@ export default Ember.Mixin.create({
     opts.model = model;
 
     return this._invokeFind(database, opts);
-  }
+  },
+
+  _observeFindPropertyChanges: observer('find', function() {
+    cancel(this.__observeFind);
+    this.__observeFind = next(() => {
+      this._relation.queryNeedsReload();
+    });
+  }),
 
 });

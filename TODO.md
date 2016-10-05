@@ -1,5 +1,6 @@
 # TODO
 
+* belongs-to-loaded proxy needs isLoading, isLoaded, error
 * belongsTo loaded
 * hasMany loaded
 * root collections

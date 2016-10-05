@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import { module, test, createStore, registerModels, registerQueries, cleanup } from '../helpers/setup';
 import { Query, Model, prefix, belongsTo } from 'sofa';
+import { next } from 'sofa/util/run';
 
 const {
   RSVP: { all },
@@ -12,14 +13,17 @@ let db;
 
 let Big = Query.extend({
 
-  find: computed(function() {
-    return { selector: { _id: 'house:big' } };
+  find: computed('model.houseDocId', function() {
+    let opts = { selector: { _id: this.get('model.houseDocId') } };
+    console.log(opts);
+    return opts;
   }),
 
 });
 
 let Duck = Model.extend({
   id: prefix(),
+  houseDocId: 'house:big',
   house: belongsTo('house', { inverse: 'duck', persist: false, query: 'big' })
 });
 
@@ -67,5 +71,14 @@ test('load by using promise property', assert => {
     assert.ok(house.get('modelName') === 'house');
     assert.ok(house.get('content') === db.existing('house', 'big'));
     assert.ok(duck.get('house.content') === db.existing('house', 'big'));
+    duck.set('houseDocId', 'foof');
+    return next().then(() => duck.get('house.promise'));
+  }).then(() => {
+    assert.ok(false, 'should reject');
+  }, err => {
+    assert.deepEqual(err.toJSON(), {
+      "error": "not_found",
+      "reason": "missing"
+    });
   });
 });
