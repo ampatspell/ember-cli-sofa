@@ -2,8 +2,10 @@ import Ember from 'ember';
 import { assert } from '../util/assert';
 import SofaModel, { getDefinition } from '../model';
 
-const __sofa_type__ = '__sofa_type__';
-const __sofa_model_type__ = 'model';
+import {
+  __sofa_type__,
+  __sofa_model_type__
+} from './store-constants';
 
 export default Ember.Mixin.create({
 

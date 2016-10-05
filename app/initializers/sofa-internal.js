@@ -15,6 +15,7 @@ export default {
   after: 'sofa:couch',
   initialize(container) {
     container.registerOptionsForType('model', { instantiate: false });
+    container.registerOptionsForType('query', { instantiate: false });
 
     container.register('sofa:store', Store, { instantiate: false });
     container.register('sofa:databases', Databases, { instantiate: false });
