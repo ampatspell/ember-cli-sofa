@@ -217,9 +217,6 @@ export default Ember.Mixin.create({
     }).then(hash => {
       let rejected = hash.filter(item => item.state === 'rejected');
       if(rejected.length) {
-        if(rejected.length === 1) {
-          return reject(rejected[0].reason);
-        }
         return reject(new Errors(rejected.map(rejection => rejection.reason)));
       }
       return array;
