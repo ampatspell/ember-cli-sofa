@@ -8,9 +8,17 @@ const {
 
 export default class BelongsToRelation extends Relation {
 
-  notifyPropertyChange(changed) {
+  dirty(changed) {
     this.relationship.dirty(this.internal, changed);
+  }
+
+  propertyDidChange(changed) {
     changed(this.relationship.name);
+  }
+
+  notifyPropertyChange(changed) {
+    this.dirty(changed);
+    this.propertyDidChange(changed);
   }
 
   withPropertyChanges(cb) {
@@ -100,9 +108,7 @@ export default class BelongsToRelation extends Relation {
     if(this.content !== internal) {
       this.willSetContent();
       this.content = internal;
-      if(changed) {
-        this.notifyPropertyChange(changed);
-      }
+      this.notifyPropertyChange(changed);
       this.didSetContent();
     }
 

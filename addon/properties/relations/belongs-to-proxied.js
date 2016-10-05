@@ -7,6 +7,16 @@ const {
 
 export default class BelongsToProxiedRelation extends BelongsToRelation {
 
+  notifyPropertyChange(changed) {
+    this.dirty(changed);
+    let proxy = this.value;
+    if(proxy) {
+      proxy.notifyPropertyChange('content');
+    } else {
+      this.propertyDidChange(changed);
+    }
+  }
+
   getValue() {
     let value = this.value;
     if(!value) {

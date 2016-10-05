@@ -1,10 +1,10 @@
-// import Ember from 'ember';
+import Ember from 'ember';
 import { module, test, createStore, registerModels, cleanup } from '../helpers/setup';
 import { Model, prefix, belongsTo } from 'sofa';
 
-// const {
-//   RSVP: { all }
-// } = Ember;
+const {
+  RSVP: { all }
+} = Ember;
 
 let store;
 let db;
@@ -25,7 +25,7 @@ export default Query.extend({
 
 let Duck = Model.extend({
   id: prefix(),
-  house: belongsTo('house', { inverse: 'duck', query: 'duck-house' })
+  house: belongsTo('house', { inverse: 'duck', persist: false, query: 'big' })
 });
 
 let House = Model.extend({
@@ -56,10 +56,20 @@ test('belongsTo returns proxy with content', assert => {
   assert.ok(duck.get('house.content') === house);
 });
 
-// test.only('load', assert => {
-//   let house = db.model('house', { id: 'big' });
-//   let duck = db.model('duck', { id: 'yellow', house });
-//   return all([ duck, house ].map(model => model.save())).then(() => {
-//     flush();
-//   });
-// });
+test.only('load', assert => {
+  let duck = db.model('duck', { id: 'yellow' });
+  let house = db.model('house', { id: 'big', duck });
+  return all([ duck, house ].map(model => model.save())).then(() => {
+    flush();
+    assert.ok(!db.existing('duck', 'yellow'));
+    assert.ok(!db.existing('house', 'big'));
+    return db.load('duck', 'yellow');
+  }).then(duck_ => {
+    duck = duck_;
+    return duck.get('house.promise');
+  }).then(house => {
+    assert.ok(house.get('modelName') === 'house');
+    assert.ok(house.get('content') === db.existing('house', 'big'));
+    assert.ok(duck.get('house.content') === db.existing('house', 'big'));
+  });
+});
