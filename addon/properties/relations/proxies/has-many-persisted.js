@@ -15,14 +15,9 @@ const Transform = createTransform({
   }
 });
 
-// TODO: clean up this mess
-// have relation.state which keeps values
-const enqueueLoad = (name) => {
-  let key = `_${name}`;
-  return computed(key, function() {
-    let value = this.get(key);
-    this.get('_relation').enqueueLazyLoadModelIfNeeded();
-    return value;
+const lazyLoad = (prop) => {
+  return computed(function() {
+    return this.get('_relation').enqueueLazyLoadModelIfNeeded(prop);
   }).readOnly();
 }
 
@@ -30,12 +25,8 @@ export default Ember.ArrayProxy.extend(Transform, {
 
   _relation: null,
 
-  _isLoading: false,
-  _isError: false,
-  _error: null,
-
-  isLoading: enqueueLoad('isLoading'),
-  isError:   enqueueLoad('isError'),
-  error:     enqueueLoad('error'),
+  isLoading: lazyLoad('isLoading'),
+  isError:   lazyLoad('isError'),
+  error:     lazyLoad('error'),
 
 });

@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import Relation from './relation';
 import { getInternalModel, internalModelDidChangeIsDeleted } from '../../internal-model';
-import { Errors } from '../../util/error';
+import enqueueLazyLoadIfNeeded from './has-many-lazy-load';
 
 const {
   getOwner,
@@ -52,7 +52,12 @@ export default class HasManyRelation extends Relation {
 
   constructor(relationship, internal) {
     super(...arguments);
-    this.needsLazyLoad = true;
+    this.lazyLoad = {
+      needs: true,
+      isLoading: false,
+      isError: false,
+      error: null
+    };
     internal.addObserver(this);
   }
 
@@ -219,82 +224,8 @@ export default class HasManyRelation extends Relation {
     }
   }
 
-  // TODO: this is crazy
-  enqueueLazyLoadModelIfNeeded() {
-    if(!this.lazyLoadEnabled) {
-      return;
-    }
-
-    if(!this.needsLazyLoad) {
-      return;
-    }
-
-    this.needsLazyLoad = false;
-
-    let content = this.content;
-    var dbs = new Map();
-
-    content.forEach(internal => {
-      if(!internal.shouldLazyLoad(true)) {
-        return;
-      }
-      let db = internal.database;
-      let arr = dbs.get(db);
-      if(!arr) {
-        arr = [];
-        dbs.set(db, arr);
-      }
-      arr.push(internal);
-    });
-
-    let promises = [];
-    let proxy = this.value;
-
-    let errors = [];
-
-    const map = (db, arr) => {
-      let promise = resolve().then(() => {
-        return db._reloadInternalModels(arr);
-      }).then(() => undefined, err => {
-        this.internal.reportLazyLoadError(`{ database: '${db.get('identifier')}', _ids: [ ${arr.map(internal => `'${internal.docId}'`).join(', ')} ] }`, err);
-        return reject(err);
-      });
-      arr.forEach(internal => internal.setLazyLoadModelPromise(promise));
-      promises.push(promise);
-    };
-
-    for(let [db, arr] of dbs) {
-      map(db, arr);
-    }
-
-    resolve().then(() => {
-      proxy.setProperties({
-        _isLoading: true,
-        _isError: false,
-        _error: null
-      });
-    }).then(() => {
-      return allSettled(promises);
-    }).then(results => {
-      let all = Ember.A(results.map(result => result.reason && result.reason.errors)).compact();
-      if(all.length > 0) {
-        let error = new Errors(all.reduce((prev, curr) => {
-          prev.push(...curr);
-          return prev;
-        }, []));
-        proxy.setProperties({
-          _isLoading: false,
-          _isError: true,
-          _error: error
-        });
-      } else {
-        proxy.setProperties({
-          _isLoading: false,
-          _isError: false,
-          _error: null
-        });
-      }
-    });
+  enqueueLazyLoadModelIfNeeded(prop) {
+    return enqueueLazyLoadIfNeeded(this, prop);
   }
 
   internalModelFromModel(model) {
