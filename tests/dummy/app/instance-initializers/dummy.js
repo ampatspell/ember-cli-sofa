@@ -1,4 +1,4 @@
-import later from 'sofa/util/later';
+import { later } from 'sofa/util/run';
 
 function throttle(db) {
   let documents = db.get('documents');
