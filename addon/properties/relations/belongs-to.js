@@ -8,10 +8,6 @@ const {
 
 export default class BelongsToRelation extends Relation {
 
-  get isMany() {
-    return false;
-  }
-
   dirty(changed) {
     this.relationship.dirty(this.internal, changed);
   }

@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import BelongsToProxiedRelation from './belongs-to-proxied';
+import RelationFirstQueryMixin from './query/relation-first';
 
 const {
   RSVP: { resolve }
@@ -14,6 +15,12 @@ export default class BelongsToLoadedRelation extends BelongsToProxiedRelation {
   createObjectProxy(owner) {
     let _relation = this;
     return owner.lookup('sofa:belongs-to-loaded').create({ _relation });
+  }
+
+  createQuery() {
+    return this.relationship.createQuery(this, 'relation-first', Query => {
+      return Query.extend(RelationFirstQueryMixin);
+    });
   }
 
   createLoadPromise() {

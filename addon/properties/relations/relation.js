@@ -30,10 +30,6 @@ export default class Relation {
     return this.internal.store;
   }
 
-  createQuery() {
-    return this.relationship.createQuery(this);
-  }
-
   getQuery() {
     let query = this.query;
     if(!query) {

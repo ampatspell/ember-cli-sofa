@@ -34,10 +34,9 @@ export default class Relationship extends Property {
     return relation;
   }
 
-  createQuery(relation) {
+  createQuery(relation, variantName, variantFn) {
     let queryModelName = this.opts.query;
-    let Query = this.store._queryClassForName(queryModelName, relation);
-    // TODO: _relation might not be the best idea. Queries should also work in root collections
+    let Query = this.store._queryClassForName(queryModelName, variantName, variantFn);
     return Query._create({ _relation: relation });
   }
 
