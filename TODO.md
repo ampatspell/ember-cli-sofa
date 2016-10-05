@@ -2,9 +2,9 @@
 
 * belongsTo loaded
 * hasMany loaded
-* embedded models (persisted as a { key: { model } })
 * root collections
 * model attachments
+* embedded models (persisted as a { key: { model } })
 * abstract Couch, have also PouchDB
 * couch permissions
 * couch session
