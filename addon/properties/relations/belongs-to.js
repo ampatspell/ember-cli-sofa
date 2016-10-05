@@ -37,29 +37,29 @@ export default class BelongsToRelation extends Relation {
 
   //
 
-  willSetValue() {
-    let value = this.value;
-    if(!value) {
+  willSetContent() {
+    let content = this.content;
+    if(!content) {
       return;
     }
 
-    value.removeObserver(this);
+    content.removeObserver(this);
 
-    let inverse = this.getInverseRelation(value);
+    let inverse = this.getInverseRelation(content);
     if(inverse) {
       inverse.inverseWillChange(this.internal);
     }
   }
 
-  didSetValue() {
-    let value = this.value;
-    if(!value) {
+  didSetContent() {
+    let content = this.content;
+    if(!content) {
       return;
     }
 
-    value.addObserver(this);
+    content.addObserver(this);
 
-    let inverse = this.getInverseRelation(value);
+    let inverse = this.getInverseRelation(content);
     if(inverse) {
       inverse.inverseDidChange(this.internal);
     }
@@ -67,26 +67,49 @@ export default class BelongsToRelation extends Relation {
 
   //
 
-  onValueDeleted() {
+  onContentDeleted() {
     this.withPropertyChanges(changed => {
-      let value = this.value;
-      value.removeObserver(this);
-      this.value = null;
+      let content = this.content;
+      content.removeObserver(this);
+      this.content = null;
       this.notifyPropertyChange(changed);
     });
   }
 
   internalModelDidChange(internal, props) {
-    assert(`internalModelDidChange internal must be this.value`, internal === this.value);
+    assert(`internalModelDidChange internal must be this.content`, internal === this.content);
     if(internalModelDidChangeIsDeleted(internal, props)) {
-      this.onValueDeleted();
+      this.onContentDeleted();
     }
   }
 
   //
 
+  getContent() {
+    return this.content;
+  }
+
+  setContent(internal, changed) {
+    if(this.isSettingContent) {
+      return;
+    }
+
+    this.isSettingContent = true;
+
+    if(this.content !== internal) {
+      this.willSetContent();
+      this.content = internal;
+      this.notifyPropertyChange(changed);
+      this.didSetContent();
+    }
+
+    this.isSettingContent = false;
+  }
+
+  //
+
   getValue() {
-    let internal = this.value;
+    let internal = this.getContent();
     if(!internal) {
       return null;
     }
@@ -94,22 +117,8 @@ export default class BelongsToRelation extends Relation {
   }
 
   setValue(value, changed) {
-    if(this.isSettingValue) {
-      return;
-    }
-
-    this.isSettingValue = true;
-
     let internal = this.toInternalModel(value);
-    if(this.value !== internal) {
-      this.willSetValue();
-      this.value = internal;
-      this.notifyPropertyChange(changed);
-      this.didSetValue();
-    }
-
-    this.isSettingValue = false;
-
+    this.setContent(internal, changed);
     return value || null;
   }
 
