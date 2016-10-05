@@ -5,6 +5,11 @@
   font-size: @size;
 }
 
+.noselect {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
 html, body {
   background: lighten(#000, 99%);
   padding: 0;
@@ -79,6 +84,7 @@ button {
 }
 
 .ui-navigation {
+  .noselect;
   padding: 20px 20px 10px 20px;
   > .title {
     display: inline-block;
@@ -138,6 +144,7 @@ button {
   }
   &.action {
     cursor: pointer;
+    .noselect;
   }
 }
 
