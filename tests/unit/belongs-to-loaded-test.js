@@ -52,7 +52,7 @@ test('belongsTo returns proxy with content', assert => {
   assert.ok(duck.get('house.content') === house);
 });
 
-test.only('load by using promise property', assert => {
+test('load by using promise property', assert => {
   let duck = db.model('duck', { id: 'yellow' });
   let house = db.model('house', { id: 'big', duck });
   return all([ duck, house ].map(model => model.save())).then(() => {

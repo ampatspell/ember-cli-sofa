@@ -11,13 +11,13 @@ const relation = (prop) => {
   }).readOnly();
 };
 
-const model = (prop) => {
+const model = () => {
   return computed(function() {
     // TODO: returns proxy
     // might be nicer to return model itself. then notifyPropertyChange in relation is needed
     return this._relation.getValue();
   }).readOnly();
-}
+};
 
 // TODO: Might make sense to extend Query as a RelationQuery (or RelationFindQuery and RelationFirstQuery)
 // Then it will be easier to use the same thing as a RootCollection query
