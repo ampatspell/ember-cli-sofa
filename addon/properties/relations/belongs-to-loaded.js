@@ -1,6 +1,15 @@
+import Ember from 'ember';
 import BelongsToProxiedRelation from './belongs-to-proxied';
 
+const {
+  RSVP: { resolve }
+} = Ember;
+
 export default class BelongsToLoadedRelation extends BelongsToProxiedRelation {
+
+  get notifyPropertyChangeProxyPropertyNames() {
+    return [ 'content', 'promise' ];
+  }
 
   createObjectProxy(owner) {
     let _relation = this;
@@ -12,9 +21,7 @@ export default class BelongsToLoadedRelation extends BelongsToProxiedRelation {
     let id = this.relationship.opts.query;
     let modelName = this.relationship.opts.relationshipModelName;
     let database = this.internal.database;
-    return database._internalModelFirst({ model: modelName, id }).then(internal => {
-      return internal;
-    });
+    return database._internalModelFirst({ model: modelName, id });
   }
 
   createLoadPromise() {
@@ -29,6 +36,9 @@ export default class BelongsToLoadedRelation extends BelongsToProxiedRelation {
   getLoadPromise() {
     let promise = this.loadPromise;
     if(!promise) {
+      if(this.content) {
+        return resolve(this.getValue());
+      }
       promise = this.createLoadPromise().finally(() => {
         this.loadPromise = null;
       });
@@ -40,7 +50,7 @@ export default class BelongsToLoadedRelation extends BelongsToProxiedRelation {
   serialize() {
   }
 
-  deserialize(value, changed) {
+  deserialize() {
   }
 
 }

@@ -13,13 +13,13 @@ const content = () => {
       return this._relation.setModel(value);
     }
   });
-}
+};
 
 const promise = () => {
   return computed(function() {
     return this._relation.getLoadPromise();
   }).readOnly();
-}
+};
 
 export default Ember.ObjectProxy.extend({
 
