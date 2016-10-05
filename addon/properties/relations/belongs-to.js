@@ -8,32 +8,29 @@ const {
 
 export default class BelongsToRelation extends Relation {
 
-  withPropertyChange(cb) {
-    let internal = this.internal;
-    let relationship = this.relationship;
-    internal.withPropertyChanges(changed_ => {
-      let changed = () => {
-        relationship.dirty(internal, changed_);
-        changed_(relationship.name);
-      };
-      cb(changed);
-    }, true);
+  notifyPropertyChange(changed) {
+    this.relationship.dirty(this.internal, changed);
+    changed(this.relationship.name);
+  }
+
+  withPropertyChanges(cb) {
+    this.internal.withPropertyChanges(cb, true);
   }
 
   inverseWillChange() {
-    this.withPropertyChange(changed => {
+    this.withPropertyChanges(changed => {
       this.setValue(null, changed);
     }, true);
   }
 
   inverseDidChange(internal) {
-    this.withPropertyChange(changed => {
+    this.withPropertyChanges(changed => {
       this.setValue(internal, changed);
     }, true);
   }
 
   inverseDeleted() {
-    this.withPropertyChange(changed => {
+    this.withPropertyChanges(changed => {
       this.setValue(null, changed);
     });
   }
@@ -71,11 +68,11 @@ export default class BelongsToRelation extends Relation {
   //
 
   onValueDeleted() {
-    this.withPropertyChange(changed => {
+    this.withPropertyChanges(changed => {
       let value = this.value;
       value.removeObserver(this);
       this.value = null;
-      changed();
+      this.notifyPropertyChange(changed);
     });
   }
 
@@ -107,7 +104,7 @@ export default class BelongsToRelation extends Relation {
     if(this.value !== internal) {
       this.willSetValue();
       this.value = internal;
-      changed();
+      this.notifyPropertyChange(changed);
       this.didSetValue();
     }
 
