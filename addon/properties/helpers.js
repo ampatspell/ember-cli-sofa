@@ -5,6 +5,7 @@ import Revision from './revision';
 import Type from './type';
 import Attribute from './attribute';
 import BelongsToPersisted from './belongs-to-persisted';
+import BelongsToLoaded from './belongs-to-loaded';
 import HasManyPersisted from './has-many-persisted';
 
 const {
@@ -44,8 +45,12 @@ function type(value) {
   return make(new Type(value));
 }
 
-function belongsTo(modelName, opts) {
-  return make(new BelongsToPersisted(modelName, opts));
+function belongsTo(modelName, opts={}) {
+  if(opts.query) {
+    return make(new BelongsToLoaded(modelName, opts));
+  } else {
+    return make(new BelongsToPersisted(modelName, opts));
+  }
 }
 
 function hasMany(modelName, opts) {

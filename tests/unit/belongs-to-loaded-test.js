@@ -45,7 +45,7 @@ module('belongs-to-loaded', () => {
   return cleanup(store, [ 'main' ]);
 });
 
-test('belongsTo with queyr returns proxy', assert => {
+test('belongsTo with query returns proxy', assert => {
   let duck = db.model('duck', { id: 'yellow' });
   assert.ok(duck.get('house'));
 });
