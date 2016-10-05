@@ -2,7 +2,8 @@ import Ember from 'ember';
 import createTransform from './array-transform-mixin';
 
 const {
-  get
+  get,
+  computed
 } = Ember;
 
 const Transform = createTransform({
@@ -14,11 +15,27 @@ const Transform = createTransform({
   }
 });
 
+// TODO: clean up this mess
+// have relation.state which keeps values
+const enqueueLoad = (name) => {
+  let key = `_${name}`;
+  return computed(key, function() {
+    let value = this.get(key);
+    this.get('_relation').enqueueLazyLoadModelIfNeeded();
+    return value;
+  }).readOnly();
+}
+
 export default Ember.ArrayProxy.extend(Transform, {
 
   _relation: null,
 
-  // TODO: isLoading, isError, error
-  // don't include isLoaded as for this one that doesn't make sense
+  _isLoading: false,
+  _isError: false,
+  _error: null,
+
+  isLoading: enqueueLoad('isLoading'),
+  isError:   enqueueLoad('isError'),
+  error:     enqueueLoad('error'),
 
 });

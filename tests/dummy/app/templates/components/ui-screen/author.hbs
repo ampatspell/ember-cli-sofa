@@ -9,11 +9,17 @@
   {{/ui-row}}
 
   {{#ui-row title='Blogs'}}
-    {{#each author.blogs as |blog|}}
-      <div>{{blog.id}}: {{blog.name}}</div>
+    {{#if author.blogs.isLoading}}
+      <div>Loading…</div>
+    {{else if author.blogs.isError}}
+      <div>{{ui-json value=author.blogs.error}}</div>
     {{else}}
-      <div>No blogs</div>
-    {{/each}}
+      {{#each author.blogs as |blog|}}
+        <div>{{blog.id}}: {{blog.name}}</div>
+      {{else}}
+        <div>No blogs</div>
+      {{/each}}
+    {{/if}}
   {{/ui-row}}
 
   {{#ui-row}}

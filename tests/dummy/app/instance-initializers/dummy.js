@@ -1,3 +1,19 @@
+function later(delay) {
+  return new Ember.RSVP.Promise(resolve => {
+    Ember.run.later(resolve, delay);
+  });
+}
+
+function throttle(db) {
+  let documents = db.get('documents');
+  let request = documents.request;
+  documents.request = (...args) => {
+    return later(1000).then(() => {
+      return request.call(documents, ...args);
+    });
+  }
+}
+
 export default {
   name: 'dummy:develop',
   initialize(app) {
@@ -5,8 +21,12 @@ export default {
 
     let store = app.lookup('service:store');
     store.set('_applicationName', 'dummy');
+
+    let main = store.get('db.main');
+    throttle(main);
+
     window.store = store;
-    window.db = store.get('db.main');
+    window.db = main;
     window.log = console.log.bind(console);
     window.set = (key) => {
       return function(arg) {

@@ -1,10 +1,12 @@
 import Ember from 'ember';
 import Relation from './relation';
 import { getInternalModel, internalModelDidChangeIsDeleted } from '../../internal-model';
+import { Errors } from '../../util/error';
 
 const {
   getOwner,
-  assert
+  assert,
+  RSVP: { resolve, reject, allSettled }
 } = Ember;
 
 const getDiff = (curr, next) => {
@@ -217,6 +219,7 @@ export default class HasManyRelation extends Relation {
     }
   }
 
+  // TODO: this is crazy
   enqueueLazyLoadModelIfNeeded() {
     if(!this.lazyLoadEnabled) {
       return;
@@ -244,16 +247,54 @@ export default class HasManyRelation extends Relation {
       arr.push(internal);
     });
 
+    let promises = [];
+    let proxy = this.value;
+
+    let errors = [];
+
     const map = (db, arr) => {
-      let promise = db._reloadInternalModels(arr).then(() => undefined, err => {
+      let promise = resolve().then(() => {
+        return db._reloadInternalModels(arr);
+      }).then(() => undefined, err => {
         this.internal.reportLazyLoadError(`{ database: '${db.get('identifier')}', _ids: [ ${arr.map(internal => `'${internal.docId}'`).join(', ')} ] }`, err);
+        return reject(err);
       });
       arr.forEach(internal => internal.setLazyLoadModelPromise(promise));
+      promises.push(promise);
     };
 
     for(let [db, arr] of dbs) {
       map(db, arr);
     }
+
+    resolve().then(() => {
+      proxy.setProperties({
+        _isLoading: true,
+        _isError: false,
+        _error: null
+      });
+    }).then(() => {
+      return allSettled(promises);
+    }).then(results => {
+      let all = Ember.A(results.map(result => result.reason && result.reason.errors)).compact();
+      if(all.length > 0) {
+        let error = new Errors(all.reduce((prev, curr) => {
+          prev.push(...curr);
+          return prev;
+        }, []));
+        proxy.setProperties({
+          _isLoading: false,
+          _isError: true,
+          _error: error
+        });
+      } else {
+        proxy.setProperties({
+          _isLoading: false,
+          _isError: false,
+          _error: null
+        });
+      }
+    });
   }
 
   internalModelFromModel(model) {
