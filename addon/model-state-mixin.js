@@ -11,11 +11,24 @@ const state = (name) => {
   }).readOnly();
 };
 
-const props = ['isNew', 'isLoading', 'isLoaded', 'isDirty', 'isSaving', 'isDeleted', 'isError', 'error'];
-const hash = {};
+const load = (name) => {
+  return computed(function() {
+    let internal = getInternalModel(this);
+    internal.enqueueLazyLoadModelIfNeeded();
+    return internal.state[name];
+  }).readOnly();
+}
+
+const props = [ 'isNew', 'isLoading', 'isLoaded', 'isDirty', 'isSaving', 'isDeleted', 'isError', 'error' ];
+const lazy  = [ 'isLoading', 'isLoaded' ];
+const hash  = {};
 
 props.forEach(key => {
-  hash[key] = state(key);
+  if(lazy.indexOf(key) !== -1) {
+    hash[key] = load(key);
+  } else {
+    hash[key] = state(key);
+  }
 });
 
 hash.state = computed(...props, function() {

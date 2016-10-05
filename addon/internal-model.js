@@ -291,15 +291,9 @@ export default class InternalModel {
 
   createLazyLoadPromise() {
     let model = this.model;
-    let promise = resolve(null, `sofa:model lazy load { model: '${model.get('modelName')}' _id: '${model.get('docId')}' }`).then(() => {
-      if(!this.shouldLazyLoad()) {
-        return;
-      }
-      return model.load();
-    }, null).then(() => undefined, err => {
+    return model.load().catch(err => {
       this.reportLazyLoadError(`{ model: '${model.get('modelName')}', _id: '${model.get('docId')}' }`, err);
     });
-    return promise;
   }
 
   enqueueLazyLoadModelIfNeeded() {
