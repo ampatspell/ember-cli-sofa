@@ -9,21 +9,16 @@
   {{/ui-row}}
 
   {{#ui-row title='Blogs'}}
-    isLoading={{author.blogs.isLoading}}, isError={{author.blogs.isError}}, error={{author.blogs.error}}
     {{#if author.blogs.isLoading}}
-      {{log 'array loading'}}
       <div>Loading array…</div>
     {{else if author.blogs.isError}}
       <div>{{ui-json value=author.blogs.error}}</div>
     {{else}}
-      {{log 'array loaded'}}
       {{#each author.blogs as |blog|}}
         {{#if blog.isLoading}}
           <div>Loading {{blog.id}}…</div>
-          {{log 'loading' blog.id}}
         {{else}}
           <div>{{blog.id}}: {{blog.name}}</div>
-          {{log 'loaded' blog.id}}
         {{/if}}
       {{else}}
         <div>No blogs</div>

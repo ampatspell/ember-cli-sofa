@@ -210,6 +210,9 @@ export default Ember.Mixin.create({
     let documents = this.get('documents');
     let ids = Ember.A(array.map(internal => internal.docId));
 
+    // ids.removeObject('blog:two');
+    // ids.pushObject('asd');
+
     // TODO: chunk array in 300 ids per request
     // let size = 1;
     // let chunks = chunkArray(array, size);

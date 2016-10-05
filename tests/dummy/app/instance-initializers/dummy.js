@@ -1,8 +1,4 @@
-function later(delay) {
-  return new Ember.RSVP.Promise(resolve => {
-    Ember.run.later(resolve, delay);
-  });
-}
+import later from 'sofa/util/later';
 
 function throttle(db) {
   let documents = db.get('documents');
@@ -11,7 +7,7 @@ function throttle(db) {
     return later(1000).then(() => {
       return request.call(documents, ...args);
     });
-  }
+  };
 }
 
 export default {
