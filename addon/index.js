@@ -1,6 +1,6 @@
 import Store from './store';
 import Model from './model';
-import Query from './model';
+import Query from './query';
 
 import {
   id,
