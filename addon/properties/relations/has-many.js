@@ -84,8 +84,10 @@ export default class HasManyRelation extends Relation {
   }
 
   inverseDeleted(internal) {
+    this.ignoreValueChanges = true;
     this.getWrappedContent().removeObject(internal);
     this.dirty();
+    this.ignoreValueChanges = false;
   }
 
   getWrappedContent() {
