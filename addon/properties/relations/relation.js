@@ -1,5 +1,10 @@
+import Ember from 'ember';
 import InternalModel, { getInternalModel } from '../../internal-model';
 import Model from '../../model';
+
+const {
+  assert
+} = Ember;
 
 export default class Relation {
 
@@ -51,6 +56,10 @@ export default class Relation {
     if(object instanceof InternalModel) {
       return object;
     }
+    if(Ember.ObjectProxy.detectInstance(object)) {
+      object = object.get('content');
+    }
+    assert(`ObjectProxy.content is ObjectProxy`, !Ember.ObjectProxy.detectInstance(object));
     if(Model.detectInstance(object)) {
       return getInternalModel(object);
     }
