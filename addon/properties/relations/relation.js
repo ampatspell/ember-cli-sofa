@@ -26,6 +26,10 @@ export default class Relation {
     return this.internal.database;
   }
 
+  get store() {
+    return this.internal.store;
+  }
+
   createQuery() {
     return this.relationship.createQuery(this);
   }
