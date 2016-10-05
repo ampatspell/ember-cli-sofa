@@ -194,7 +194,7 @@ test('deleted hasMany model is removed from hasMany', assert => {
   });
 });
 
-test.only('deleted hasMany model is removed from hasMany with inverse proxies', assert => {
+test('deleted hasMany model is removed from hasMany with inverse proxies', assert => {
   let yellow = db.model('duck', { id: 'yellow' });
   let red = db.model('duck', { id: 'red' });
   let big = db.model('house', { id: 'big', ducks: [ yellow, red ] });
