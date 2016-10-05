@@ -21,7 +21,7 @@ export default Ember.Mixin.create({
   },
 
   _queryClassForName(queryName) {
-    return this._classForName('query', queryName, (Query, normalizedModelName) => {
+    return this._classForName('query', queryName, null, (Query, normalizedModelName) => {
       assert(`query '${normalizedModelName}' must be sofa Query`, this._isQueryClass(Query));
       let Extended = Query.extend();
       Extended.reopenClass({ store: this, [__sofa_type__]: __sofa_query_type__ });
