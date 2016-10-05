@@ -3,7 +3,8 @@ import createTransform from './array-transform-mixin';
 
 const {
   get,
-  computed
+  computed,
+  computed: { oneWay }
 } = Ember;
 
 const Transform = createTransform({
@@ -15,18 +16,20 @@ const Transform = createTransform({
   }
 });
 
-const lazyLoad = (prop) => {
+const state = (prop) => {
   return computed(function() {
     return this.get('_relation').enqueueLazyLoadModelIfNeeded(prop);
   }).readOnly();
-}
+};
 
 export default Ember.ArrayProxy.extend(Transform, {
 
   _relation: null,
 
-  isLoading: lazyLoad('isLoading'),
-  isError:   lazyLoad('isError'),
-  error:     lazyLoad('error'),
+  state:     state(),
+
+  isLoading: oneWay('state.isLoading'),
+  isError:   oneWay('state.isError'),
+  error:     oneWay('state.error'),
 
 });

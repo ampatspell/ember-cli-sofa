@@ -14,7 +14,7 @@ const chunkArray = (array, size) => {
     result.push(Ember.A(array.slice(i, i + size)));
   }
   return result;
-}
+};
 
 window.chunkArray = chunkArray;
 

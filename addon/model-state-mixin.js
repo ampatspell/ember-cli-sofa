@@ -17,7 +17,7 @@ const load = (name) => {
     internal.enqueueLazyLoadModelIfNeeded();
     return internal.state[name];
   }).readOnly();
-}
+};
 
 const props = [ 'isNew', 'isLoading', 'isLoaded', 'isDirty', 'isSaving', 'isDeleted', 'isError', 'error' ];
 const lazy  = [ 'isLoading', 'isLoaded' ];

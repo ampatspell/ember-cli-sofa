@@ -2,9 +2,8 @@ import Ember from 'ember';
 import { Errors } from '../../util/error';
 
 const {
-  RSVP: { resolve, reject, allSettled },
-  run,
-  merge
+  RSVP: { resolve, allSettled },
+  Logger: { error }
 } = Ember;
 
 function splitInternalModelsByDatabase(content) {
@@ -24,73 +23,67 @@ function splitInternalModelsByDatabase(content) {
   return dbs;
 }
 
-function loadInternalModelsForDatabase(db, arr) {
+function loadInternalModelsForDatabase(relation, db, arr) {
   let promise = resolve().then(() => {
     return db._reloadInternalModels(arr);
-  }).then(() => undefined, err => {
+  }).then(() => {
+    return { ok: true };
+  }, err => {
     relation.internal.reportLazyLoadError(`{ database: '${db.get('identifier')}', _ids: [ ${arr.map(internal => `'${internal.docId}'`).join(', ')} ] }`, err);
-    return reject(err);
+    return { ok: false, reason: err };
   });
   arr.forEach(internal => internal.setLazyLoadModelPromise(promise));
   return promise;
 }
 
-function lazyLoadInternalModels(content) {
+function lazyLoadInternalModels(relation) {
+  let content = relation.content;
   let dbs = splitInternalModelsByDatabase(content);
 
   let promises = [];
   for(let [db, arr] of dbs) {
-    promises.push(loadInternalModelsForDatabase(db, arr));
+    promises.push(loadInternalModelsForDatabase(relation, db, arr));
   }
 
   return allSettled(promises);
 }
 
 function setState(relation, next) {
-  let state = relation.lazyLoad;
-  let proxy = relation.value;
-  proxy.beginPropertyChanges();
-  for(let key in next) {
-    let value = next[key];
-    if(state[key] !== value) {
-      state[key] = value;
-      proxy.notifyPropertyChange(key);
-    }
-  }
-  proxy.endPropertyChanges();
+  relation.lazyLoad = next;
+  relation.value.notifyPropertyChange('state');
 }
 
-export default function(relation, prop) {
+function collectErrors(results) {
+  let failed = Ember.A(results).filter(result => !result.value.ok);
+  let errors = Ember.A(failed).map(result => result.value.reason.errors || result.value.reason);
+  if(errors.length === 0) {
+    return;
+  }
+  return errors.reduce((prev, curr) => {
+    prev.push(...curr);
+    return prev;
+  }, []);
+}
+
+export default function(relation) {
   let state = relation.lazyLoad;
 
   if(!relation.lazyLoadEnabled) {
-    return state[prop];
+    return state;
   }
 
   if(!state.needs) {
-    return state[prop];
+    return state;
   }
 
   if(state.isLoading) {
-    return state[prop];
+    return state;
   }
 
-  merge(state, {
-    needs: false,
-    isLoading: true,
-    isError: false,
-    error: null
-  });
-
-  let content = relation.content;
-
-  lazyLoadInternalModels(content).then(results => {
-    let all = Ember.A(results.map(result => result.reason && result.reason.errors)).compact();
-    if(all.length > 0) {
-      let error = new Errors(all.reduce((prev, curr) => {
-        prev.push(...curr);
-        return prev;
-      }, []));
+  lazyLoadInternalModels(relation).then(results => {
+    let errors = collectErrors(results);
+    if(errors) {
+      let error = new Errors(errors);
       setState(relation, {
         isLoading: false,
         isError: true,
@@ -103,7 +96,16 @@ export default function(relation, prop) {
         error: null
       });
     }
+  }).catch(err => {
+    error(err.stack);
   });
 
-  return state[prop];
+  relation.lazyLoad = {
+    needs: false,
+    isLoading: true,
+    isError: false,
+    error: null
+  };
+
+  return relation.lazyLoad;
 }

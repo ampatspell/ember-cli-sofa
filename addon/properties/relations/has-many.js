@@ -5,8 +5,7 @@ import enqueueLazyLoadIfNeeded from './has-many-lazy-load';
 
 const {
   getOwner,
-  assert,
-  RSVP: { resolve, reject, allSettled }
+  assert
 } = Ember;
 
 const getDiff = (curr, next) => {
@@ -224,8 +223,8 @@ export default class HasManyRelation extends Relation {
     }
   }
 
-  enqueueLazyLoadModelIfNeeded(prop) {
-    return enqueueLazyLoadIfNeeded(this, prop);
+  enqueueLazyLoadModelIfNeeded() {
+    return enqueueLazyLoadIfNeeded(this);
   }
 
   internalModelFromModel(model) {
