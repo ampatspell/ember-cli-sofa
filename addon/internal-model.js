@@ -96,6 +96,7 @@ export default class InternalModel {
     let props = Ember.A();
 
     let changed = key => {
+      Ember.assert(`call changed(key) with key`, (typeof key === 'string'));
       if(notifyModel) {
         model.notifyPropertyChange(key);
       }

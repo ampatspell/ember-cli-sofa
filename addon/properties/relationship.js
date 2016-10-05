@@ -38,7 +38,7 @@ export default class Relationship extends Property {
   _setValue(internal, value, changed_) {
     let changed = () => {
       this.dirty(internal, changed_);
-      changed_(this.opts.name);
+      changed_(this.name);
     };
     let relation = this.getRelation(internal);
     return relation.setValue(value, changed);
@@ -52,7 +52,10 @@ export default class Relationship extends Property {
     }
   }
 
-  _deserialize(internal, doc, changed) {
+  _deserialize(internal, doc, changed_) {
+    let changed = () => {
+      changed_(this.name);
+    };
     let value = this.getDocValue(doc);
     let relation = this.getRelation(internal);
     relation.deserialize(value, changed);

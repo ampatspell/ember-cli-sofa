@@ -107,7 +107,7 @@ export default class BelongsToRelation extends Relation {
     if(this.value !== internal) {
       this.willSetValue();
       this.value = internal;
-      changed(); // TODO: shouldn't this be called with property name?
+      changed();
       this.didSetValue();
     }
 
