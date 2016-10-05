@@ -2,6 +2,7 @@
   "name": "@ampatspell/ember-cli-sofa",
   "version": "2.0.0-pre.2",
   "description": "CouchDB persistence library for Ember.js",
+  "repository": "https://bitbucket.org/ampatspell/ember-cli-sofa-4",
   "directories": {
     "doc": "doc",
     "test": "tests"
@@ -37,7 +38,10 @@
     "ember-export-application-global": "^1.0.5",
     "ember-load-initializers": "^0.5.1",
     "ember-resolver": "^2.0.3",
-    "loader.js": "^4.0.10"
+    "glob": "^4.5.3",
+    "loader.js": "^4.0.10",
+    "morgan": "^1.7.0",
+    "request": "^2.75.0"
   },
   "keywords": [
     "ember",

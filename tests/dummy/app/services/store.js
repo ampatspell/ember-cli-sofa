@@ -3,7 +3,7 @@ import { Store } from 'sofa';
 export default Store.extend({
 
   databaseOptionsForIdentifier(identifier) {
-    let url = 'http://127.0.0.1:5984';
+    let url = '/api';
     if(identifier === 'main') {
       return { url, name: 'thing' };
     }

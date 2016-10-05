@@ -94,7 +94,7 @@ export function createStore() {
   let Store = container.lookup('sofa:store').extend({
     isLazyLoadEnabled: false,
     databaseOptionsForIdentifier(identifier) {
-      let url = 'http://127.0.0.1:5984';
+      let url = '/api';
       if(identifier === 'main') {
         return { url, name: 'ember-cli-sofa-test-main' };
       }
@@ -113,9 +113,24 @@ export function registerModels(hash) {
   }
 }
 
+// TODO: get rid of this when database.get('session') will be implemented
+export function login(db) {
+  return db.get('documents.couch').request({
+    method: 'post',
+    url: '/_session',
+    json: true,
+    data: {
+      name: 'ampatspell',
+      password: 'hello'
+    }
+  });
+}
+
 export function recreate(db) {
   let docs = db.get('documents');
-  return docs.all().then(json => {
+  return login(db).then(() => {
+    return docs.all();
+  }).then(json => {
     return all(json.rows.map(row => {
       return docs.delete(row.id, row.value.rev);
     }));
