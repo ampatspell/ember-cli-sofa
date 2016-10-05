@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import BelongsToProxiedRelation from './belongs-to-proxied';
+import RelationQueryMixin from './query/relation';
 import RelationFirstQueryMixin from './query/relation-first';
 
 const {
@@ -19,7 +20,7 @@ export default class BelongsToLoadedRelation extends BelongsToProxiedRelation {
 
   createQuery() {
     return this.relationship.createQuery(this, 'relation-first', Query => {
-      return Query.extend(RelationFirstQueryMixin);
+      return Query.extend(RelationQueryMixin, RelationFirstQueryMixin);
     });
   }
 
