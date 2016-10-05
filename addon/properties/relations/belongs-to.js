@@ -14,7 +14,7 @@ export default class BelongsToRelation extends Relation {
   }
 
   withPropertyChanges(cb) {
-    this.internal.withPropertyChanges(cb, true);
+    return this.internal.withPropertyChanges(cb, true);
   }
 
   inverseWillChange() {
@@ -36,6 +36,7 @@ export default class BelongsToRelation extends Relation {
   }
 
   //
+
 
   willSetContent() {
     let content = this.content;
@@ -99,7 +100,9 @@ export default class BelongsToRelation extends Relation {
     if(this.content !== internal) {
       this.willSetContent();
       this.content = internal;
-      this.notifyPropertyChange(changed);
+      if(changed) {
+        this.notifyPropertyChange(changed);
+      }
       this.didSetContent();
     }
 
@@ -119,7 +122,7 @@ export default class BelongsToRelation extends Relation {
   setValue(value, changed) {
     let internal = this.toInternalModel(value);
     this.setContent(internal, changed);
-    return value || null;
+    return this.getValue();
   }
 
 }

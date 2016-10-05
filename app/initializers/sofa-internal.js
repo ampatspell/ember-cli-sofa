@@ -8,6 +8,7 @@ import IntegerTransform from 'sofa/transforms/integer';
 import BooleanTransform from 'sofa/transforms/boolean';
 
 import HasManyPersisted from 'sofa/properties/relations/proxies/has-many-persisted';
+import BelongsToLoaded from 'sofa/properties/relations/proxies/belongs-to-loaded';
 
 export default {
   name: 'sofa:internal',
@@ -20,6 +21,7 @@ export default {
     container.register('sofa:database', Database, { instantiate: false });
 
     container.register('sofa:has-many-persisted', HasManyPersisted, { instantiate: false });
+    container.register('sofa:belongs-to-loaded', BelongsToLoaded, { instantiate: false });
 
     container.register('sofa:transform/noop', NoopTransform, { instantiate: false });
     container.register('sofa:transform/string', StringTransform, { instantiate: false });

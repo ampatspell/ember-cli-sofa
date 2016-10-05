@@ -1,10 +1,10 @@
-import Ember from 'ember';
+// import Ember from 'ember';
 import { module, test, createStore, registerModels, cleanup } from '../helpers/setup';
 import { Model, prefix, belongsTo } from 'sofa';
 
-const {
-  RSVP: { all }
-} = Ember;
+// const {
+//   RSVP: { all }
+// } = Ember;
 
 let store;
 let db;
@@ -45,9 +45,15 @@ module('belongs-to-loaded', () => {
   return cleanup(store, [ 'main' ]);
 });
 
-test.skip('belongsTo with query returns proxy', assert => {
+test('belongsTo returns proxy', assert => {
   let duck = db.model('duck', { id: 'yellow' });
   assert.ok(duck.get('house'));
+});
+
+test('belongsTo returns proxy with content', assert => {
+  let house = db.model('house', { id: 'big' });
+  let duck = db.model('duck', { id: 'yellow', house });
+  assert.ok(duck.get('house.content') === house);
 });
 
 // test.only('load', assert => {
