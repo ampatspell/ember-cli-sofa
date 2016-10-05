@@ -16,6 +16,9 @@ const Transform = createTransform({
 
 export default Ember.ArrayProxy.extend(Transform, {
 
-  _relation: null
+  _relation: null,
+
+  // TODO: isLoading, isError, error
+  // don't include isLoaded as for this one that doesn't make sense
 
 });
