@@ -12,6 +12,10 @@ export default class Relationship extends Property {
     super(merge({ relationshipModelName }, opts));
   }
 
+  get relationshipModelName() {
+    return this.opts.relationshipModelName;
+  }
+
   get relationshipModelClass() {
     let modelClass = this.opts.relationshipModelClass;
     if(!modelClass) {
@@ -28,6 +32,13 @@ export default class Relationship extends Property {
       this.setInternalValue(internal, relation, K);
     }
     return relation;
+  }
+
+  createQuery(relation) {
+    let queryModelName = this.opts.query;
+    let Query = this.store._queryClassForName(queryModelName, relation);
+    // TODO: _relation might not be the best idea. Queries should also work in root collections
+    return Query._create({ _relation: relation });
   }
 
   _getValue(internal) {

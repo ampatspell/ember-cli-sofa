@@ -60,6 +60,10 @@ export default class HasManyRelation extends Relation {
     internal.addObserver(this);
   }
 
+  get isMany() {
+    return true;
+  }
+
   get lazyLoadEnabled() {
     return this.internal.lazyLoadEnabled;
   }

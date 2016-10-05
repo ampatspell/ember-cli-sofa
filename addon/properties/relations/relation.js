@@ -14,12 +14,29 @@ export default class Relation {
     this.value = null;
   }
 
+  get relationshipModelName() {
+    return this.relationship.relationshipModelName;
+  }
+
   get relationshipModelClass() {
     return this.relationship.relationshipModelClass;
   }
 
   get database() {
     return this.internal.database;
+  }
+
+  createQuery() {
+    return this.relationship.createQuery(this);
+  }
+
+  getQuery() {
+    let query = this.query;
+    if(!query) {
+      query = this.createQuery();
+      this.query = query;
+    }
+    return query;
   }
 
   getInverseRelation(internal) {

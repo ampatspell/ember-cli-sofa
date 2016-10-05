@@ -1,13 +1,22 @@
 import Ember from 'ember';
-import { module, test, createStore, registerModels, cleanup } from '../helpers/setup';
-import { Model, prefix, belongsTo } from 'sofa';
+import { module, test, createStore, registerModels, registerQueries, cleanup } from '../helpers/setup';
+import { Query, Model, prefix, belongsTo } from 'sofa';
 
 const {
-  RSVP: { all }
+  RSVP: { all },
+  computed
 } = Ember;
 
 let store;
 let db;
+
+let Big = Query.extend({
+
+  find: computed(function() {
+    return { selector: { _id: 'house:big' } };
+  }),
+
+});
 
 let Duck = Model.extend({
   id: prefix(),
@@ -27,6 +36,7 @@ function flush() {
 
 module('belongs-to-loaded', () => {
   registerModels({ Duck, House });
+  registerQueries({ Big });
   flush();
   return cleanup(store, [ 'main' ]);
 });
@@ -42,7 +52,7 @@ test('belongsTo returns proxy with content', assert => {
   assert.ok(duck.get('house.content') === house);
 });
 
-test('load by using promise property', assert => {
+test.only('load by using promise property', assert => {
   let duck = db.model('duck', { id: 'yellow' });
   let house = db.model('house', { id: 'big', duck });
   return all([ duck, house ].map(model => model.save())).then(() => {

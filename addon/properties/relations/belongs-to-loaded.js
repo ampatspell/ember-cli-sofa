@@ -16,16 +16,9 @@ export default class BelongsToLoadedRelation extends BelongsToProxiedRelation {
     return owner.lookup('sofa:belongs-to-loaded').create({ _relation });
   }
 
-  createLoadInternalModelPromise() {
-    // TODO: replace with Query
-    let id = this.relationship.opts.query;
-    let modelName = this.relationship.opts.relationshipModelName;
-    let database = this.internal.database;
-    return database._internalModelFirst({ model: modelName, id });
-  }
-
   createLoadPromise() {
-    return this.createLoadInternalModelPromise().then(internal => {
+    let query = this.getQuery();
+    return query._find().then(internal => {
       this.withPropertyChanges(changed => {
         this.setContent(internal, changed);
       });
