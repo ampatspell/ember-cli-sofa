@@ -9,20 +9,6 @@ const {
 let store;
 let db;
 
-/*
-
-// queries/duck-house.js
-export default Query.extend({
-
-  find: computed('parent.id', function() {
-    let docId = this.get('parent.docId');
-    return { selector: { _id: docId } };
-  }),
-
-});
-
-*/
-
 let Duck = Model.extend({
   id: prefix(),
   house: belongsTo('house', { inverse: 'duck', persist: false, query: 'big' })
