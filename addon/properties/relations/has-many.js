@@ -21,10 +21,9 @@ const getDiff = (curr, next) => {
 
 class ArrayWrapper {
 
-  constructor(array, fn, name) {
+  constructor(array, fn) {
     this.array = array;
     this.fn = fn;
-    this.name = name;
   }
 
   _array(array) {
@@ -72,6 +71,7 @@ export default class HasManyRelation extends Relation {
       return;
     }
     this.getWrappedContent().removeObject(internal);
+    internal.removeObserver(this);
     this.dirty();
   }
 
@@ -79,6 +79,7 @@ export default class HasManyRelation extends Relation {
     if(this.isValueChanging) {
       return;
     }
+    internal.addObserver(this);
     this.getWrappedContent().addObject(internal);
     this.dirty();
   }
@@ -86,6 +87,7 @@ export default class HasManyRelation extends Relation {
   inverseDeleted(internal) {
     this.ignoreValueChanges = true;
     this.getWrappedContent().removeObject(internal);
+    internal.removeObserver(this);
     this.dirty();
     this.ignoreValueChanges = false;
   }
@@ -93,10 +95,10 @@ export default class HasManyRelation extends Relation {
   getWrappedContent() {
     let value = this.value;
     if(value) {
-      return new ArrayWrapper(value, internal => internal.getModel(), 'proxy');
+      return new ArrayWrapper(value, internal => internal.getModel());
     }
     let content = this.getContent();
-    return new ArrayWrapper(content, internal => internal, 'internal');
+    return new ArrayWrapper(content, internal => internal);
   }
 
   getContent() {
