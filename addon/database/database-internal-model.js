@@ -3,8 +3,20 @@ import Error, { Errors } from '../util/error';
 
 const {
   merge,
-  RSVP: { resolve, reject, allSettled }
+  RSVP: { resolve, reject, allSettled },
+  assert
 } = Ember;
+
+const chunkArray = (array, size) => {
+  assert(`size must be more than zero`, size > 0);
+  let result = Ember.A();
+  for(let i = 0; i < array.length; i += size) {
+    result.push(Ember.A(array.slice(i, i + size)));
+  }
+  return result;
+}
+
+window.chunkArray = chunkArray;
 
 export default Ember.Mixin.create({
 
@@ -197,7 +209,16 @@ export default Ember.Mixin.create({
   _reloadInternalModels(array) {
     let documents = this.get('documents');
     let ids = Ember.A(array.map(internal => internal.docId));
-    // TODO: needs multiple requests if array contains more than 300(?) ids
+
+    // TODO: chunk array in 300 ids per request
+    // let size = 1;
+    // let chunks = chunkArray(array, size);
+    // return allSettled(chunks.map(chunk => {
+    //   return documents.all({ include_docs: true, keys: chunk.map(internal => internal.docId) });
+    // })).then(blocks => {
+    // }).then(hash => {
+    // });
+
     return documents.all({ include_docs: true, keys: ids }).then(json => {
       let rows = json.rows;
       return allSettled(array.map((internal, idx) => {
