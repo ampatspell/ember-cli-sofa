@@ -1,39 +1,11 @@
 import Ember from 'ember';
-import createTransform from './util/array-transform-mixin';
+import Transform from './util/internal-model-to-model-transform';
+import createRelationLoaderStateMixin from './util/create-relation-loader-state-mixin';
 
-const {
-  computed
-} = Ember;
+let RelationLoaderState = createRelationLoaderStateMixin({ hasPromise: false });
 
-const Transform = createTransform({
-  internal(model) {
-    return this._relation.internalModelFromModel(model);
-  },
-  public(internal) {
-    return this._relation.modelFromInternalModel(internal);
-  }
-});
+export default Ember.ArrayProxy.extend(Transform, RelationLoaderState, {
 
-const state = () => {
-  return computed(function() {
-    return this._relation.loader.getState();
-  }).readOnly();
-};
-
-const stateProperty = (name) => {
-  return computed('state', function() {
-    return this.get('state')[name];
-  }).readOnly();
-};
-
-export default Ember.ArrayProxy.extend(Transform, {
-
-  _relation: null,
-
-  state:     state(),
-
-  isLoading: stateProperty('isLoading'),
-  isError:   stateProperty('isError'),
-  error:     stateProperty('error')
+  _relation: null
 
 });

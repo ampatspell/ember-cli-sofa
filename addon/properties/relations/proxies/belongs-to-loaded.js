@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import createRelationLoaderStateMixin from './util/create-relation-loader-state-mixin';
 
 const {
   computed
@@ -15,36 +16,12 @@ const content = () => {
   });
 };
 
-const promise = () => {
-  return computed(function() {
-    return this._relation.loader.getPromise();
-  }).readOnly();
-};
+const RelationLoaderState = createRelationLoaderStateMixin({ hasPromise: true });
 
-const state = () => {
-  return computed(function() {
-    return this._relation.loader.getState();
-  }).readOnly();
-};
-
-const stateProperty = (name) => {
-  return computed('state', function() {
-    return this.get('state')[name];
-  }).readOnly();
-};
-
-export default Ember.ObjectProxy.extend({
+export default Ember.ObjectProxy.extend(RelationLoaderState, {
 
   _relation: null,
 
-  content: content(),
-
-  promise: promise(),
-  state: state(),
-
-  isLoading: stateProperty('isLoading'),
-  isLoaded:  stateProperty('isLoaded'),
-  isError:   stateProperty('isError'),
-  error:     stateProperty('error')
+  content: content()
 
 });
