@@ -14,9 +14,8 @@ let db;
 let Big = Query.extend({
 
   find: computed('model.houseDocId', function() {
-    let opts = { selector: { _id: this.get('model.houseDocId') } };
-    console.log(opts);
-    return opts;
+    let _id = this.get('model.houseDocId');
+    return { selector: { _id } };
   }),
 
 });

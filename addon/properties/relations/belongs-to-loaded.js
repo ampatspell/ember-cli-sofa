@@ -32,8 +32,13 @@ export default class BelongsToLoadedRelation extends BelongsToProxiedRelation {
     return owner.lookup('sofa:belongs-to-loaded').create({ _relation });
   }
 
-  setLoadState(state) {
-    // TODO: extract internal.withPropertyChanges.any
+  createQuery() {
+    return this.relationship.createQuery(this, 'relation-first', Query => {
+      return Query.extend(RelationQueryMixin, RelationFirstQueryMixin);
+    });
+  }
+
+  setLoadState(state, notify=true) {
     for(let key in this.load.state) {
       if(!state.hasOwnProperty(key)) {
         state[key] = this.load.state[key];
@@ -41,15 +46,9 @@ export default class BelongsToLoadedRelation extends BelongsToProxiedRelation {
     }
     this.load.state = state;
     let value = this.value;
-    if(value) {
+    if(value && notify) {
       value.notifyPropertyChange('state');
     }
-  }
-
-  createQuery() {
-    return this.relationship.createQuery(this, 'relation-first', Query => {
-      return Query.extend(RelationQueryMixin, RelationFirstQueryMixin);
-    });
   }
 
   queryNeedsReload() {
@@ -58,14 +57,14 @@ export default class BelongsToLoadedRelation extends BelongsToProxiedRelation {
     value.notifyPropertyChange('promise');
   }
 
-  createLoadPromise() {
+  createLoadPromise(notifyInitialStateChange=true) {
     let query = this.getQuery();
 
     this.setLoadState({
       isLoading: true,
       isError: false,
       error: null
-    });
+    }, notifyInitialStateChange);
 
     return query._find().then(internal => {
       this.withPropertyChanges(changed => {
@@ -88,14 +87,14 @@ export default class BelongsToLoadedRelation extends BelongsToProxiedRelation {
     });
   }
 
-  getLoadPromise() {
+  getLoadPromise(notifyInitialStateChange=true) {
     let promise = this.load.promise;
     if(!promise) {
       if(this.content && !this.load.needsReload) {
         return resolve(this.getValue());
       }
       this.load.needsReload = false;
-      promise = this.createLoadPromise().finally(() => {
+      promise = this.createLoadPromise(notifyInitialStateChange).finally(() => {
         this.load.promise = null;
       });
       this.load.promise = promise;
@@ -104,7 +103,7 @@ export default class BelongsToLoadedRelation extends BelongsToProxiedRelation {
   }
 
   getLoadState() {
-    this.getLoadPromise();
+    this.getLoadPromise(false);
     return this.load.state;
   }
 
