@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import createRelationLoaderStateMixin from './util/create-relation-loader-state-mixin';
+import { LoadableRelationLoaderStateMixin } from './util/relation-loader-state-mixin';
 
 const {
   computed
@@ -16,9 +16,7 @@ const content = () => {
   });
 };
 
-const RelationLoaderState = createRelationLoaderStateMixin({ hasPromise: true });
-
-export default Ember.ObjectProxy.extend(RelationLoaderState, {
+export default Ember.ObjectProxy.extend(LoadableRelationLoaderStateMixin, {
 
   _relation: null,
 

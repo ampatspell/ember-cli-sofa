@@ -1,10 +1,8 @@
 import Ember from 'ember';
 import Transform from './util/internal-model-to-model-transform';
-import createRelationLoaderStateMixin from './util/create-relation-loader-state-mixin';
+import { PassiveRelationLoaderStateMixin } from './util/relation-loader-state-mixin';
 
-let RelationLoaderState = createRelationLoaderStateMixin({ hasPromise: false });
-
-export default Ember.ArrayProxy.extend(Transform, RelationLoaderState, {
+export default Ember.ArrayProxy.extend(Transform, PassiveRelationLoaderStateMixin, {
 
   _relation: null
 
