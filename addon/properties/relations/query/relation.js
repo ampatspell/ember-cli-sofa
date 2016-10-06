@@ -42,7 +42,7 @@ export default Ember.Mixin.create({
     return this._invokeFind(database, opts);
   },
 
-  isLoadable: computed('model.isNew', function() {
+  _isLoadable: computed('model.isNew', function() {
     let model = this.get('model');
     if(model.get('isNew')) {
       return false;
@@ -50,9 +50,9 @@ export default Ember.Mixin.create({
     return true;
   }),
 
-  _observePropertyChanges: observer('find', 'isLoadable', function() {
+  _observePropertyChanges: observer('find', '_isLoadable', function() {
     cancel(this.__propertyChanges);
-    if(!this.get('isLoadable')) {
+    if(!this.get('_isLoadable')) {
       return;
     }
     this.__propertyChanges = next(() => {

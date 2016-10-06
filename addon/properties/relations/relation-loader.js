@@ -83,7 +83,7 @@ export default class RelationLoader {
       return false;
     }
     let query = this.getQuery();
-    if(!query.get('isLoadable')) {
+    if(!query.get('_isLoadable')) {
       return false;
     }
     return true;
