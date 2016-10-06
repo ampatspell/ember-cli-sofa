@@ -7,8 +7,8 @@
 * support cross-database model loads (`{ user: { database: 'users', _id: 'user:ampatspell' } }`
 * embedded models (persisted as a `{ key: { model } }`)
 * abstract Couch, have also PouchDB
-* database session
 * database permissions
 * couch mango indexes
+* sofa:security
 * couch changes listener
 * database changes -> push
