@@ -4,7 +4,8 @@ import { Query, Model, prefix, belongsTo, hasMany } from 'sofa';
 // import { next } from 'sofa/util/run';
 
 const {
-  computed
+  computed,
+  RSVP: { all }
 } = Ember;
 
 let store;
@@ -21,7 +22,6 @@ let HouseDucks = Query.extend({
 
 let Duck = Model.extend({
   id: prefix(),
-  houseDocId: 'house:big',
   house: belongsTo('house', { inverse: 'ducks' })
 });
 
@@ -47,4 +47,35 @@ test('hasMany returns proxy', assert => {
   let house = db.model('house', { id: 'big' });
   let ducks = house.get('ducks');
   assert.ok(ducks);
+  assert.ok(ducks.get('promise'));
+  return ducks.get('promise').then(proxy => {
+    assert.ok(ducks === proxy);
+  });
+});
+
+test('has many loads', assert => {
+  let house = db.model('house', { id: 'big' });
+  let ducks = [ 'yellow', 'green', 'red' ].map(id => db.model('duck', { id, house }));
+  return all([ house.save(), all(ducks.map(duck => duck.save())) ]).then(() => {
+    flush();
+    return db.load('house', 'big');
+  }).then(house_ => {
+    house = house_;
+    assert.deepEqual(house.get('ducks.state'), {
+      "error": null,
+      "isError": false,
+      "isLoaded": false,
+      "isLoading": true
+    });
+    return house.get('ducks.promise');
+  }).then(ducks => {
+    assert.ok(ducks);
+    assert.deepEqual(ducks.mapBy('id'), [ "green", "red", "yellow" ]);
+    assert.deepEqual(ducks.get('state'), {
+      "error": false,
+      "isError": false,
+      "isLoaded": true,
+      "isLoading": false
+    });
+  });
 });

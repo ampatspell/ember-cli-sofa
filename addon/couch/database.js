@@ -8,7 +8,8 @@ const {
   assert,
   merge,
   typeOf,
-  RSVP: { resolve, reject, all }
+  RSVP: { resolve, reject, all },
+  Logger: { warn }
 } = Ember;
 
 function stringifyUnlessEmpty(value) {
@@ -215,6 +216,11 @@ export default Ember.Object.extend({
         fields:    opts.fields,
         use_index: opts.use_index
       }
+    }).then(results => {
+      if(results.warning) {
+        warn('CouchDB mango query:', results.warning, opts);
+      }
+      return results;
     }).then(null, null, 'sofa:database mango');
   }
 

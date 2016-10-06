@@ -4,7 +4,7 @@ function throttle(db) {
   let documents = db.get('documents');
   let request = documents.request;
   documents.request = (...args) => {
-    return later(1000).then(() => {
+    return later(200).then(() => {
       return request.call(documents, ...args);
     });
   };
