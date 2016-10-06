@@ -24,7 +24,7 @@ const stateProperty = (name) => {
   return computed('state', function() {
     return this.get('state')[name];
   }).readOnly();
-}
+};
 
 export default Ember.ArrayProxy.extend(Transform, {
 
@@ -34,6 +34,6 @@ export default Ember.ArrayProxy.extend(Transform, {
 
   isLoading: stateProperty('isLoading'),
   isError:   stateProperty('isError'),
-  error:     stateProperty('error'),
+  error:     stateProperty('error')
 
 });

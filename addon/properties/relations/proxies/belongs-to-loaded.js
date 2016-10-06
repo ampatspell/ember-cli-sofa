@@ -31,7 +31,7 @@ const stateProperty = (name) => {
   return computed('state', function() {
     return this.get('state')[name];
   }).readOnly();
-}
+};
 
 export default Ember.ObjectProxy.extend({
 
@@ -45,6 +45,6 @@ export default Ember.ObjectProxy.extend({
   isLoading: stateProperty('isLoading'),
   isLoaded:  stateProperty('isLoaded'),
   isError:   stateProperty('isError'),
-  error:     stateProperty('error'),
+  error:     stateProperty('error')
 
 });
