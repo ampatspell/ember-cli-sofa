@@ -8,6 +8,14 @@
     {{author.email}}
   {{/ui-row}}
 
+  {{#ui-row title='Posts'}}
+    {{#each author.posts as |post|}}
+      <div>{{post.id}} {{post.title}}</div>
+    {{else}}
+      {{ui-button title='Load' action=(action 'loadPosts')}}
+    {{/each}}
+  {{/ui-row}}
+
   {{#ui-row title='Blogs'}}
     {{#if author.blogs.isLoading}}
       <div>Loading array…</div>

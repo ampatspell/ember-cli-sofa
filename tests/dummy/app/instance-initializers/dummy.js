@@ -24,11 +24,20 @@ export default {
     window.store = store;
     window.db = main;
     window.log = console.log.bind(console);
+
     window.set = (key) => {
       return function(arg) {
         window[key] = arg;
         console.log(key, '=', arg+'');
       };
     };
+
+    window.createPosts = (authorId) => {
+      let author = main.existing('author', authorId);
+      for(let i = 0; i < 25; i++) {
+        let post = main.model('post', { author, title: `Post #${i}` });
+        post.save();
+      }
+    }
   }
 };
