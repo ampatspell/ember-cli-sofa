@@ -4,6 +4,7 @@ import wrap from './util/file';
 import { isFileOrBlob, hasToBase64, toBase64 } from './util/file-availability';
 
 const {
+  getOwner,
   computed,
   assert,
   merge,
@@ -12,18 +13,26 @@ const {
   Logger: { warn }
 } = Ember;
 
-function stringifyUnlessEmpty(value) {
+const stringifyUnlessEmpty = value => {
   let type = typeOf(value);
   if(type === 'null' || type === 'undefined') {
     return;
   }
   return JSON.stringify(value);
-}
+};
+
+const security = () => {
+  return computed(function() {
+    return getOwner(this).lookup('couch:security').create({ database: this });
+  }).readOnly();
+};
 
 export default Ember.Object.extend({
 
   couch: null,
   name: null,
+
+  security: security(),
 
   url: computed('couch.url', 'name', function() {
     let url = this.get('couch.url');
