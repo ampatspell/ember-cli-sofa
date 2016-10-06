@@ -1,4 +1,5 @@
 import { later } from 'sofa/util/run';
+import Mixin from 'sofa/util/basic-state-mixin';
 
 function throttle(db) {
   let documents = db.get('documents');
@@ -9,6 +10,13 @@ function throttle(db) {
     });
   };
 }
+
+const Thing = Ember.Object.extend(Mixin, {
+
+});
+
+let thing = Thing.create();
+window.thing = thing;
 
 export default {
   name: 'dummy:develop',
