@@ -16,7 +16,7 @@ export default class HasManyPersistedRelation extends HasManyRelation {
 
   didAddInternalModel() {
     super.didAddInternalModel(...arguments);
-    this.loader.setNeedsReload();
+    this.loader.setNeedsLoad();
   }
 
   modelFromInternalModel(internal) {
