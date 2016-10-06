@@ -104,6 +104,8 @@ export function createStore() {
       let url = '/api';
       if(identifier === 'main') {
         return { url, name: 'ember-cli-sofa-test-main' };
+      } else if(identifier === 'second') {
+        return { url, name: 'ember-cli-sofa-test-second' };
       }
     }
   });

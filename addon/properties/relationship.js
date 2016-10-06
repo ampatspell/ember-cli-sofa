@@ -28,6 +28,14 @@ export default class Relationship extends Property {
     return modelClass;
   }
 
+  getRelationshipDatabase(internal) {
+    let identifier = this.opts.database;
+    if(identifier) {
+      return this.store.database(identifier);
+    }
+    return internal.database;
+  }
+
   getRelation(internal) {
     let relation = this.getInternalValue(internal);
     if(!relation) {
@@ -53,9 +61,9 @@ export default class Relationship extends Property {
     return relation.setValue(value, changed);
   }
 
-  _serialize(internal, doc) {
+  _serialize(internal, doc, preview) {
     let relation = this.getRelation(internal);
-    let value = relation.serialize();
+    let value = relation.serialize(preview);
     if(value !== undefined) {
       this.setDocValue(doc, value);
     }

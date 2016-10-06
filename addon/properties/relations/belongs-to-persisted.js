@@ -2,8 +2,8 @@ import BelongsToRelation from './belongs-to';
 
 export default class BelongsToPersistedRelation extends BelongsToRelation {
 
-  serialize() {
-    return this.serializeInternalModelToDocId(this.getContent());
+  serialize(preview) {
+    return this.serializeInternalModelToDocId(this.getContent(), preview);
   }
 
   deserialize(value, changed) {

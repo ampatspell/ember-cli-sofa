@@ -26,10 +26,10 @@ export default class HasManyPersistedRelation extends HasManyRelation {
     return super.modelFromInternalModel(internal);
   }
 
-  serialize() {
+  serialize(preview) {
     let content = this.content;
     return Ember.A(content.map(internal => {
-      return this.serializeInternalModelToDocId(internal);
+      return this.serializeInternalModelToDocId(internal, preview);
     })).compact();
   }
 
