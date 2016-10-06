@@ -125,7 +125,7 @@ export function registerModels(hash) {
 export function login(db) {
   return db.get('documents.couch').request({
     method: 'post',
-    url: '/_session',
+    url: '_session',
     json: true,
     data: {
       name: 'ampatspell',
