@@ -7,7 +7,7 @@ const {
 
 export default Query.extend({
 
-  find: computed('model.docId', function() {
+  find: computed(function() {
     return { selector: { } };
   }),
 

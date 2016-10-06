@@ -1,26 +1,13 @@
-import Ember from 'ember';
 import BelongsToProxiedRelation from './belongs-to-proxied';
 import RelationQueryMixin from './query/relation';
 import RelationFirstQueryMixin from './query/relation-first';
-
-const {
-  RSVP: { resolve, reject }
-} = Ember;
+import RelationLoader from './relation-loader';
 
 export default class BelongsToLoadedRelation extends BelongsToProxiedRelation {
 
   constructor() {
     super(...arguments);
-    this.load = {
-      state: {
-        isLoading: false,
-        isLoaded: false,
-        isError: false,
-        error: null
-      },
-      needed: true,
-      promise: null,
-    };
+    this.loader = new RelationLoader(this);
   }
 
   get notifyPropertyChangeProxyPropertyNames() {
@@ -38,80 +25,14 @@ export default class BelongsToLoadedRelation extends BelongsToProxiedRelation {
     });
   }
 
-  setLoadState(state, notify=true) {
-    for(let key in this.load.state) {
-      if(!state.hasOwnProperty(key)) {
-        state[key] = this.load.state[key];
-      }
-    }
-    this.load.state = state;
-    let value = this.value;
-    if(value && notify) {
-      value.notifyPropertyChange('state');
-    }
-  }
-
-  queryNeedsReload() {
-    let value = this.value;
-    this.load.needed = true;
-    value.beginPropertyChanges();
-    value.notifyPropertyChange('promise');
-    value.notifyPropertyChange('content');
-    value.endPropertyChanges();
-  }
-
-  createLoadPromise(notifyInitialStateChange=true) {
-    let query = this.getQuery();
-
-    this.setLoadState({
-      isLoading: true,
-      isError: false,
-      error: null
-    }, notifyInitialStateChange);
-
-    return query._find().then(internal => {
-      this.withPropertyChanges(changed => {
-        this.setContent(internal, changed);
-      });
-      this.setLoadState({
-        isLoading: false,
-        isLoaded: true,
-        isError: false,
-        error: false
-      });
-      return this.getValue();
-    }, err => {
-      this.setLoadState({
-        isLoading: false,
-        isError: true,
-        error: err
-      });
-      return reject(err);
+  relationLoaderDidLoad(internal) {
+    this.withPropertyChanges(changed => {
+      this.setContent(internal, changed);
     });
   }
 
-  getLoadPromise(notifyInitialStateChange=true) {
-    let promise = this.load.promise;
-    if(!promise) {
-      if(!this.load.needed) {
-        return resolve(this.getValue());
-      }
-      this.load.needed = false;
-      promise = this.createLoadPromise(notifyInitialStateChange).finally(() => {
-        this.load.promise = null;
-      });
-      this.load.promise = promise;
-    }
-    return promise;
-  }
-
-  getLoadState() {
-    this.getLoadPromise(false);
-    return this.load.state;
-  }
-
   getModel() {
-    this.getLoadPromise();
+    this.loader.load();
     return super.getModel(...arguments);
   }
 

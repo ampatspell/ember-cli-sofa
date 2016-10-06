@@ -42,10 +42,21 @@ export default Ember.Mixin.create({
     return this._invokeFind(database, opts);
   },
 
-  _observeFindPropertyChanges: observer('find', function() {
-    cancel(this.__observeFind);
-    this.__observeFind = next(() => {
-      this._relation.queryNeedsReload();
+  isLoadable: computed('model.isNew', function() {
+    let model = this.get('model');
+    if(model.get('isNew')) {
+      return false;
+    }
+    return true;
+  }),
+
+  _observePropertyChanges: observer('find', 'isLoadable', function() {
+    cancel(this.__propertyChanges);
+    if(!this.get('isLoadable')) {
+      return;
+    }
+    this.__propertyChanges = next(() => {
+      this._relation.loader.setNeedsReload();
     });
   }),
 

@@ -18,13 +18,13 @@ const content = () => {
 
 const promise = () => {
   return computed(function() {
-    return this._relation.getLoadPromise();
+    return this._relation.loader.getPromise();
   }).readOnly();
 };
 
 const state = () => {
   return computed(function() {
-    return this._relation.getLoadState();
+    return this._relation.loader.getState();
   }).readOnly();
 };
 
