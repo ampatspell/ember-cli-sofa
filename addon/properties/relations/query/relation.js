@@ -33,7 +33,7 @@ export default Ember.Mixin.create({
 
   _find() {
     let relation = this._relation;
-    let database = relation.database;
+    let database = relation.relationshipDatabase;
     let model = relation.relationshipModelName;
 
     let opts = this.get('find');

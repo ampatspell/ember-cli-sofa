@@ -27,6 +27,10 @@ export default class Relation {
     return this.internal.database;
   }
 
+  get relationshipDatabase() {
+    return this.relationship.getRelationshipDatabase(this.internal);
+  }
+
   get store() {
     return this.internal.store;
   }
@@ -52,7 +56,7 @@ export default class Relation {
   }
 
   assertModelMatchesRelationshipDatabase(internal) {
-    let expected = this.relationship.getRelationshipDatabase(this.internal);
+    let expected = this.relationshipDatabase;
     let actual = internal.database;
     if(expected === actual) {
       return;
@@ -64,7 +68,7 @@ export default class Relation {
   }
 
   deserializeDocIdToInternalModel(docId) {
-    let internal = this.relationship.getRelationshipDatabase(this.internal)._deserializeDocIdToInternalModel(this.relationshipModelClass, docId);
+    let internal = this.relationshipDatabase._deserializeDocIdToInternalModel(this.relationshipModelClass, docId);
     if(internal.state.isDeleted) {
       return null;
     }
