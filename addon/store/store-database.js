@@ -16,7 +16,7 @@ const lookupWithStore = (name) => {
 
 export default Ember.Mixin.create({
 
-  _couches: lookup('couch:couches'),
+  _couches: lookup('sofa:couches'),
   _databases: object(),
 
   databaseOptionsForIdentifier(/*identifier*/) {
@@ -31,16 +31,20 @@ export default Ember.Mixin.create({
     return databaseOptions;
   },
 
-  _createCouchDatabase({ url, name }) {
-    let couch = this.get('_couches').couch({ url });
-    return couch.database(name);
+  _createCouch({ url }) {
+    return this.get('_couches').couch({ url });
+  },
+
+  _createDocuments(couch, { name }) {
+    return couch.get('documents').database(name);
   },
 
   _createDatabase(identifier) {
     let databaseOptions = this._databaseOptionsForIdentifier(identifier);
-    let documents = this._createCouchDatabase(databaseOptions);
+    let couch = this._createCouch(databaseOptions);
+    let documents = this._createDocuments(couch, databaseOptions);
     let store = this;
-    return getOwner(this).lookup('sofa:database').create({ store, identifier, documents });
+    return getOwner(this).lookup('sofa:database').create({ identifier, store, couch, documents });
   },
 
   database(identifier) {

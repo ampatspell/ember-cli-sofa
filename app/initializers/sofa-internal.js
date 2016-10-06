@@ -1,4 +1,6 @@
 import Store from 'sofa/store';
+import Couches from 'sofa/couches';
+import Couch from 'sofa/couch';
 import Databases from 'sofa/databases';
 import Database from 'sofa/database';
 
@@ -19,6 +21,8 @@ export default {
     container.registerOptionsForType('query', { instantiate: false });
 
     container.register('sofa:store', Store, { instantiate: false });
+    container.register('sofa:couches', Couches, { instantiate: false });
+    container.register('sofa:couch', Couch, { instantiate: false });
     container.register('sofa:databases', Databases, { instantiate: false });
     container.register('sofa:database', Database, { instantiate: false });
 

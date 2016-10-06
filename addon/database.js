@@ -17,8 +17,10 @@ export default Ember.Object.extend(
   DatabaseInternalModelIdentity,
   DatabaseInternalModel, {
 
-  store:      null,
   identifier: null,
-  documents:  null,
+
+  store:     null,
+  couch:     null,
+  documents: null,
 
 });
