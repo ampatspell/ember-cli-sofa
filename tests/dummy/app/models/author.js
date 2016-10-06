@@ -1,4 +1,4 @@
-import { Model, prefix, attr, hasMany } from 'sofa';
+import { Model, prefix, attr, hasMany, belongsTo } from 'sofa';
 
 export default Model.extend({
 
@@ -7,7 +7,9 @@ export default Model.extend({
   email: attr('string'),
 
   blogs: hasMany('blog', { inverse: 'authors' }),
-  posts: hasMany('post', { inverse: 'author' }),
+  posts: hasMany('post', { inverse: 'author', persist: false }),
+
+  post: belongsTo('post', { query: 'author-first-post' }),
 
   willCreate() {
     let name = this.get('name');
