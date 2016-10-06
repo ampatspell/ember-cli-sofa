@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import Relation from './relation';
 import { getInternalModel, internalModelDidChangeIsDeleted } from '../../internal-model';
-import enqueueLazyLoadIfNeeded from './has-many-lazy-load';
+import enqueueLazyLoadIfNeeded from './util/has-many-lazy-load';
 
 const {
   getOwner,
@@ -51,6 +51,7 @@ export default class HasManyRelation extends Relation {
 
   constructor(relationship, internal) {
     super(...arguments);
+    // TODO: implement in the same way as relation-loader
     this.lazyLoad = {
       needs: true,
       isLoading: false,

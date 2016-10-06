@@ -1,7 +1,7 @@
 import BelongsToProxiedRelation from './belongs-to-proxied';
 import RelationQueryMixin from './query/relation';
 import RelationFirstQueryMixin from './query/relation-first';
-import RelationLoader from './relation-loader';
+import RelationLoader from './util/relation-loader';
 
 export default class BelongsToLoadedRelation extends BelongsToProxiedRelation {
 

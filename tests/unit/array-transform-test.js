@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import { module, test } from '../helpers/setup';
-import transform from 'sofa/properties/relations/proxies/array-transform-mixin';
+import transform from 'sofa/properties/relations/proxies/util/array-transform-mixin';
 
 let Transform = transform({
   public(hash) {

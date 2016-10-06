@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import { Errors } from '../../util/error';
+import { Errors } from '../../../util/error';
 
 const {
   RSVP: { resolve, allSettled },
