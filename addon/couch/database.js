@@ -61,10 +61,7 @@ export default Ember.Object.extend({
   },
 
   info() {
-    return this.request({
-      type: 'get',
-      json: true
-    }).then(null, null, 'sofa:database info');
+    return this.get('database').info();
   },
 
   load(id, opts) {
