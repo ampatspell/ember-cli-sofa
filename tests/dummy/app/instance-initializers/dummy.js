@@ -38,6 +38,6 @@ export default {
         let post = main.model('post', { author, title: `Post #${i}` });
         post.save();
       }
-    }
+    };
   }
 };

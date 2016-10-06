@@ -4,20 +4,22 @@ import RelationQueryMixin from './query/relation';
 import RelationFirstQueryMixin from './query/relation-first';
 
 const {
-  RSVP: { resolve, reject },
-  merge
+  RSVP: { resolve, reject }
 } = Ember;
 
 export default class BelongsToLoadedRelation extends BelongsToProxiedRelation {
 
-  constructor(relationship, internal) {
+  constructor() {
     super(...arguments);
-    // TODO: maybe add this.load = { state, promise, ... }
-    this.loadState = {
-      isLoading: false,
-      isLoaded: false,
-      isError: false,
-      error: null
+    this.load = {
+      state: {
+        isLoading: false,
+        isLoaded: false,
+        isError: false,
+        error: null
+      },
+      needsReload: false,
+      promise: null,
     };
   }
 
@@ -30,14 +32,14 @@ export default class BelongsToLoadedRelation extends BelongsToProxiedRelation {
     return owner.lookup('sofa:belongs-to-loaded').create({ _relation });
   }
 
-  setState(state) {
+  setLoadState(state) {
     // TODO: extract internal.withPropertyChanges.any
-    for(let key in this.loadState) {
+    for(let key in this.load.state) {
       if(!state.hasOwnProperty(key)) {
-        state[key] = this.loadState[key];
+        state[key] = this.load.state[key];
       }
     }
-    this.loadState = state;
+    this.load.state = state;
     let value = this.value;
     if(value) {
       value.notifyPropertyChange('state');
@@ -52,14 +54,14 @@ export default class BelongsToLoadedRelation extends BelongsToProxiedRelation {
 
   queryNeedsReload() {
     let value = this.value;
-    this.needsReload = true;
+    this.load.needsReload = true;
     value.notifyPropertyChange('promise');
   }
 
   createLoadPromise() {
     let query = this.getQuery();
 
-    this.setState({
+    this.setLoadState({
       isLoading: true,
       isError: false,
       error: null
@@ -69,7 +71,7 @@ export default class BelongsToLoadedRelation extends BelongsToProxiedRelation {
       this.withPropertyChanges(changed => {
         this.setContent(internal, changed);
       });
-      this.setState({
+      this.setLoadState({
         isLoading: false,
         isLoaded: true,
         isError: false,
@@ -77,26 +79,26 @@ export default class BelongsToLoadedRelation extends BelongsToProxiedRelation {
       });
       return this.getValue();
     }, err => {
-      this.setState({
+      this.setLoadState({
         isLoading: false,
         isError: true,
         error: err
       });
       return reject(err);
-    })
+    });
   }
 
   getLoadPromise() {
-    let promise = this.loadPromise;
+    let promise = this.load.promise;
     if(!promise) {
-      if(this.content && !this.needsReload) {
+      if(this.content && !this.load.needsReload) {
         return resolve(this.getValue());
       }
-      this.needsReload = false;
+      this.load.needsReload = false;
       promise = this.createLoadPromise().finally(() => {
-        this.loadPromise = null;
+        this.load.promise = null;
       });
-      this.loadPromise = promise;
+      this.load.promise = promise;
     }
     return promise;
   }

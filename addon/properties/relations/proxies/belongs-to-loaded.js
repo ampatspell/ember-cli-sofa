@@ -24,9 +24,9 @@ const promise = () => {
 
 const state = () => {
   return computed(function() {
-    return this._relation.loadState;
+    return this._relation.load.state;
   }).readOnly();
-}
+};
 
 export default Ember.ObjectProxy.extend({
 
