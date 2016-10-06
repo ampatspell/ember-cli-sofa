@@ -5,6 +5,8 @@ import startApp from './start-app';
 import extendAssert from './extend-assert';
 import params from './params';
 
+import globalOptions from 'sofa/util/global-options';
+
 const {
   RSVP: { Promise, resolve, all },
   Logger: { error },
@@ -17,9 +19,15 @@ let app;
 let container;
 let stores = [];
 
+function setupGlobalOptions() {
+  globalOptions.autoload.internalModel = false;
+  globalOptions.autoload.persistedArray = false;
+}
+
 export function module(name, cb) {
   qmodule(name, {
     beforeEach: function(assert) {
+      setupGlobalOptions();
       let done = assert.async();
       app = startApp();
       container = app.__container__;

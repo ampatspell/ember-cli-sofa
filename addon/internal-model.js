@@ -3,6 +3,7 @@ import EmptyObject from './util/empty-object';
 import { assert } from './util/assert';
 import { getDefinition } from './model';
 import Relationship from './properties/relationship';
+import globalOptions from './util/global-options';
 
 const {
   Logger: { error }
@@ -266,6 +267,9 @@ export default class InternalModel {
   }
 
   shouldLazyLoad(checkForExistingLoad) {
+    if(!globalOptions.autoload.internalModel) {
+      return;
+    }
     if(checkForExistingLoad && this.loadPromise) {
       return;
     }

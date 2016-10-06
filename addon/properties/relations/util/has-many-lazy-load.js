@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import { Errors } from '../../../util/error';
+import globalOptions from '../../../util/global-options';
 
 const {
   RSVP: { resolve, allSettled },
@@ -67,6 +68,10 @@ function collectErrors(results) {
 
 export default function(relation) {
   let state = relation.lazyLoad;
+
+  if(!globalOptions.autoload.persistedArray) {
+    return state;
+  }
 
   if(!state.needs) {
     return state;
