@@ -28,7 +28,18 @@ export default Ember.Object.extend({
   url: computed('couch.url', 'name', function() {
     let url = this.get('couch.url');
     let name = this.get('name');
-    return `${url}/${name}`;
+
+    let components = [];
+    if(url) {
+      if(url.endsWith('/')) {
+        url = url.substring(0, url.length - 1);
+      }
+      components.push(url);
+    }
+    if(name) {
+      components.push(name);
+    }
+    return components.join('/');
   }).readOnly(),
 
   request(opts) {

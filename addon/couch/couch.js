@@ -8,9 +8,24 @@ const {
   typeOf
 } = Ember;
 
+const normalizedUrl = function() {
+  return computed('url', function() {
+    let url = this.get('url');
+    if(!url) {
+      return url;
+    }
+    if(!url.endsWith('/')) {
+      url = `${url}/`;
+    }
+    return url;
+  }).readOnly();
+};
+
 export default Ember.Object.extend({
 
   url: null,
+  normalizedUrl: normalizedUrl(),
+
   openDatabases: object(),
 
   _request: computed(function() {
@@ -18,10 +33,10 @@ export default Ember.Object.extend({
   }).readOnly(),
 
   request(opts) {
-    let url = this.get("url");
+    let url = this.get("normalizedUrl");
     assert("Extend sofa Store and set url property", typeOf(url) !== 'null');
     opts = opts || {};
-    opts.url = opts.url ? [url, opts.url].join('/') : url;
+    opts.url = opts.url ? [url, opts.url].join('') : url;
     return this.get('_request').send(opts);
   },
 
