@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import InternalModel, { getInternalModel } from '../../internal-model';
 import Model from '../../model';
+import Error from '../../util/error';
 
 const {
   assert
@@ -50,17 +51,32 @@ export default class Relation {
     return internal.getRelation(key);
   }
 
+  assertModelMatchesRelationshipDatabase(internal) {
+    let expected = this.relationship.getRelationshipDatabase(this.internal);
+    let actual = internal.database;
+    if(expected === actual) {
+      return;
+    }
+    throw new Error({
+      error: 'invalid_relationship',
+      reason: `${this.internal.modelName} '${this.internal.docId}' relationship '${this.relationship.name}': ${internal.modelName} '${internal.docId}' is expected to be saved in '${expected.get('identifier')}' database, not in '${actual.get('identifier')}'`
+    });
+  }
+
   deserializeDocIdToInternalModel(docId) {
-    let internal = this.database._deserializeDocIdToInternalModel(this.relationshipModelClass, docId);
+    let internal = this.relationship.getRelationshipDatabase(this.internal)._deserializeDocIdToInternalModel(this.relationshipModelClass, docId);
     if(internal.state.isDeleted) {
       return null;
     }
     return internal;
   }
 
-  serializeInternalModelToDocId(internal) {
+  serializeInternalModelToDocId(internal, preview) {
     if(!internal) {
       return null;
+    }
+    if(!preview) {
+      this.assertModelMatchesRelationshipDatabase(internal);
     }
     if(internal.state.isDeleted) {
       return null;
