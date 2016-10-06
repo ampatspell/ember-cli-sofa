@@ -21,9 +21,9 @@ const stringifyUnlessEmpty = value => {
   return JSON.stringify(value);
 };
 
-const security = () => {
+const lookup = name => {
   return computed(function() {
-    return getOwner(this).lookup('couch:security').create({ database: this });
+    return getOwner(this).lookup(name).create({ database: this });
   }).readOnly();
 };
 
@@ -32,7 +32,8 @@ export default Ember.Object.extend({
   couch: null,
   name: null,
 
-  security: security(),
+  security: lookup('couch:security'),
+  design: lookup('couch:design'),
 
   url: computed('couch.url', 'name', function() {
     let url = this.get('couch.url');

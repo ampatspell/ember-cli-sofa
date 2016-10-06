@@ -8,7 +8,7 @@
 * embedded models (persisted as a `{ key: { model } }`)
 * abstract Couch, have also PouchDB
 * couch database create/drop/recreate
-* couch design documents
+* couch mango indexes
 * couch changes listener
 * database session
 * database permissions
