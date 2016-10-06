@@ -4,7 +4,6 @@ const {
   merge,
   typeOf,
   isArray,
-  copy,
   RSVP: { reject }
 } = Ember;
 

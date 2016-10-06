@@ -6,6 +6,7 @@ import Databases from 'sofa/couch/databases';
 import Database from 'sofa/couch/database';
 import Security from 'sofa/couch/database/security';
 import Design from 'sofa/couch/database/design';
+import DatabaseDatabase from 'sofa/couch/database/database';
 
 export default {
   name: 'sofa:couch',
@@ -16,7 +17,8 @@ export default {
     container.register('couch:session', Session, { instantiate: false });
     container.register('couch:databases', Databases, { instantiate: false });
     container.register('couch:database', Database, { instantiate: false });
-    container.register('couch:security', Security, { instantiate: false });
-    container.register('couch:design', Design, { instantiate: false });
+    container.register('couch:database-database', DatabaseDatabase, { instantiate: false });
+    container.register('couch:database-security', Security, { instantiate: false });
+    container.register('couch:database-design', Design, { instantiate: false });
   }
 };

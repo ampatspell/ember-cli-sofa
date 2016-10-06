@@ -1,6 +1,6 @@
 /* global emit */
 import Ember from 'ember';
-import { module, test, createStore, cleanup, logout, login } from '../helpers/setup';
+import { module, test, createStore, cleanup } from '../helpers/setup';
 
 const {
   copy

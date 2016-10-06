@@ -146,6 +146,8 @@ export function logout(db) {
 export function recreate(db) {
   let docs = db.get('documents');
   return login(db).then(() => {
+    return docs.get('database').create({ optional: true });
+  }).then(() => {
     return docs.all();
   }).then(json => {
     return all(json.rows.map(row => {

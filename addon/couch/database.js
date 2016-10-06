@@ -32,8 +32,9 @@ export default Ember.Object.extend({
   couch: null,
   name: null,
 
-  security: lookup('couch:security'),
-  design: lookup('couch:design'),
+  security: lookup('couch:database-security'),
+  design:   lookup('couch:database-design'),
+  database: lookup('couch:database-database'),
 
   url: computed('couch.url', 'name', function() {
     let url = this.get('couch.url');
