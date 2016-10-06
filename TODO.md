@@ -1,6 +1,5 @@
 # TODO
 
-* belongsTo loaded
 * hasMany loaded
 * root collections
 * model attachments

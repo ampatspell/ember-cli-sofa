@@ -1,5 +1,10 @@
+import Ember from 'ember';
 import InternalModel, { getInternalModel } from '../../internal-model';
 import Model from '../../model';
+
+const {
+  assert
+} = Ember;
 
 export default class Relation {
 
@@ -9,12 +14,29 @@ export default class Relation {
     this.value = null;
   }
 
+  get relationshipModelName() {
+    return this.relationship.relationshipModelName;
+  }
+
   get relationshipModelClass() {
     return this.relationship.relationshipModelClass;
   }
 
   get database() {
     return this.internal.database;
+  }
+
+  get store() {
+    return this.internal.store;
+  }
+
+  getQuery() {
+    let query = this.query;
+    if(!query) {
+      query = this.createQuery();
+      this.query = query;
+    }
+    return query;
   }
 
   getInverseRelation(internal) {
@@ -51,6 +73,10 @@ export default class Relation {
     if(object instanceof InternalModel) {
       return object;
     }
+    if(Ember.ObjectProxy.detectInstance(object)) {
+      object = object.get('content');
+    }
+    assert(`ObjectProxy.content is ObjectProxy`, !Ember.ObjectProxy.detectInstance(object));
     if(Model.detectInstance(object)) {
       return getInternalModel(object);
     }

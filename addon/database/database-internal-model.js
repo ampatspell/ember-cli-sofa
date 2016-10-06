@@ -473,6 +473,11 @@ export default Ember.Mixin.create({
         return result;
       }
       return result[0];
+    }).then(internal => {
+      if(!internal) {
+        return reject(new Error({ error: 'not_found', reason: 'missing' }));
+      }
+      return internal;
     });
   }
 

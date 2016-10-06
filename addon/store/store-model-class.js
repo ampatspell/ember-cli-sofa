@@ -2,8 +2,10 @@ import Ember from 'ember';
 import { assert } from '../util/assert';
 import SofaModel, { getDefinition } from '../model';
 
-const __sofa_type__ = '__sofa_type__';
-const __sofa_model_type__ = 'model';
+import {
+  __sofa_type__,
+  __sofa_model_type__
+} from './store-constants';
 
 export default Ember.Mixin.create({
 
@@ -19,7 +21,7 @@ export default Ember.Mixin.create({
   },
 
   modelClassForName(modelName) {
-    return this._classForName('model', modelName, (Model, normalizedModelName) => {
+    return this._classForName('model', modelName, null, (Model, normalizedModelName) => {
       assert(`model '${normalizedModelName}' must be sofa Model`, this._isModelClass(Model));
       let Extended = Model.extend();
       Extended.reopenClass({ store: this, [__sofa_type__]: __sofa_model_type__ });

@@ -105,12 +105,20 @@ export function createStore() {
   return store;
 }
 
-export function registerModels(hash) {
+function registerHash(prefix, hash) {
   for(let name in hash) {
     let Class = hash[name];
     let normalizedName = dasherize(name);
-    app.register(`model:${normalizedName}`, Class, { instantiate: false });
+    app.register(`${prefix}:${normalizedName}`, Class, { instantiate: false });
   }
+}
+
+export function registerQueries(hash) {
+  registerHash('query', hash);
+}
+
+export function registerModels(hash) {
+  registerHash('model', hash);
 }
 
 // TODO: get rid of this when database.get('session') will be implemented

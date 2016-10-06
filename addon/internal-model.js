@@ -96,6 +96,7 @@ export default class InternalModel {
     let props = Ember.A();
 
     let changed = key => {
+      Ember.assert(`call changed(key) with key`, (typeof key === 'string'));
       if(notifyModel) {
         model.notifyPropertyChange(key);
       }
@@ -107,7 +108,7 @@ export default class InternalModel {
 
     changed.props = props;
 
-    cb(changed);
+    let result = cb(changed);
 
     if(notifyModel) {
       model.endPropertyChanges();
@@ -116,6 +117,8 @@ export default class InternalModel {
     if(props.length) {
       this.notifyObservers(changed.props);
     }
+
+    return result;
   }
 
   notifyObservers(props) {

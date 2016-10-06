@@ -2,23 +2,22 @@ import Ember from 'ember';
 import createTransform from './array-transform-mixin';
 
 const {
-  get,
   computed,
   computed: { oneWay }
 } = Ember;
 
 const Transform = createTransform({
   internal(model) {
-    return get(this, '_relation').internalModelFromModel(model);
+    return this._relation.internalModelFromModel(model);
   },
   public(internal) {
-    return get(this, '_relation').modelFromInternalModel(internal);
+    return this._relation.modelFromInternalModel(internal);
   }
 });
 
 const state = (prop) => {
   return computed(function() {
-    return this.get('_relation').enqueueLazyLoadModelIfNeeded(prop);
+    return this._relation.enqueueLazyLoadModelIfNeeded(prop);
   }).readOnly();
 };
 

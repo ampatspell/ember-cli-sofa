@@ -40,3 +40,18 @@ test('deserialize relationship', assert => {
   });
   assert.ok(db.existing('house', 'big'));
 });
+
+test('set makes parent dirty', assert => {
+  let house = db.model('house', { id: 'big' });
+  let duck = db.model('duck', { id: 'yellow', house });
+
+  duck._internal.state.isDirty = false;
+  duck.notifyPropertyChange('isDirty');
+  assert.ok(duck.get('isDirty') === false);
+
+  duck.set('house', house);
+  assert.ok(duck.get('isDirty') === false);
+
+  duck.set('house', db.model('house', { id: 'other' }));
+  assert.ok(duck.get('isDirty') === true);
+});

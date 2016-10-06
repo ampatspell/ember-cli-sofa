@@ -12,6 +12,10 @@ export default class Relationship extends Property {
     super(merge({ relationshipModelName }, opts));
   }
 
+  get relationshipModelName() {
+    return this.opts.relationshipModelName;
+  }
+
   get relationshipModelClass() {
     let modelClass = this.opts.relationshipModelClass;
     if(!modelClass) {
@@ -30,16 +34,18 @@ export default class Relationship extends Property {
     return relation;
   }
 
+  createQuery(relation, variantName, variantFn) {
+    let queryModelName = this.opts.query;
+    let Query = this.store._queryClassForName(queryModelName, variantName, variantFn);
+    return Query._create({ _relation: relation });
+  }
+
   _getValue(internal) {
     let relation = this.getRelation(internal);
     return relation.getValue();
   }
 
-  _setValue(internal, value, changed_) {
-    let changed = () => {
-      this.dirty(internal, changed_);
-      changed_(this.opts.name);
-    };
+  _setValue(internal, value, changed) {
     let relation = this.getRelation(internal);
     return relation.setValue(value, changed);
   }
