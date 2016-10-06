@@ -1,7 +1,8 @@
 import Ember from 'ember';
 
 const {
-  computed
+  computed,
+  computed: { oneWay }
 } = Ember;
 
 const content = () => {
@@ -21,11 +22,24 @@ const promise = () => {
   }).readOnly();
 };
 
+const state = () => {
+  return computed(function() {
+    return this._relation.loadState;
+  }).readOnly();
+}
+
 export default Ember.ObjectProxy.extend({
 
   _relation: null,
 
-  promise: promise(),
   content: content(),
+
+  promise: promise(),
+  state: state(),
+
+  isLoading: oneWay('state.isLoading'),
+  isLoaded:  oneWay('state.isLoaded'),
+  isError:   oneWay('state.isError'),
+  error:     oneWay('state.error'),
 
 });
