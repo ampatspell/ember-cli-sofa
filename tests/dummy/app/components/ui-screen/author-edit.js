@@ -11,7 +11,7 @@ export default Ember.Component.extend({
     saveAuthor(author) {
       all([
         author.save(),
-        all( author.get('blogs').map(blog => blog.save()) )
+        all( this.get('store.db.main').dirty('blog').map(blog => blog.save()) )
       ]).then(() => {
         this.get('router').transitionTo('authors.author', author);
       }, () => undefined);

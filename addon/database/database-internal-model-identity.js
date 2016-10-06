@@ -27,6 +27,11 @@ export default Ember.Mixin.create({
     return internal;
   },
 
+  _internalModelsWithModelName(modelName) {
+    let storage = this._modelIdentity;
+    return storage.type[modelName] || [];
+  },
+
   _storeSavedInternalModel(internal) {
     let docId = internal.docId;
     let storage = this._modelIdentity;
