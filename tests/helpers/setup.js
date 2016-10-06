@@ -92,7 +92,6 @@ export function wait(arg, delay) {
 
 export function createStore() {
   let Store = container.lookup('sofa:store').extend({
-    isLazyLoadEnabled: false,
     databaseOptionsForIdentifier(identifier) {
       let url = '/api';
       if(identifier === 'main') {

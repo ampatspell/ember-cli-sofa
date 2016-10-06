@@ -1,4 +1,3 @@
-import Ember from 'ember';
 import HasManyRelation from './has-many';
 
 export default class HasManyLoadedRelation extends HasManyRelation {

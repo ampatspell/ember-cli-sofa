@@ -68,10 +68,6 @@ function collectErrors(results) {
 export default function(relation) {
   let state = relation.lazyLoad;
 
-  if(!relation.lazyLoadEnabled) {
-    return state;
-  }
-
   if(!state.needs) {
     return state;
   }
