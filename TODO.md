@@ -7,8 +7,9 @@
 * support cross-database model loads (`{ user: { database: 'users', _id: 'user:ampatspell' } }`
 * embedded models (persisted as a `{ key: { model } }`)
 * abstract Couch, have also PouchDB
+* couch database create/drop/recreate
 * couch permissions
-* couch session
+* couch design documents
 * couch changes listener
 * database session
 * database permissions

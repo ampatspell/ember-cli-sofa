@@ -8,7 +8,7 @@ const {
   typeOf
 } = Ember;
 
-const normalizedUrl = function() {
+const normalizedUrl = () => {
   return computed('url', function() {
     let url = this.get('url');
     if(!url) {
@@ -21,12 +21,20 @@ const normalizedUrl = function() {
   }).readOnly();
 };
 
+const session = () => {
+  return computed(function() {
+    return getOwner(this).lookup('couch:session').create({ couch: this });
+  }).readOnly();
+};
+
 export default Ember.Object.extend({
 
   url: null,
   normalizedUrl: normalizedUrl(),
 
   openDatabases: object(),
+
+  session: session(),
 
   _request: computed(function() {
     return getOwner(this).lookup('couch:request').create();

@@ -130,17 +130,17 @@ export function registerModels(hash) {
   registerHash('model', hash);
 }
 
-// TODO: get rid of this when database.get('session') will be implemented
+export const admin = {
+  name: 'ampatspell',
+  password: 'hello'
+};
+
 export function login(db) {
-  return db.get('documents.couch').request({
-    method: 'post',
-    url: '_session',
-    json: true,
-    data: {
-      name: 'ampatspell',
-      password: 'hello'
-    }
-  });
+  return db.get('documents.couch.session').save(admin.name, admin.password);
+}
+
+export function logout(db) {
+  return db.get('documents.couch.session').delete();
 }
 
 export function recreate(db) {
