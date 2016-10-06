@@ -22,7 +22,7 @@ const constructor = () => {
   }).readOnly();
 };
 
-const internal = (name) => {
+const internal = name => {
   return computed({
     get() {
       return getInternalModel(this)[name];
@@ -42,7 +42,7 @@ const serialize = () => {
   };
 };
 
-const databaseInternalPromise = (functionName) => {
+const databaseInternalPromise = functionName => {
   return function(...args) {
     let database = this.get('database');
     if(!database) {

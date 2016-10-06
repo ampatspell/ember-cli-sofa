@@ -5,13 +5,13 @@ const {
   computed
 } = Ember;
 
-const state = (name) => {
+const state = name => {
   return computed(function() {
     return getInternalModel(this).state[name];
   }).readOnly();
 };
 
-const load = (name) => {
+const load = name => {
   return computed(function() {
     let internal = getInternalModel(this);
     internal.enqueueLazyLoadModelIfNeeded();
