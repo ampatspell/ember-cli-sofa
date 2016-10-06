@@ -2,8 +2,7 @@ import Ember from 'ember';
 import createTransform from './util/array-transform-mixin';
 
 const {
-  computed,
-  computed: { oneWay }
+  computed
 } = Ember;
 
 const Transform = createTransform({
@@ -15,11 +14,17 @@ const Transform = createTransform({
   }
 });
 
-const state = (prop) => {
+const state = () => {
   return computed(function() {
-    return this._relation.enqueueLazyLoadModelIfNeeded(prop);
+    return this._relation.loader.getState();
   }).readOnly();
 };
+
+const stateProperty = (name) => {
+  return computed('state', function() {
+    return this.get('state')[name];
+  }).readOnly();
+}
 
 export default Ember.ArrayProxy.extend(Transform, {
 
@@ -27,8 +32,8 @@ export default Ember.ArrayProxy.extend(Transform, {
 
   state:     state(),
 
-  isLoading: oneWay('state.isLoading'),
-  isError:   oneWay('state.isError'),
-  error:     oneWay('state.error'),
+  isLoading: stateProperty('isLoading'),
+  isError:   stateProperty('isError'),
+  error:     stateProperty('error'),
 
 });

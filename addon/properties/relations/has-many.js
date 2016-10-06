@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import Relation from './relation';
 import { getInternalModel, internalModelDidChangeIsDeleted } from '../../internal-model';
-import enqueueLazyLoadIfNeeded from './util/has-many-lazy-load';
+import HasManyContentLoader from './util/has-many-content-loader';
 
 const {
   getOwner,
@@ -51,13 +51,7 @@ export default class HasManyRelation extends Relation {
 
   constructor(relationship, internal) {
     super(...arguments);
-    // TODO: implement in the same way as relation-loader
-    this.lazyLoad = {
-      needs: true,
-      isLoading: false,
-      isError: false,
-      error: null
-    };
+    this.loader = new HasManyContentLoader(this);
     internal.addObserver(this);
   }
 
@@ -127,7 +121,7 @@ export default class HasManyRelation extends Relation {
     if(inverse) {
       inverse.inverseDidChange(this.internal);
     }
-    this.needsLazyLoad = true;
+    this.loader.setNeedsReload();
   }
 
   getValue() {
@@ -220,10 +214,6 @@ export default class HasManyRelation extends Relation {
     }
   }
 
-  enqueueLazyLoadModelIfNeeded() {
-    return enqueueLazyLoadIfNeeded(this);
-  }
-
   internalModelFromModel(model) {
     if(!model) {
       return null;
@@ -235,7 +225,7 @@ export default class HasManyRelation extends Relation {
     if(!internal) {
       return null;
     }
-    this.enqueueLazyLoadModelIfNeeded();
+    this.loader.load();
     return internal.getModel();
   }
 
