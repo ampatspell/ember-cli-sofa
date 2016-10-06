@@ -1,10 +1,10 @@
 import Couches from 'sofa/couch/couches';
 import Couch from 'sofa/couch/couch';
 import Request from 'sofa/couch/request';
-import Session from 'sofa/couch/session';
+import Session from 'sofa/couch/couch/session';
 import Databases from 'sofa/couch/databases';
 import Database from 'sofa/couch/database';
-import Security from 'sofa/couch/security';
+import Security from 'sofa/couch/database/security';
 
 export default {
   name: 'sofa:couch',
