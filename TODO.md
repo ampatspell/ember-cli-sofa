@@ -1,6 +1,5 @@
 # TODO
 
-* support database identifier setting for relationships: `user: belongsTo('user', { database: 'users' })`)
 * root collections
 * model attachments
 * model inheritance
