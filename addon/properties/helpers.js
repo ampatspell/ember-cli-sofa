@@ -7,6 +7,7 @@ import Attribute from './attribute';
 import BelongsToPersisted from './belongs-to-persisted';
 import BelongsToLoaded from './belongs-to-loaded';
 import HasManyPersisted from './has-many-persisted';
+import HasManyLoaded from './has-many-loaded';
 
 const {
   computed
@@ -53,8 +54,12 @@ function belongsTo(modelName, opts={}) {
   }
 }
 
-function hasMany(modelName, opts) {
-  return make(new HasManyPersisted(modelName, opts));
+function hasMany(modelName, opts={}) {
+  if(opts.query) {
+    return make(new HasManyLoaded(modelName, opts));
+  } else {
+    return make(new HasManyPersisted(modelName, opts));
+  }
 }
 
 export {

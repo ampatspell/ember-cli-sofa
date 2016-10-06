@@ -36,13 +36,19 @@ export default Ember.Mixin.create({
     let database = relation.database;
     let model = relation.relationshipModelName;
 
-    let opts = this.get('find') || {};
+    let opts = this.get('find');
+    assert(`Query._find should not be called when find returns ${opts}`, !!opts);
+
     opts.model = model;
 
     return this._invokeFind(database, opts);
   },
 
-  _isLoadable: computed('model.isNew', function() {
+  _isLoadable: computed('find', 'model.isNew', function() {
+    let find = this.get('find');
+    if(!find) {
+      return false;
+    }
     let model = this.get('model');
     if(model.get('isNew')) {
       return false;

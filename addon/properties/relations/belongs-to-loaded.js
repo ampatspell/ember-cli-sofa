@@ -36,10 +36,4 @@ export default class BelongsToLoadedRelation extends BelongsToProxiedRelation {
     return super.getModel(...arguments);
   }
 
-  serialize() {
-  }
-
-  deserialize() {
-  }
-
 }

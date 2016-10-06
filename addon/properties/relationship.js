@@ -8,7 +8,10 @@ const {
 
 export default class Relationship extends Property {
 
-  constructor(relationshipModelName, opts) {
+  constructor(relationshipModelName, opts={}) {
+    if(opts.query) {
+      opts.persist = false;
+    }
     super(merge({ relationshipModelName }, opts));
   }
 
