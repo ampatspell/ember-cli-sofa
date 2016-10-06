@@ -5,6 +5,6 @@ export default Model.extend({
   id: prefix(),
   name: attr('string'),
 
-  authors: hasMany('author', { inverse: 'blogs', persist: false })
+  authors: hasMany('author', { inverse: 'blogs' })
 
 });

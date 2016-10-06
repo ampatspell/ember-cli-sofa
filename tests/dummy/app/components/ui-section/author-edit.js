@@ -7,8 +7,10 @@ export default Ember.Component.extend({
     updateBlogSelection(blog, select) {
       if(select) {
         this.get('author.blogs').pushObject(blog);
+        blog.save();
       } else {
         this.get('author.blogs').removeObject(blog);
+        blog.save();
       }
     }
   }
