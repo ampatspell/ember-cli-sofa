@@ -18,7 +18,7 @@ export default class BelongsToLoadedRelation extends BelongsToProxiedRelation {
         isError: false,
         error: null
       },
-      needsReload: false,
+      needed: true,
       promise: null,
     };
   }
@@ -53,8 +53,11 @@ export default class BelongsToLoadedRelation extends BelongsToProxiedRelation {
 
   queryNeedsReload() {
     let value = this.value;
-    this.load.needsReload = true;
+    this.load.needed = true;
+    value.beginPropertyChanges();
     value.notifyPropertyChange('promise');
+    value.notifyPropertyChange('content');
+    value.endPropertyChanges();
   }
 
   createLoadPromise(notifyInitialStateChange=true) {
@@ -90,10 +93,10 @@ export default class BelongsToLoadedRelation extends BelongsToProxiedRelation {
   getLoadPromise(notifyInitialStateChange=true) {
     let promise = this.load.promise;
     if(!promise) {
-      if(this.content && !this.load.needsReload) {
+      if(!this.load.needed) {
         return resolve(this.getValue());
       }
-      this.load.needsReload = false;
+      this.load.needed = false;
       promise = this.createLoadPromise(notifyInitialStateChange).finally(() => {
         this.load.promise = null;
       });
