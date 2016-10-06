@@ -24,7 +24,7 @@ const promise = () => {
 
 const state = () => {
   return computed(function() {
-    return this._relation.load.state;
+    return this._relation.getLoadState();
   }).readOnly();
 };
 

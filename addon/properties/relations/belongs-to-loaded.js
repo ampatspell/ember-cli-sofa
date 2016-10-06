@@ -103,6 +103,11 @@ export default class BelongsToLoadedRelation extends BelongsToProxiedRelation {
     return promise;
   }
 
+  getLoadState() {
+    this.getLoadPromise();
+    return this.load.state;
+  }
+
   serialize() {
   }
 
