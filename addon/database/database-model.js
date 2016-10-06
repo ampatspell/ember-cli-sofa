@@ -1,5 +1,9 @@
 import Ember from 'ember';
 
+const {
+  get
+} = Ember;
+
 export default Ember.Mixin.create({
 
   _internalArrayToModelsArray(array) {
@@ -22,6 +26,19 @@ export default Ember.Mixin.create({
   existing(modelName, modelId, opts) {
     let internal = this._existingInternalModelForModelName(modelName, modelId, opts);
     return this._internalToModel(internal);
+  },
+
+  _modelsWithModelNameAndState(modelName, key, value) {
+    let modelClass = this.modelClassForName(modelName);
+    let internals = this._internalModelsWithModelName(get(modelClass, 'modelName'));
+    let filtered = Ember.A(internals.filter(internal => {
+      return internal.state[key] === value;
+    }));
+    return this._internalArrayToModelsArray(filtered);
+  },
+
+  dirty(modelName) {
+    return this._modelsWithModelNameAndState(modelName, 'isDirty', true);
   },
 
   load(modelName, id, opts) {

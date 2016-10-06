@@ -136,7 +136,7 @@ export default class HasManyContentLoader {
     return this.load();
   }
 
-  setNeedsReload() {
+  setNeedsLoad() {
     this.needs = true;
   }
 

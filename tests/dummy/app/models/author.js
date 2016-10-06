@@ -6,7 +6,7 @@ export default Model.extend({
   name: attr('string'),
   email: attr('string'),
 
-  blogs: hasMany('blog', { inverse: 'authors' }),
+  blogs: hasMany('blog', { inverse: 'authors', query: 'author-blogs' }),
   posts: hasMany('post', { inverse: 'author', persist: false }),
 
   post: belongsTo('post', { query: 'author-first-post' }),

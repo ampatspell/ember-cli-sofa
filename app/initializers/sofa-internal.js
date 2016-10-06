@@ -24,7 +24,7 @@ export default {
 
     container.register('sofa:belongs-to-loaded', BelongsToLoaded, { instantiate: false });
     container.register('sofa:has-many-persisted', HasManyPersisted, { instantiate: false });
-    container.register('sofa:has-many-loaded', HasManyPersisted, { instantiate: false });
+    container.register('sofa:has-many-loaded', HasManyLoaded, { instantiate: false });
 
     container.register('sofa:transform/noop', NoopTransform, { instantiate: false });
     container.register('sofa:transform/string', StringTransform, { instantiate: false });
