@@ -18,7 +18,7 @@ let DuckUser = Query.extend({
       selector: {
         duck: this.get('model.docId')
       }
-    }
+    };
   }),
 
 });
