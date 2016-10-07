@@ -21,7 +21,7 @@ function wrap(file, target) {
   }
 
   function progress(value) {
-    setProperties({progress: value});
+    setProperties({ progress: value });
   }
 
   file.contentType = fileContentType(file);

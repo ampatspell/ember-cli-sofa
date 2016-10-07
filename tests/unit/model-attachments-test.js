@@ -203,7 +203,7 @@ test('deserialize with deleted attachment', assert => {
   });
 });
 
-test.only('save blob', assert => {
+test('save blob', assert => {
   let data = createBlob('hey there', 'text/plain');
   let model = db.model('duck', { id: 'yellow', attachments: [ { name: 'blob', data } ] });
   return model.save().then(() => {
@@ -224,4 +224,12 @@ test.only('save blob', assert => {
       "type": "duck"
     });
   });
+});
+
+test.only('blob content', assert => {
+  let data = createBlob('hey there', 'text/plain');
+  let model = db.model('duck', { id: 'yellow', attachments: [ { name: 'blob', data } ] });
+  let att = model.get('attachments.blob');
+  assert.ok(att.get('contentType') === 'text/plain')
+  assert.ok(att.get('length') === 9);
 });

@@ -6,8 +6,9 @@ export default class AttachmentFileContent extends AttachmentContent {
 
   constructor(attachment, file) {
     super(attachment);
+    // wrap
+    file.contentType = fileContentType(file);
     this.file = file;
-    this.contentType = fileContentType(file);
   }
 
   get contentModelName() {
