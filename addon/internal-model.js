@@ -47,6 +47,15 @@ export default class InternalModel {
     };
   }
 
+  get url() {
+    let docId = this.docId;
+    if(!docId) {
+      return;
+    }
+    let url = this._database.get('documents.url');
+    return `${url}/${encodeURIComponent(docId)}`;
+  }
+
   get modelName() {
     return this.definition.modelName;
   }
