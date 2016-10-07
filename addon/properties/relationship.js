@@ -12,6 +12,7 @@ export default class Relationship extends Property {
     if(opts.query) {
       opts.persist = false;
     }
+    delete opts.initial;
     super(merge({ relationshipModelName }, opts));
   }
 
