@@ -1,12 +1,10 @@
 # TODO
 
 * couch mango indexes
-* couch database tests from old impl
 * root collections
 * model attachments
 * model inheritance
 * per-database models (each database is initialized with model folder name which is returned by store.databaseOptionsForIdentifier)
-* support cross-database model loads (`{ user: { database: 'users', _id: 'user:ampatspell' } }`
 * embedded models (persisted as a `{ key: { model } }`)
 * abstract Couch, have also PouchDB
 * couch changes listener
@@ -25,3 +23,5 @@
 * properties-attribute-transform-json-test
 * properties-type-test
 * model-inheritance-test
+* support cross-database model loads (`{ user: { database: 'users', _id: 'user:ampatspell' } }`
+* couch database tests from old impl
