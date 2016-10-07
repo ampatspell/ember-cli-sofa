@@ -1,6 +1,11 @@
+import Ember from 'ember';
 import AttachmentContent from './content-internal';
 // TODO: crappy import
 import { wrapFile, addFileObserver, removeFileObserver } from '../../../couch/util/file';
+
+const {
+  run: { next }
+} = Ember;
 
 export default class AttachmentFileContent extends AttachmentContent {
 
@@ -26,7 +31,7 @@ export default class AttachmentFileContent extends AttachmentContent {
     let state = this.state;
     this.withPropertyChanges(changed => {
       for(let key in props) {
-        let value = props[value];
+        let value = props[key];
         if(value !== state[key]) {
           state[key] = value;
           changed(key);
@@ -66,6 +71,16 @@ export default class AttachmentFileContent extends AttachmentContent {
 
   getBase64Promise() {
     return this.file.base64String();
+  }
+
+  getStateProperty(key) {
+    // TODO: get rid of this crap along with wrapFile
+    if(this.state.isLoading === false) {
+      next(() => {
+        this.getPromise();
+      });
+    }
+    return this.state[key];
   }
 
   serialize(preview) {

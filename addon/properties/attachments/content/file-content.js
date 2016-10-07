@@ -13,7 +13,7 @@ const file = (key) => {
 
 const state = (key) => {
   return computed(function() {
-    return this._internal.state[key];
+    return this._internal.getStateProperty(key);
   }).readOnly();
 };
 
