@@ -14,7 +14,7 @@ export default Ember.Object.extend({
   },
 
   reportWarning(warning, opts) {
-    warn('CouchDB mango query:', warning, opts);
+    warn(`_find:`, warning, opts);
   },
 
   _query(url, opts) {
