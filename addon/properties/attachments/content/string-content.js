@@ -2,6 +2,7 @@ import { Content, internal } from './content';
 
 export default Content.extend({
 
-  data: internal('data'),
+  contentType: internal('contentType'),
+  data:        internal('data')
 
 });

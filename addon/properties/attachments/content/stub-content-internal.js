@@ -1,6 +1,6 @@
 import AttachmentContent from './content-internal';
 
-const mapping = {
+export const mapping = {
   content_type: 'contentType',
   digest: 'digest',
   revpos: 'revpos',
@@ -21,22 +21,6 @@ export default class AttachmentStubContent extends AttachmentContent {
 
   get contentModelName() {
     return 'stub';
-  }
-
-  get contentType() {
-    return this.data.content_type;
-  }
-
-  get digest() {
-    return this.data.digest;
-  }
-
-  get revpos() {
-    return this.data.revpos;
-  }
-
-  get length() {
-    return this.data.length;
   }
 
   serialize() {

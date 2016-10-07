@@ -154,6 +154,7 @@ test('load with attachment', assert => {
   }).then(model => {
     assert.ok(model.get('attachments.note'))
     assert.ok(model.get('attachments.note.length') === 3);
+    assert.ok(model.get('attachments.note.contentType') === 'text/plain');
   });
 });
 
@@ -186,7 +187,7 @@ test('delete attachment', assert => {
   });
 });
 
-test.only('deserialize with deleted attachment', assert => {
+test('deserialize with deleted attachment', assert => {
   let model = db.model('duck', { id: 'yellow', attachments: [ { name: 'note', data: 'hey' }, { name: 'greeting', data: 'yaay' } ] });
   return model.save().then(() => {
     return db.get('documents').load('duck:yellow');

@@ -15,6 +15,5 @@ export const Content = Ember.Object.extend({
   _internal: null,
 
   type:        internal('type'), // local, remote
-  contentType: internal('contentType'),
 
 });
