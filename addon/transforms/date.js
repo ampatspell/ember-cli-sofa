@@ -6,7 +6,7 @@ const {
   copy
 } = Ember;
 
-export default class StringTransform extends Transform {
+export default class DateTransform extends Transform {
 
   _validDate(date) {
     if(isNaN(date.getTime())) {

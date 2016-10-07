@@ -10,6 +10,7 @@ import DatabaseSecurityPair from 'sofa/security-pair';
 import NoopTransform from 'sofa/transforms/noop';
 import StringTransform from 'sofa/transforms/string';
 import IntegerTransform from 'sofa/transforms/integer';
+import FloatTransform from 'sofa/transforms/float';
 import BooleanTransform from 'sofa/transforms/boolean';
 import DateTransform from 'sofa/transforms/date';
 
@@ -40,6 +41,7 @@ export default {
     container.register('sofa:transform/noop', NoopTransform, { instantiate: false });
     container.register('sofa:transform/string', StringTransform, { instantiate: false });
     container.register('sofa:transform/integer', IntegerTransform, { instantiate: false });
+    container.register('sofa:transform/float', FloatTransform, { instantiate: false });
     container.register('sofa:transform/boolean', BooleanTransform, { instantiate: false });
     container.register('sofa:transform/date', DateTransform, { instantiate: false });
   }
