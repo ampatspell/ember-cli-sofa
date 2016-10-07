@@ -2,6 +2,7 @@ import Ember from 'ember';
 import Identifier from './identifier';
 import PrefixedIdentifier from './prefixed-identifier';
 import Revision from './revision';
+import Attachments from './attachments';
 import Type from './type';
 import Attribute from './attribute';
 import BelongsToPersisted from './belongs-to-persisted';
@@ -46,6 +47,10 @@ function rev() {
   return make(new Revision());
 }
 
+function attachments(opts) {
+  return make(new Attachments(opts));
+}
+
 function type(value, opts) {
   if(typeof value === 'object') {
     opts = value;
@@ -75,6 +80,7 @@ export {
   id,
   prefix,
   rev,
+  attachments,
   type,
   attr,
   belongsTo,

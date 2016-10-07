@@ -43,10 +43,18 @@ export default class Property {
     }
   }
 
+  validateDocumentKey(key) {
+    let required = this.requiredDocumentKey;
+    if(required) {
+      assert(`${this.name} can only be saved as a ${required} document key`, required === key);
+    }
+  }
+
   prepareModelClass(name, declaringModelClass, store) {
     this.validatePropertyName(name);
     this.name = name;
     this.opts.key = this.opts.key || this.name;
+    this.validateDocumentKey(this.opts.key);
     this.declaringModelClass = declaringModelClass;
     this.store = store;
   }
