@@ -87,3 +87,8 @@ test('string attachment content', assert => {
   let data = content.get('data');
   assert.ok(data === 'hey there');
 });
+
+test.only('init model with attachments', assert => {
+  let model = db.model('duck', { attachments: [ { name: 'note', data: 'hey' } ] });
+  assert.ok(model.get('attachments.note.data') === 'hey');
+});

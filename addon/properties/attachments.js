@@ -39,9 +39,15 @@ export default class Attachments extends Property {
     return attachments;
   }
 
-  _setValue(internal) {
-    error(`Cannot set model attachments for model ${internal.modelName} with id ${internal.docId}`);
-    this.notifyPropertyChange(internal);
+  _setValue(internal, value) {
+    // TODO: replace attachments
+    if(this.getInternalValue(internal)) {
+      error(`Attempted to set attachments for model ${internal.modelName} with id ${internal.docId}`);
+      this.notifyPropertyChange(internal);
+    } else {
+      let attachments = this.getAttachmentsInternal(internal);
+      attachments.addAttachmentHashes(value);
+    }
     return this.getValue(internal);
   }
 

@@ -53,30 +53,47 @@ export default class AttachmentsInternal {
 
   //
 
-  willRemoveAttachment(attachment) {
-    attachment.destroy();
+  willRemoveAttachments(attachments) {
+    attachments.forEach(attachment => {
+      attachment.destroy();
+    });
     this.dirty();
   }
 
-  didAddAttachment(attachment) {
-    assert(`attachment '${attachment.name}' is already assigned to ${attachment.attachments.internalModel.modelName} with id '${attachment.attachments.internalModel.docId}'`, attachment.attachments === this);
+  didAddAttachments(attachments) {
+    attachments.forEach(attachment => {
+      assert(`attachment '${attachment.name}' is already assigned to ${attachment.attachments.internalModel.modelName} with id '${attachment.attachments.internalModel.docId}'`, attachment.attachments === this);
+    });
     this.dirty();
+  }
+
+  addAttachments(attachments) {
+    this.ignoreProxyChangeNotifications = true;
+    this.content.addObjects(attachments);
+    this.didAddAttachments(attachments);
+    this.ignoreProxyChangeNotifications = false;
+    return attachments;
+  }
+
+  addAttachmentHashes(hashes) {
+    let attachments = Ember.A(hashes).map(hash => this.createAttachmentInternalFromHash(hash));
+    return this.addAttachments(attachments);
   }
 
   //
 
   attachmentModelsWillChange(proxy, removing) {
-    removing.forEach(model => {
-      let internal = model._internal;
-      this.willRemoveAttachment(internal);
-    });
+    if(this.ignoreProxyChangeNotifications) {
+      return;
+    }
+    this.willRemoveAttachments(removing.map(model => model._internal));
   }
 
   attachmentModelsDidChange(proxy, removeCount, adding) {
-    adding.forEach(model => {
-      let internal = model._internal;
-      this.didAddAttachment(internal);
-    });
+    if(this.ignoreProxyChangeNotifications) {
+      return;
+    }
+    this.didAddAttachments(adding.map(model => model._internal));
   }
 
 }
