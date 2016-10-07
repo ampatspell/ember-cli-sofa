@@ -4,13 +4,13 @@ const {
   computed
 } = Ember;
 
-const internal = (prop) => {
+export const internal = (prop) => {
   return computed(function() {
     return this._internal[prop];
   }).readOnly();
 };
 
-export default Ember.Object.extend({
+export const Content = Ember.Object.extend({
 
   _internal: null,
 
