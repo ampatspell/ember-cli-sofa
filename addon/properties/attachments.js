@@ -69,11 +69,23 @@ export default class Attachments extends Property {
     }
 
     this.setDocValue(doc, value);
-
-    return this.opts.key;
   }
 
   _deserialize(internal, doc, changed) {
+    let attachments = this.getInternalValue(internal);
+
+    if(Object.keys(doc._attachments) === 0 && !attachments) {
+      return;
+    }
+
+    if(!attachments) {
+      attachments = this.getAttachmentsInternal();
+    }
+
+    let value = this.getDocValue(doc);
+    attachments.deserialize(value, changed);
+
+    return this.opts.key;
   }
 
 }

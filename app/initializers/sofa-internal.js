@@ -22,6 +22,7 @@ import HasManyLoaded from 'sofa/properties/relations/proxies/has-many-loaded';
 import Attachments from 'sofa/properties/attachments/attachments';
 import Attachment from 'sofa/properties/attachments/attachment';
 import AttachmentStringContent from 'sofa/properties/attachments/content/string-content';
+import AttachmentStubContent from 'sofa/properties/attachments/content/stub-content';
 
 export default {
   name: 'sofa:internal',
@@ -54,5 +55,6 @@ export default {
     container.register('sofa:attachments', Attachments, { instantiate: false });
     container.register('sofa:attachment', Attachment, { instantiate: false });
     container.register('sofa:attachment-content/string', AttachmentStringContent, { instantiate: false });
+    container.register('sofa:attachment-content/stub', AttachmentStubContent, { instantiate: false });
   }
 };

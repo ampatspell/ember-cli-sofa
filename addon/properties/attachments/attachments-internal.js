@@ -3,7 +3,8 @@ import { isObject_, isString_, assert } from '../../util/assert';
 import AttachmentInternal from './attachment-internal';
 
 const {
-  getOwner
+  getOwner,
+  copy
 } = Ember;
 
 export default class AttachmentsInternal {
@@ -41,10 +42,15 @@ export default class AttachmentsInternal {
     return model;
   }
 
+  createAttachmentInternal(name, data) {
+    return new AttachmentInternal(this, name, data);
+  }
+
   createAttachmentInternalFromHash(hash) {
     isObject_(`attachment must be object { name, type, data } not ${hash}`, hash);
     isString_(`attachment.name must be string not ${hash.name}`, hash.name);
-    return new AttachmentInternal(this, hash.name, hash);
+    let name = hash.name;
+    return this.createAttachmentInternal(name, hash);
   }
 
   getAttachmentInternalByName(name) {
@@ -101,10 +107,40 @@ export default class AttachmentsInternal {
   serialize(preview) {
     let hash = {};
     this.content.forEach(attachment => {
-      let { key, value } = attachment.serialize(preview);
-      hash[key] = value;
+      let { name, value } = attachment.serialize(preview);
+      hash[name] = value;
     });
     return hash;
+  }
+
+  deserialize(hash={}) {
+
+    let content = this.content;
+
+    let add = Ember.A();
+    let remove = Ember.A(copy(content));
+
+    for(let name in hash) {
+      let value = hash[name];
+      let current = content.find(attachment => attachment.name === name);
+      if(current) {
+        // exists
+        current.deserialize(value);
+        remove.removeObject(current);
+      } else {
+        // new
+        add.push(this.createAttachmentInternal(name, value));
+      }
+    }
+
+    if(add.length > 0) {
+      throw new Error('not implemented');
+    }
+
+    if(remove.length > 0) {
+      throw new Error('not implemented');
+    }
+
   }
 
 }

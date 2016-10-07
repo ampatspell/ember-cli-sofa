@@ -123,6 +123,10 @@ export default class Definition {
     this.deserializeProperty(internal, 'rev', null, changed);
   }
 
+  deserializeAttachments(internal, doc, changed) {
+    this.property('attachments').deserialize(internal, doc, changed);
+  }
+
   docId(modelId) {
     return this.property('id').docId(this.modelClass, modelId);
   }

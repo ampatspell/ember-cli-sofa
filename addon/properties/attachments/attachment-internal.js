@@ -14,10 +14,6 @@ export default class Attachment {
     this.attachmentModel = null;
   }
 
-  get key() {
-    return this.name;
-  }
-
   createContentForHash(hash) {
     return createContentInternal(this, hash);
   }
@@ -36,17 +32,35 @@ export default class Attachment {
     return model;
   }
 
+  notifyAttachmentModelContentDidChange() {
+    let model = this.attachmentModel;
+    if(!model) {
+      return;
+    }
+    model.notifyPropertyChange('content');
+  }
+
   getAttachmentContentModel() {
     return this.content.getContentModel();
   }
 
   serialize(preview) {
-    let key = this.key;
+    let name = this.name;
     let value = this.content.serialize(preview);
     return {
-      key,
+      name,
       value
     };
+  }
+
+  deserialize(value) {
+    if(this.content.isStub) {
+      this.content.deserialize(value);
+    } else {
+      this.content.destroy();
+      this.content = this.createContentForHash(value);
+      this.notifyAttachmentModelContentDidChange();
+    }
   }
 
   destroy() {

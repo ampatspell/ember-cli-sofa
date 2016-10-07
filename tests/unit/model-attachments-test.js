@@ -114,3 +114,18 @@ test('save string attachments saves _attachments in doc', assert => {
     });
   });
 });
+
+test.only('save with attachment is reloaded and attachment content is replaced with stub', assert => {
+  let model = db.model('duck', { id: 'yellow', attachments: [ { name: 'note', data: 'hey' } ] });
+  let string = model.get('attachments.note.content');
+  assert.ok(model.get('attachments.note.type') === 'local');
+  return model.save().then(() => {
+    let stub = model.get('attachments.note.content');
+    assert.ok(string !== stub);
+    assert.ok(model.get('attachments.note.type') === 'remote');
+    let att = model.get('attachments.note');
+    assert.ok(att.get('digest'));
+    assert.ok(att.get('revpos'));
+    assert.ok(att.get('length') === 3);
+  });
+});

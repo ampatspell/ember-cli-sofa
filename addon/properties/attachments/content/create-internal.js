@@ -1,7 +1,12 @@
 import StringContent from './string-content-internal';
+import StubContent from './stub-content-internal';
 import Error from '../../../util/error';
 
 export default (attachment, hash) => {
+  if(hash.stub === true) {
+    return new StubContent(attachment, hash);
+  }
+
   let data = hash.data;
   let contentType = hash.type || hash.contentType || hash['content-type'];
 
