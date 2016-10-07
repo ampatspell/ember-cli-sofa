@@ -88,7 +88,29 @@ test('string attachment content', assert => {
   assert.ok(data === 'hey there');
 });
 
-test.only('init model with attachments', assert => {
+test('init model with attachments', assert => {
   let model = db.model('duck', { attachments: [ { name: 'note', data: 'hey' } ] });
   assert.ok(model.get('attachments.note.data') === 'hey');
+});
+
+test('save string attachments saves _attachments in doc', assert => {
+  let model = db.model('duck', { id: 'yellow', attachments: [ { name: 'note', data: 'hey' } ] });
+  return model.save().then(() => {
+    return db.get('documents').load('duck:yellow');
+  }).then(doc => {
+    assert.deepEqual_(doc, {
+      "_attachments": {
+        "note": {
+          "content_type": "text/plain",
+          "digest": "ignored",
+          "length": 3,
+          "revpos": "ignored",
+          "stub": true
+        }
+      },
+      "_id": "duck:yellow",
+      "_rev": "ignored",
+      "type": "duck"
+    });
+  });
 });

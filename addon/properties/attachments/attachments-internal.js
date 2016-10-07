@@ -96,4 +96,15 @@ export default class AttachmentsInternal {
     this.didAddAttachments(adding.map(model => model._internal));
   }
 
+  //
+
+  serialize(preview) {
+    let hash = {};
+    this.content.forEach(attachment => {
+      let { key, value } = attachment.serialize(preview);
+      hash[key] = value;
+    });
+    return hash;
+  }
+
 }

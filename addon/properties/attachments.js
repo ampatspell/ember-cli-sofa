@@ -30,9 +30,9 @@ export default class Attachments extends Property {
     return new AttachmentsInternal(internal, this);
   }
 
-  getAttachmentsInternal(internal) {
+  getAttachmentsInternal(internal, create=true) {
     let attachments = this.getInternalValue(internal);
-    if(!attachments) {
+    if(!attachments && create) {
       attachments = this.createAttachmentsInternal(internal);
       this.setInternalValue(internal, attachments, K);
     }
@@ -53,6 +53,27 @@ export default class Attachments extends Property {
 
   _getValue(internal) {
     return this.getAttachmentsInternal(internal).getAttachmentsModel();
+  }
+
+  _serialize(internal, doc, preview) {
+    let attachments = this.getAttachmentsInternal(internal, false);
+
+    let value = {};
+
+    if(attachments) {
+      value = attachments.serialize(preview);
+    }
+
+    if(preview && Object.keys(value) === 0) {
+      value = undefined;
+    }
+
+    this.setDocValue(doc, value);
+
+    return this.opts.key;
+  }
+
+  _deserialize(internal, doc, changed) {
   }
 
 }

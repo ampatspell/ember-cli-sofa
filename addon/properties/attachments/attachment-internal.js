@@ -14,6 +14,10 @@ export default class Attachment {
     this.attachmentModel = null;
   }
 
+  get key() {
+    return this.name;
+  }
+
   createContentForHash(hash) {
     return createContentInternal(this, hash);
   }
@@ -34,6 +38,15 @@ export default class Attachment {
 
   getAttachmentContentModel() {
     return this.content.getContentModel();
+  }
+
+  serialize(preview) {
+    let key = this.key;
+    let value = this.content.serialize(preview);
+    return {
+      key,
+      value
+    };
   }
 
   destroy() {
