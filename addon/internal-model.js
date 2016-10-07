@@ -241,11 +241,12 @@ export default class InternalModel {
     return value;
   }
 
+  getProperty(key) {
+    return this.definition.property(key);
+  }
+
   getRelation(key) {
-    let property = this.definition.property(key);
-    if(!property) {
-      return;
-    }
+    let property = this.getProperty(key);
     if(!(property instanceof Relationship)) {
       return;
     }

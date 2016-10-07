@@ -87,6 +87,11 @@ export default class Property {
     return transform.toModel(value, this);
   }
 
+  transformValueToDocument(internal, value) {
+    let transform = this.transform(internal);
+    return transform.toDocument(value, this);
+  }
+
   //
 
   dirty(internal, changed) {
@@ -162,7 +167,8 @@ export default class Property {
 
   _serialize(internal, doc) {
     let value = this.getInternalValue(internal);
-    this.setDocValue(doc, value);
+    let transformed = this.transformValueToDocument(internal, value);
+    this.setDocValue(doc, transformed);
   }
 
   serialize(internal, doc) {

@@ -11,6 +11,7 @@ import NoopTransform from 'sofa/transforms/noop';
 import StringTransform from 'sofa/transforms/string';
 import IntegerTransform from 'sofa/transforms/integer';
 import BooleanTransform from 'sofa/transforms/boolean';
+import DateTransform from 'sofa/transforms/date';
 
 import BelongsToLoaded from 'sofa/properties/relations/proxies/belongs-to-loaded';
 import HasManyPersisted from 'sofa/properties/relations/proxies/has-many-persisted';
@@ -40,5 +41,6 @@ export default {
     container.register('sofa:transform/string', StringTransform, { instantiate: false });
     container.register('sofa:transform/integer', IntegerTransform, { instantiate: false });
     container.register('sofa:transform/boolean', BooleanTransform, { instantiate: false });
+    container.register('sofa:transform/date', DateTransform, { instantiate: false });
   }
 };
