@@ -19,7 +19,7 @@ export default {
     store.set('_applicationName', 'dummy');
 
     let main = store.get('db.main');
-    throttle(main);
+    // throttle(main);
 
     window.store = store;
     window.db = main;
