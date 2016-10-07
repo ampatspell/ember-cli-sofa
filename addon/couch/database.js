@@ -9,8 +9,7 @@ const {
   assert,
   merge,
   typeOf,
-  RSVP: { resolve, reject, all },
-  Logger: { warn }
+  RSVP: { resolve, reject, all }
 } = Ember;
 
 const stringifyUnlessEmpty = value => {
@@ -35,6 +34,7 @@ export default Ember.Object.extend({
   security: lookup('couch:database-security'),
   design:   lookup('couch:database-design'),
   database: lookup('couch:database-database'),
+  mango:    lookup('couch:database-mango'),
 
   url: computed('couch.url', 'name', function() {
     let url = this.get('couch.url');
@@ -218,39 +218,6 @@ export default Ember.Object.extend({
 
   all(opts) {
     return this._view('_all_docs', opts).then(null, null, 'sofa:database all');
-  },
-
-  mango(opts) {
-    opts = merge({}, opts);
-
-    let explain = opts.explain;
-    delete opts.explain;
-
-    let url;
-    if(explain) {
-      url = '_explain';
-    } else {
-      url = '_find';
-    }
-
-    return this.request({
-      type: 'post',
-      url: url,
-      json: true,
-      data: {
-        selector:  opts.selector,
-        limit:     opts.limit,
-        skip:      opts.skip,
-        sort:      opts.sort,
-        fields:    opts.fields,
-        use_index: opts.use_index
-      }
-    }).then(results => {
-      if(results.warning) {
-        warn('CouchDB mango query:', results.warning, opts);
-      }
-      return results;
-    }).then(null, null, 'sofa:database mango');
   }
 
 });
