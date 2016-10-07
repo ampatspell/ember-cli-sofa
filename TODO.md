@@ -2,7 +2,6 @@
 
 * destroy isNew model -> model is removed from identity.new _and_ all assigned relationships
 * root collections
-* model inheritance
 * per-database models (each database is initialized with model folder name which is returned by store.databaseOptionsForIdentifier)
 * embedded models (persisted as a `{ key: { model } }`)
 * abstract Couch, have also PouchDB
@@ -27,3 +26,4 @@
 * couch database tests from old impl
 * couch mango indexes
 * replace attachment
+* model inheritance
