@@ -1,7 +1,8 @@
 import Ember from 'ember';
 
 const {
-  computed
+  computed,
+  computed: { equal }
 } = Ember;
 
 export const internal = (prop) => {
@@ -15,5 +16,8 @@ export const Content = Ember.Object.extend({
   _internal: null,
 
   type: internal('type'), // local, remote
+
+  isLocal:  equal('type', 'local').readOnly(),
+  isRemote: equal('type', 'remote').readOnly(),
 
 });
