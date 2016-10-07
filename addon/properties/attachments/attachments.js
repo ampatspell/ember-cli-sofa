@@ -1,4 +1,5 @@
 import Ember from 'ember';
+// TODO: crappy import
 import transform from '../relations/proxies/util/array-transform-mixin';
 
 let Transform = transform({

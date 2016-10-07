@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import SofaError from '../../util/error';
 import readFile from './file-reader';
-import mimeType from './mime-type';
+import fileContentType from './file-content-type';
 import arrayBufferToBase64 from './array-buffer-to-base64';
 
 const {
@@ -10,21 +10,6 @@ const {
 } = Ember;
 
 const options = '__sofa';
-
-function contentType(file) {
-  let type = file.type;
-  if(isEmpty(type)) {
-    let name = file.name;
-    if(name) {
-      type = mimeType(name);
-      if(type) {
-        return type;
-      }
-    }
-    return 'application/octet-stream';
-  }
-  return type;
-}
 
 function wrap(file, target) {
   let opts = file[options];
@@ -39,7 +24,7 @@ function wrap(file, target) {
     setProperties({progress: value});
   }
 
-  file.contentType = contentType(file);
+  file.contentType = fileContentType(file);
 
   file.arrayBuffer = function() {
     let promise = opts.arrayBufferPromise;

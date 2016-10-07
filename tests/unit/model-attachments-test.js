@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import { module, test, createStore, registerModels, cleanup } from '../helpers/setup';
 import { Model, prefix } from 'sofa';
+import createBlob from 'sofa/util/create-blob';
 
 const {
   RSVP: { resolve }
@@ -199,5 +200,28 @@ test('deserialize with deleted attachment', assert => {
   }).then(() => {
     assert.ok(!model.get('attachments.note'));
     assert.ok(model.get('attachments.greeting'));
+  });
+});
+
+test.only('save blob', assert => {
+  let data = createBlob('hey there', 'text/plain');
+  let model = db.model('duck', { id: 'yellow', attachments: [ { name: 'blob', data } ] });
+  return model.save().then(() => {
+    return db.get('documents').load('duck:yellow');
+  }).then(doc => {
+    assert.deepEqual_(doc, {
+      "_attachments": {
+        "blob": {
+          "content_type": "text/plain",
+          "digest": "ignored",
+          "length": 9,
+          "revpos": "ignored",
+          "stub": true
+        }
+      },
+      "_id": "duck:yellow",
+      "_rev": "ignored",
+      "type": "duck"
+    });
   });
 });
