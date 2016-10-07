@@ -5,7 +5,6 @@ import fileContentType from './file-content-type';
 import arrayBufferToBase64 from './array-buffer-to-base64';
 
 const {
-  isEmpty,
   RSVP: { reject }
 } = Ember;
 
@@ -15,12 +14,12 @@ const wrap = (file) => {
   const opts = file[options];
 
   const notifyTarget = hash => {
-    if(opts.target) {
+    if(opts.observers) {
       opts.observers.forEach(observer => {
         observer.filePropertiesDidChange(hash);
       });
     }
-  }
+  };
 
   const progress = value => notifyTarget({ progress: value });
 
