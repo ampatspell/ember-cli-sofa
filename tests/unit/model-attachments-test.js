@@ -70,3 +70,14 @@ test('add object throws', assert => {
     });
   });
 });
+
+test.only('string attachment content', assert => {
+  let attachments = db.model('duck').get('attachments');
+  attachments.pushObject({ name: 'note', data: 'hey there' });
+  let attachment = attachments.get('note');
+  assert.ok(attachment);
+  let content = attachment.get('content');
+  assert.ok(content);
+  let data = content.get('data');
+  assert.ok(data);
+});
