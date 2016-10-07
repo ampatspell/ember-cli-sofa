@@ -57,6 +57,7 @@ export default class Attachment {
     if(this.content.isStub) {
       this.content.deserialize(value);
     } else {
+      // TODO: give the current one to stub while stub is loading data
       this.content.destroy();
       this.content = this.createContentForHash(value);
       this.notifyAttachmentModelContentDidChange();
