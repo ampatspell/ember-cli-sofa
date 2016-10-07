@@ -1,6 +1,6 @@
 import { later } from 'sofa/util/run';
 
-function throttle(db) {
+export function throttle(db) {
   let documents = db.get('documents');
   let request = documents.request;
   documents.request = (...args) => {
