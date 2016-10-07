@@ -226,10 +226,31 @@ test('save blob', assert => {
   });
 });
 
-test.only('blob content', assert => {
+test('blob content', assert => {
   let data = createBlob('hey there', 'text/plain');
   let model = db.model('duck', { id: 'yellow', attachments: [ { name: 'blob', data } ] });
   let att = model.get('attachments.blob');
   assert.ok(att.get('contentType') === 'text/plain')
   assert.ok(att.get('length') === 9);
+});
+
+test('file url promise', assert => {
+  let data = createBlob('hey there', 'text/plain');
+  let model = db.model('duck', { id: 'yellow', attachments: [ { name: 'blob', data } ] });
+  let att = model.get('attachments.blob');
+  assert.ok(!att.get('url'));
+  return att.get('promise').then(string => {
+    assert.equal(string, 'data:text/plain;base64,aGV5IHRoZXJl');
+    assert.equal(att.get('url'), 'data:text/plain;base64,aGV5IHRoZXJl');
+  });
+});
+
+test.only('file url is autoloaded', assert => {
+  let data = createBlob('hey there', 'text/plain');
+  let model = db.model('duck', { id: 'yellow', attachments: [ { name: 'blob', data } ] });
+  let att = model.get('attachments.blob');
+  assert.ok(!att.get('url'));
+  return wait().then(() => {
+    assert.equal(att.get('url'), 'data:text/plain;base64,aGV5IHRoZXJl');
+  });
 });

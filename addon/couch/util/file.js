@@ -11,30 +11,30 @@ const {
 
 const options = '__sofa';
 
-function wrap(file, target) {
-  let opts = file[options];
+const wrap = (file) => {
+  const opts = file[options];
 
-  function setProperties(hash) {
-    if(target && !target.isDestroying) {
-      target.setProperties(hash);
+  const notifyTarget = hash => {
+    if(opts.target) {
+      opts.observers.forEach(observer => {
+        observer.filePropertiesDidChange(hash);
+      });
     }
   }
 
-  function progress(value) {
-    setProperties({ progress: value });
-  }
+  const progress = value => notifyTarget({ progress: value });
 
   file.contentType = fileContentType(file);
 
-  file.arrayBuffer = function() {
+  file.arrayBuffer = () => {
     let promise = opts.arrayBufferPromise;
     if(!promise) {
-      setProperties({ isLoading: true, isLoaded: false, isError: false, progress: 0, error: null });
-      promise = readFile(file, progress).then((result) => {
-        setProperties({ isLoading: false, isLoaded: true, isError: false, progress: 100, error: null });
+      notifyTarget({ isLoading: true, isLoaded: false, isError: false, progress: 0, error: null });
+      promise = readFile(file, progress).then(result => {
+        notifyTarget({ isLoading: false, isLoaded: true, isError: false, progress: 100, error: null });
         return result;
-      }, (err) => {
-        setProperties({ isLoading: false, isLoaded: false, isError: true, progress: 0, error: err });
+      }, err => {
+        notifyTarget({ isLoading: false, isLoaded: false, isError: true, progress: 0, error: err });
         return reject(err);
       });
       opts.arrayBufferPromise = promise;
@@ -42,19 +42,19 @@ function wrap(file, target) {
     return promise;
   };
 
-  file.base64String = function() {
+  file.base64String = () => {
     let promise = opts.base64StringPromise;
     if(!promise) {
-      promise = file.arrayBuffer().then((buffer) => {
+      promise = file.arrayBuffer().then(buffer => {
         let string = arrayBufferToBase64(buffer);
         if(!string) {
           return reject(new SofaError({ error: 'file_load', reason: 'File too large' }));
         }
         return string;
-      }).then((result) => {
+      }).then(result => {
         return result;
       }, (err) => {
-        setProperties({ error: err });
+        notifyTarget({ error: err });
         return reject(err);
       });
       opts.base64StringPromise = promise;
@@ -63,12 +63,22 @@ function wrap(file, target) {
   };
 
   return file;
+};
+
+export function wrapFile(file) {
+  if(!file[options]) {
+    file[options] = {
+      observers: Ember.A()
+    };
+    file = wrap(file);
+  }
+  return file;
 }
 
-export default function(file, target) {
-  if(file[options]) {
-    return file;
-  }
-  file[options] = {};
-  return wrap(file, target);
+export function addFileObserver(file, target) {
+  file[options].observers.addObject(target);
+}
+
+export function removeFileObserver(file, target) {
+  file[options].observers.removeObject(target);
 }

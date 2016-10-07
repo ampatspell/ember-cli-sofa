@@ -1,18 +1,64 @@
 import AttachmentContent from './content-internal';
 // TODO: crappy import
-import fileContentType from '../../../couch/util/file-content-type';
+import { wrapFile, addFileObserver, removeFileObserver } from '../../../couch/util/file';
 
 export default class AttachmentFileContent extends AttachmentContent {
 
   constructor(attachment, file) {
     super(attachment);
-    // wrap
-    file.contentType = fileContentType(file);
-    this.file = file;
+    this.file = wrapFile(file);
+    addFileObserver(file, this);
+    this.state = {
+      isLoading: false,
+      isLoaded: false,
+      isError: false,
+      progress: 0,
+      error: null
+    };
+    this.url = null;
   }
 
   get contentModelName() {
     return 'file';
+  }
+
+  filePropertiesDidChange(props) {
+    console.log(props);
+    let state = this.state;
+    this.withPropertyChanges(changed => {
+      for(let key in props) {
+        let value = props[value];
+        if(value !== state[key]) {
+          state[key] = value;
+          changed(key);
+        }
+      }
+    });
+  }
+
+  didCreateURL(url) {
+    this.withPropertyChanges(changed => {
+      this.url = url;
+      changed('url');
+    });
+  }
+
+  getURL() {
+    let url = this.url;
+    if(!url) {
+      this.getPromise();
+    }
+    return url;
+  }
+
+  getPromise() {
+    return this.file.base64String().then(string => {
+      let contentType = this.file.contentType;
+      let url = `data:${contentType};base64,`;
+      url += string;
+      this.didCreateURL(url);
+      return url;
+    });
   }
 
   serialize(preview) {
@@ -29,6 +75,11 @@ export default class AttachmentFileContent extends AttachmentContent {
         data: this.file
       };
     }
+  }
+
+  destroy() {
+    removeFileObserver(this.file, this);
+    super.destroy();
   }
 
 }
