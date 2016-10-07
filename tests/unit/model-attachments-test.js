@@ -272,7 +272,7 @@ test('file has array buffer promise', assert => {
   });
 });
 
-test.only('file has base64 promise', assert => {
+test('file has base64 promise', assert => {
   let data = createBlob('hey there', 'text/plain');
   let model = db.model('duck', { id: 'yellow', attachments: [ { name: 'blob', data } ] });
   let att = model.get('attachments.blob');
