@@ -29,7 +29,8 @@ body {
   cursor: pointer;
 }
 
-input[type=text] {
+input[type=text],
+input[type=password] {
   display: block;
   width: 100%;
   -webkit-appearance: none;
@@ -129,7 +130,7 @@ button {
 }
 
 .ui-row {
-  padding: 10px;
+  padding: 10px 10px 0 10px;
   > .title {
     padding: 0 0 5px 0;
     .font(14px);
@@ -145,6 +146,9 @@ button {
   &.action {
     cursor: pointer;
     .noselect;
+  }
+  &:last-child {
+    padding-bottom: 10px;
   }
 }
 
