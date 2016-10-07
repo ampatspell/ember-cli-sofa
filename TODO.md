@@ -1,7 +1,6 @@
 # TODO
 
 * database-documents-attachments-test
-* database-documents-test
 * properties-attribute-test
 * properties-attribute-transform-date-test
 * properties-attribute-transform-float-test
@@ -27,3 +26,4 @@
 # Done
 
 * model-callbacks-test
+* database-documents-test
