@@ -86,6 +86,13 @@ export default class AttachmentsInternal {
     return this.addAttachments(attachments);
   }
 
+  removeAttachments(attachments) {
+    this.ignoreProxyChangeNotifications = true;
+    this.willRemoveAttachments(attachments);
+    this.content.removeObjects(attachments);
+    this.ignoreProxyChangeNotifications = false;
+  }
+
   //
 
   attachmentModelsWillChange(proxy, removing) {
@@ -120,27 +127,25 @@ export default class AttachmentsInternal {
     let add = Ember.A();
     let remove = Ember.A(copy(content));
 
-    const byName = (name) => (attachment) => attachment.name === name;
+    const named = (name) => (attachment) => attachment.name === name;
 
     for(let name in hash) {
       let value = hash[name];
-      let current = content.find(byName(name));
+      let current = content.find(named(name));
       if(current) {
-        // exists
         current.deserialize(value);
         remove.removeObject(current);
       } else {
-        // new
         add.push(this.createAttachmentInternal(name, value));
       }
     }
 
     if(add.length > 0) {
-      throw new Error('not implemented');
+      this.addAttachments(add);
     }
 
     if(remove.length > 0) {
-      throw new Error('not implemented');
+      this.removeAttachments(remove);
     }
 
   }

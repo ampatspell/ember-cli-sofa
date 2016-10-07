@@ -13,10 +13,14 @@ let Duck = Model.extend({
   id: prefix(),
 });
 
-module('model-attachments', () => {
-  registerModels({ Duck });
+const flush = () => {
   store = createStore();
   db = store.get('db.main');
+};
+
+module('model-attachments', () => {
+  registerModels({ Duck });
+  flush();
   return cleanup(store, [ 'main' ]);
 });
 
@@ -127,5 +131,72 @@ test('save with attachment is reloaded and attachment content is replaced with s
     assert.ok(att.get('digest'));
     assert.ok(att.get('revpos'));
     assert.ok(att.get('length') === 3);
+  });
+});
+
+test('resave does not break attachments', assert => {
+  let model = db.model('duck', { id: 'yellow', attachments: [ { name: 'note', data: 'hey' } ] });
+  return model.save().then(() => {
+    return model.save({ force: true });
+  }).then(() => {
+    assert.ok(model.get('attachments.note.length') === 3);
+    return model.reload();
+  }).then(() => {
+    assert.ok(model.get('attachments.note.length') === 3);
+  });
+});
+
+test('load with attachment', assert => {
+  let model = db.model('duck', { id: 'yellow', attachments: [ { name: 'note', data: 'hey' } ] });
+  return model.save().then(() => {
+    flush();
+    return db.load('duck', 'yellow');
+  }).then(model => {
+    assert.ok(model.get('attachments.note'))
+    assert.ok(model.get('attachments.note.length') === 3);
+  });
+});
+
+test('delete attachment', assert => {
+  let model = db.model('duck', { id: 'yellow', attachments: [ { name: 'note', data: 'hey' }, { name: 'greeting', data: 'yaay' } ] });
+  return model.save().then(() => {
+    assert.ok(!model.get('isDirty'));
+    model.get('attachments').removeAt(0);
+    assert.ok(model.get('isDirty'));
+    return model.save();
+  }).then(() => {
+    assert.ok(!model.get('attachments.note'));
+    assert.ok(model.get('attachments.greeting'));
+    return db.get('documents').load('duck:yellow');
+  }).then(doc => {
+    assert.deepEqual_(doc, {
+      "_attachments": {
+        "greeting": {
+          "content_type": "text/plain",
+          "digest": "ignored",
+          "length": 4,
+          "revpos": "ignored",
+          "stub": true
+        }
+      },
+      "_id": "duck:yellow",
+      "_rev": "ignored",
+      "type": "duck"
+    });
+  });
+});
+
+test.only('deserialize with deleted attachment', assert => {
+  let model = db.model('duck', { id: 'yellow', attachments: [ { name: 'note', data: 'hey' }, { name: 'greeting', data: 'yaay' } ] });
+  return model.save().then(() => {
+    return db.get('documents').load('duck:yellow');
+  }).then(doc => {
+    delete doc._attachments.note;
+    return db.get('documents').save(doc);
+  }).then(() => {
+    return model.reload();
+  }).then(() => {
+    assert.ok(!model.get('attachments.note'));
+    assert.ok(model.get('attachments.greeting'));
   });
 });

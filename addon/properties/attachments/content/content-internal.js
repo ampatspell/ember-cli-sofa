@@ -28,6 +28,29 @@ export default class AttachmentContent {
     return model;
   }
 
+  withPropertyChanges(cb) {
+    let model = this.contentModel;
+
+    if(model) {
+      model.beginPropertyChanges();
+    }
+
+    let changed = (key) => {
+      if(!key) {
+        return;
+      }
+      if(model) {
+        model.notifyPropertyChange(key);
+      }
+    };
+
+    cb(changed);
+
+    if(model) {
+      model.endPropertyChanges();
+    }
+  }
+
   destroy() {
     if(this.contentModel) {
       this.contentModel.destroy();
