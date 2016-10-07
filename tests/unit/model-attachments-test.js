@@ -261,3 +261,22 @@ test('stub has url', assert => {
     assert.equal(model.get('attachments.note.url'), '/api/ember-cli-sofa-test-main/duck%3Ayellow/note?_r=1');
   });
 });
+
+test('file has array buffer promise', assert => {
+  let data = createBlob('hey there', 'text/plain');
+  let model = db.model('duck', { id: 'yellow', attachments: [ { name: 'blob', data } ] });
+  let att = model.get('attachments.blob');
+  return att.get('arrayBuffer').then(arrayBuffer => {
+    assert.ok(arrayBuffer instanceof ArrayBuffer);
+    assert.ok(arrayBuffer.byteLength === 9);
+  });
+});
+
+test.only('file has base64 promise', assert => {
+  let data = createBlob('hey there', 'text/plain');
+  let model = db.model('duck', { id: 'yellow', attachments: [ { name: 'blob', data } ] });
+  let att = model.get('attachments.blob');
+  return att.get('base64').then(string => {
+    assert.equal(string, 'aGV5IHRoZXJl');
+  });
+});

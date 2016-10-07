@@ -60,6 +60,14 @@ export default class AttachmentFileContent extends AttachmentContent {
     });
   }
 
+  getArrayBufferPromise() {
+    return this.file.arrayBuffer();
+  }
+
+  getBase64Promise() {
+    return this.file.base64String();
+  }
+
   serialize(preview) {
     if(preview) {
       return {

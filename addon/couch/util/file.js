@@ -4,6 +4,8 @@ import readFile from './file-reader';
 import fileContentType from './file-content-type';
 import arrayBufferToBase64 from './array-buffer-to-base64';
 
+// TODO: https://github.com/nolanlawson/blob-util
+
 const {
   RSVP: { reject }
 } = Ember;

@@ -1,6 +1,5 @@
 # TODO
 
-* model attachments
 * root collections
 * model inheritance
 * per-database models (each database is initialized with model folder name which is returned by store.databaseOptionsForIdentifier)
@@ -8,6 +7,7 @@
 * abstract Couch, have also PouchDB
 * couch changes listener
 * database changes -> push
+* get rid of wrapFile nonsense. have a nice class and don't keep resolved promises there
 
 # Done
 

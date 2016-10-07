@@ -32,6 +32,9 @@ let hash = {
   url:         call('getURL'),
   promise:     call('getPromise'),
 
+  arrayBuffer: call('getArrayBufferPromise'),
+  base64:      call('getBase64Promise'),
+
 };
 
 ['isLoading', 'isLoaded', 'isError', 'progress', 'error'].forEach(prop => {
