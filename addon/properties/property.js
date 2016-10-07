@@ -179,11 +179,11 @@ export default class Property {
     this.setDocValue(doc, transformed);
   }
 
-  serialize(internal, doc) {
+  serialize(internal, doc, preview) {
     if(!this.opts.serialize) {
       return;
     }
-    return this._serialize(internal, doc);
+    return this._serialize(internal, doc, preview);
   }
 
   _deserialize(internal, doc, changed) {
