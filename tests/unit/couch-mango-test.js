@@ -1,9 +1,4 @@
-import Ember from 'ember';
-import { module, test, createStore, cleanup, admin } from '../helpers/setup';
-
-const {
-  RSVP: { all }
-} = Ember;
+import { module, test, createStore, cleanup } from '../helpers/setup';
 
 let store;
 let db;
