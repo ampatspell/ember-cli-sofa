@@ -27,6 +27,10 @@ function make(property) {
 }
 
 function attr(transform, opts) {
+  if(typeof transform === 'object') {
+    opts = transform;
+    transform = undefined;
+  }
   return make(new Attribute(transform, opts));
 }
 
