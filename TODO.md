@@ -1,6 +1,5 @@
 # TODO
 
-* properties-attribute-transform-float-test
 * properties-attribute-transform-integer-test
 * properties-attribute-transform-json-test
 * properties-attribute-transform-object-test
@@ -26,3 +25,4 @@
 * properties-attribute-test
 * properties-attribute-transform-test
 * properties-attribute-transform-date-test
+* properties-attribute-transform-float-test
