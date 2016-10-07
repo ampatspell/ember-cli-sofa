@@ -1,6 +1,5 @@
 # TODO
 
-* couch mango indexes
 * root collections
 * model attachments
 * model inheritance
@@ -25,3 +24,4 @@
 * model-inheritance-test
 * support cross-database model loads (`{ user: { database: 'users', _id: 'user:ampatspell' } }`
 * couch database tests from old impl
+* couch mango indexes
