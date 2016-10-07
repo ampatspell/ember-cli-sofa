@@ -20,7 +20,7 @@ let flush = () => {
   store = createStore();
   db = store.get('db.main');
   db.set('modelNames', [ 'test-duck', 'custom-duck' ]);
-}
+};
 
 module('type', () => {
   registerModels({ TestDuck, CustomDuck });
@@ -43,7 +43,7 @@ test('initial value cannot be overridden', assert => {
       "error": "assertion",
       "reason": "Type value must be 'test-duck'"
     });
-  })
+  });
 });
 
 test('initial value cannot be changed', assert => {
@@ -58,7 +58,7 @@ test('initial value cannot be changed', assert => {
       "error": "assertion",
       "reason": "Type value must be 'test-duck'"
     });
-  })
+  });
 });
 
 test('custom key and value', assert => {

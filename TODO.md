@@ -1,6 +1,5 @@
 # TODO
 
-* properties-type-test
 * model-inheritance-test
 * couch mango indexes
 * couch database tests from old impl
@@ -25,3 +24,4 @@
 * properties-attribute-transform-float-test
 * properties-attribute-transform-integer-test
 * properties-attribute-transform-json-test
+* properties-type-test
