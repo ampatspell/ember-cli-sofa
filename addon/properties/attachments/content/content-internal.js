@@ -31,6 +31,10 @@ export default class AttachmentContent {
   withPropertyChanges(cb) {
     let model = this.contentModel;
 
+    if(model.isDestroying) {
+      model = null;
+    }
+
     if(model) {
       model.beginPropertyChanges();
     }
