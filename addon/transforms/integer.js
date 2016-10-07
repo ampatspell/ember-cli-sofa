@@ -1,16 +1,16 @@
 import Ember from 'ember';
-import Transform from './transform';
+import SimpleTransform from './simple';
 
 const {
   copy
 } = Ember;
 
-export default class IntegerTransform extends Transform {
+export default class IntegerTransform extends SimpleTransform {
 
-  toModel(value, attr) {
+  transform(value, opts) {
     var number = parseInt(value);
     if(isNaN(number)) {
-      return copy(attr.opts.fallback);
+      return copy(opts.fallback);
     }
     return number;
   }
