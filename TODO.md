@@ -1,5 +1,20 @@
 # TODO
 
+* database-documents-attachments-test
+* database-documents-test
+* model-callbacks-test
+* properties-attribute-test
+* properties-attribute-transform-date-test
+* properties-attribute-transform-float-test
+* properties-attribute-transform-integer-test
+* properties-attribute-transform-json-test
+* properties-attribute-transform-object-test
+* properties-attribute-transform-test
+* properties-type-test
+* model-inheritance-test
+* util-test
+* couch mango indexes
+* couch database tests from old impl
 * root collections
 * model attachments
 * model inheritance
@@ -7,7 +22,5 @@
 * support cross-database model loads (`{ user: { database: 'users', _id: 'user:ampatspell' } }`
 * embedded models (persisted as a `{ key: { model } }`)
 * abstract Couch, have also PouchDB
-* database permissions
-* couch mango indexes
 * couch changes listener
 * database changes -> push
