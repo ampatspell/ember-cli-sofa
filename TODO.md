@@ -1,6 +1,5 @@
 # TODO
 
-* database-documents-attachments-test
 * properties-attribute-test
 * properties-attribute-transform-date-test
 * properties-attribute-transform-float-test
@@ -10,7 +9,6 @@
 * properties-attribute-transform-test
 * properties-type-test
 * model-inheritance-test
-* util-test
 * couch mango indexes
 * couch database tests from old impl
 * root collections
@@ -27,3 +25,4 @@
 
 * model-callbacks-test
 * database-documents-test
+* database-documents-attachments-test -> couch-documents-attachments-test
