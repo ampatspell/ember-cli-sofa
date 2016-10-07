@@ -1,6 +1,5 @@
 # TODO
 
-* properties-attribute-transform-object-test
 * properties-type-test
 * model-inheritance-test
 * couch mango indexes
