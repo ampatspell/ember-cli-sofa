@@ -1,6 +1,5 @@
 # TODO
 
-* understand what is happening with deserialization
 * couch mango indexes
 * couch database tests from old impl
 * root collections
