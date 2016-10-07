@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import { Content } from './content';
+import { Content, internal } from './content';
 import { mapping } from './stub-content-internal';
 
 const {
@@ -20,4 +20,8 @@ for(let key in mapping) {
   hash[value] = data(key);
 }
 
-export default Content.extend(merge({}, hash));
+export default Content.extend(merge({
+
+  url: internal('url')
+
+}, hash));

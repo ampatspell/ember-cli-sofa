@@ -153,7 +153,7 @@ test('load with attachment', assert => {
     flush();
     return db.load('duck', 'yellow');
   }).then(model => {
-    assert.ok(model.get('attachments.note'))
+    assert.ok(model.get('attachments.note'));
     assert.ok(model.get('attachments.note.length') === 3);
     assert.ok(model.get('attachments.note.contentType') === 'text/plain');
   });
@@ -230,7 +230,7 @@ test('blob content', assert => {
   let data = createBlob('hey there', 'text/plain');
   let model = db.model('duck', { id: 'yellow', attachments: [ { name: 'blob', data } ] });
   let att = model.get('attachments.blob');
-  assert.ok(att.get('contentType') === 'text/plain')
+  assert.ok(att.get('contentType') === 'text/plain');
   assert.ok(att.get('length') === 9);
 });
 
@@ -245,12 +245,19 @@ test('file url promise', assert => {
   });
 });
 
-test.only('file url is autoloaded', assert => {
+test('file url is autoloaded', assert => {
   let data = createBlob('hey there', 'text/plain');
   let model = db.model('duck', { id: 'yellow', attachments: [ { name: 'blob', data } ] });
   let att = model.get('attachments.blob');
   assert.ok(!att.get('url'));
   return wait().then(() => {
     assert.equal(att.get('url'), 'data:text/plain;base64,aGV5IHRoZXJl');
+  });
+});
+
+test('stub has url', assert => {
+  let model = db.model('duck', { id: 'yellow', attachments: [ { name: 'note', data: 'hey' } ] });
+  return model.save().then(() => {
+    assert.equal(model.get('attachments.note.url'), '/api/ember-cli-sofa-test-main/duck%3Ayellow/note?_r=1');
   });
 });
