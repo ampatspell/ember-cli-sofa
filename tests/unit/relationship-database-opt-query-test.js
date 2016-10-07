@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import { module, test, createStore, registerModels, registerQueries, cleanup } from '../helpers/setup';
+import { module, test, createStore, registerModels, registerQueries, cleanup, wait } from '../helpers/setup';
 import { Query, Model, prefix, belongsTo } from 'sofa';
 
 const {
@@ -79,7 +79,7 @@ test('load duck', assert => {
   duck.set('user', user);
   return all([duck, user].map(model => model.save())).then(() => {
     flush();
-    return main.load('duck', 'yellow');
+    return wait().then(() => main.load('duck', 'yellow')); // sleep for mango
   }).then(duck => {
     return duck.get('user.promise');
   }).then(user => {
