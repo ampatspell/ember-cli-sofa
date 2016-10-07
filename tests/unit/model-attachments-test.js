@@ -71,7 +71,7 @@ test('add object throws', assert => {
   });
 });
 
-test.only('string attachment content', assert => {
+test('string attachment content', assert => {
   let attachments = db.model('duck').get('attachments');
   attachments.pushObject({ name: 'note', data: 'hey there' });
 

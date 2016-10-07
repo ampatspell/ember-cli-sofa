@@ -14,4 +14,4 @@ export default (attachment, hash) => {
     error: 'invalid_attachment',
     reason: `unsupported attachment object.data '${data}'. data may be String, File or Blob`
   });
-}
+};
