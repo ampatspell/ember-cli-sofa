@@ -2,7 +2,6 @@
 
 * database-documents-attachments-test
 * database-documents-test
-* model-callbacks-test
 * properties-attribute-test
 * properties-attribute-transform-date-test
 * properties-attribute-transform-float-test
@@ -24,3 +23,7 @@
 * abstract Couch, have also PouchDB
 * couch changes listener
 * database changes -> push
+
+# Done
+
+* model-callbacks-test
