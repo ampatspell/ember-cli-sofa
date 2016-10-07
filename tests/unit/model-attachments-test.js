@@ -74,10 +74,16 @@ test('add object throws', assert => {
 test.only('string attachment content', assert => {
   let attachments = db.model('duck').get('attachments');
   attachments.pushObject({ name: 'note', data: 'hey there' });
+
   let attachment = attachments.get('note');
   assert.ok(attachment);
+  assert.ok(attachment.get('name') === 'note');
+
   let content = attachment.get('content');
   assert.ok(content);
+  assert.ok(content.get('type') === 'local');
+  assert.ok(content.get('contentType') === 'text/plain');
+
   let data = content.get('data');
-  assert.ok(data);
+  assert.ok(data === 'hey there');
 });
