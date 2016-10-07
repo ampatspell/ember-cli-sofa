@@ -1,5 +1,5 @@
 import { module, test, createStore, registerModels, cleanup } from '../helpers/setup';
-import { Model, prefix, attr } from 'sofa';
+import { Model, prefix } from 'sofa';
 
 let store;
 let db;
@@ -7,14 +7,6 @@ let db;
 let Duck = Model.extend({
   id: prefix(),
 });
-
-/*
-
-  let attachments = model.get('attachments');
-  attachment = attachments.pushObject({ name, type, data });
-  attachments.remove('name');
-
-*/
 
 module('model-attachments', () => {
   registerModels({ Duck });

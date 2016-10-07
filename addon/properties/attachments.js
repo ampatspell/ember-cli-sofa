@@ -5,8 +5,7 @@ import AttachmentsInternal from './attachments/attachments-internal';
 const {
   merge,
   Logger: { error },
-  K,
-  getOwner
+  K
 } = Ember;
 
 export default class Attachments extends Property {
@@ -40,7 +39,7 @@ export default class Attachments extends Property {
     return attachments;
   }
 
-  _setValue(internal, value, changed) {
+  _setValue(internal) {
     error(`Cannot set model attachments for model ${internal.modelName} with id ${internal.docId}`);
     this.notifyPropertyChange(internal);
     return this.getValue(internal);
