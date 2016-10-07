@@ -1,5 +1,10 @@
+import Ember from 'ember';
 import { module, test, createStore, registerModels, cleanup } from '../helpers/setup';
 import { Model, prefix } from 'sofa';
+
+const {
+  RSVP: { resolve }
+} = Ember;
 
 let store;
 let db;
@@ -42,5 +47,26 @@ test('add marks model dirty', assert => {
     assert.ok(duck.get('isDirty') === false);
     duck.get('attachments').pushObject({ name: 'note', type: 'text/plain', data: 'heyy' });
     assert.ok(duck.get('isDirty') === true);
+  });
+});
+
+test('add string', assert => {
+  let model = db.model('duck');
+  let attachments = model.get('attachments');
+  attachments.pushObject({ name: 'note', data: 'hey there' });
+  assert.ok(attachments.get('note'));
+  assert.ok(attachments.get('note._internal').content.type === 'local');
+});
+
+test('add object throws', assert => {
+  return resolve().then(() => {
+    db.model('duck').get('attachments').pushObject({ name: 'note', data: {} });
+  }).then(() => {
+    assert.ok(false, 'should reject');
+  }, err => {
+    assert.deepEqual(err.toJSON(), {
+      "error": "invalid_attachment",
+      "reason": "unsupported attachment object.data '[object Object]'. data may be String, File or Blob"
+    });
   });
 });

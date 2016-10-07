@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import createAttachmentContentInternal from './create-attachment-content-internal';
 
 const {
   getOwner
@@ -6,12 +7,15 @@ const {
 
 export default class Attachment {
 
-  constructor(attachments, name, type, data) {
+  constructor(attachments, name, hash) {
     this.attachments = attachments;
-    this.attachmentModel = null;
     this.name = name;
-    this.type = type;
-    this.data = data;
+    this.content = this.createContentForHash(hash);
+    this.attachmentModel = null;
+  }
+
+  createContentForHash(hash) {
+    return createAttachmentContentInternal(this, hash);
   }
 
   createAttachmentModel() {

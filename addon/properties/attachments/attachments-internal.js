@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import { isObject_, assert } from '../../util/assert';
+import { isObject_, isString_, assert } from '../../util/assert';
 import AttachmentInternal from './attachment-internal';
 
 const {
@@ -43,7 +43,8 @@ export default class AttachmentsInternal {
 
   createAttachmentInternalFromHash(hash) {
     isObject_(`attachment must be object { name, type, data } not ${hash}`, hash);
-    return new AttachmentInternal(this, hash.name, hash.type, hash.data);
+    isString_(`attachment.name must be string not ${hash.name}`, hash.name);
+    return new AttachmentInternal(this, hash.name, hash);
   }
 
   getAttachmentInternalByName(name) {
