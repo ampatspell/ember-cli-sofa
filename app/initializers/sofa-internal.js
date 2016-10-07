@@ -4,6 +4,8 @@ import Couch from 'sofa/couch';
 import Session from 'sofa/session';
 import Databases from 'sofa/databases';
 import Database from 'sofa/database';
+import DatabaseSecurity from 'sofa/security';
+import DatabaseSecurityPair from 'sofa/security-pair';
 
 import NoopTransform from 'sofa/transforms/noop';
 import StringTransform from 'sofa/transforms/string';
@@ -27,6 +29,8 @@ export default {
     container.register('sofa:session', Session, { instantiate: false });
     container.register('sofa:databases', Databases, { instantiate: false });
     container.register('sofa:database', Database, { instantiate: false });
+    container.register('sofa:database-security', DatabaseSecurity, { instantiate: false });
+    container.register('sofa:database-security-pair', DatabaseSecurityPair, { instantiate: false });
 
     container.register('sofa:belongs-to-loaded', BelongsToLoaded, { instantiate: false });
     container.register('sofa:has-many-persisted', HasManyPersisted, { instantiate: false });

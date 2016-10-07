@@ -64,11 +64,15 @@ export default function(opts) {
     };
   };
 
+  const caller = function(key) {
+    return function() {
+      this[key].call(this);
+    };
+  };
+
   for(let key in opts) {
     let value = opts[key];
-    hash[`_observe_${key}_deps`] = observer(...value, function() {
-      this[key].call(this);
-    });
+    hash[`_observe_${key}_deps`] = observer(...value, caller(key));
   }
 
   return Ember.Mixin.create(merge(hash, {

@@ -7,6 +7,7 @@ import DatabaseDeserialize from './database/database-deserialize';
 import DatabaseSerialize from './database/database-serialize';
 import DatabaseInternalModelIdentity from './database/database-internal-model-identity';
 import DatabaseInternalModel from './database/database-internal-model';
+import DatabaseSecurity from './database/database-security';
 
 export default Ember.Object.extend(
   DatabaseModelClass,
@@ -15,7 +16,8 @@ export default Ember.Object.extend(
   DatabaseDeserialize,
   DatabaseSerialize,
   DatabaseInternalModelIdentity,
-  DatabaseInternalModel, {
+  DatabaseInternalModel,
+  DatabaseSecurity, {
 
   identifier: null,
 

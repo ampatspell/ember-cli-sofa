@@ -9,7 +9,7 @@ const session = function() {
   return lookup('sofa:session', function() {
     return { couch: this };
   });
-}
+};
 
 export default Ember.Object.extend({
 
@@ -17,6 +17,6 @@ export default Ember.Object.extend({
 
   url: oneWay('documents.url'),
 
-  session: session(),
+  session: session()
 
 });

@@ -9,6 +9,5 @@
 * abstract Couch, have also PouchDB
 * database permissions
 * couch mango indexes
-* sofa:security
 * couch changes listener
 * database changes -> push
