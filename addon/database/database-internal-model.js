@@ -385,8 +385,8 @@ export default Ember.Mixin.create({
       }
     }
 
-    let documents = this.get('documents');
-    return documents.mango(opts).then(json => {
+    let mango = this.get('documents.mango');
+    return mango.find(opts).then(json => {
       return this._deserializeDocuments(json.docs, expectedModelClass, optional);
     });
   },
