@@ -1,5 +1,6 @@
 # TODO
 
+* destroy isNew model -> model is removed from identity.new _and_ all assigned relationships
 * root collections
 * model inheritance
 * per-database models (each database is initialized with model folder name which is returned by store.databaseOptionsForIdentifier)
