@@ -167,8 +167,6 @@ export default Ember.Mixin.create({
 
   _onInternalModelLoaded(internal, doc) {
     return resolve().then(() => {
-      let definition = internal.definition;
-      this._assertDefinitionMatchesDocument(definition, doc);
       this._deserializeDocument(internal, doc);
     }).then(() => internal, err => {
       this._onInternalModelError(internal, err);
@@ -184,10 +182,9 @@ export default Ember.Mixin.create({
     let docId = internal.docId;
     let documents = this.get('documents');
 
-    return resolve(null, `sofa:database load { database: '${this.get('identifier')}', model: '${internal.modelName}', _id: '${docId}' }`).then(() => {
-      this._onInternalModelLoading(internal);
-      return documents.load(docId);
-    }).then(doc => {
+    this._onInternalModelLoading(internal);
+
+    return documents.load(docId).then(doc => {
       return this._onInternalModelLoaded(internal, doc);
     }, err => {
       this._onInternalModelLoadFailed(internal, err);
@@ -253,9 +250,7 @@ export default Ember.Mixin.create({
       return this._loadInternalModel(internal, opts);
     }
 
-    return resolve(null, `sofa:database load { database: '${this.get('identifier')}', _id: '${docId}' }`).then(() => {
-      return this.get('documents').load(docId);
-    }).then(doc => {
+    return this.get('documents').load(docId).then(doc => {
       return this._deserializeSavedDocumentToInternalModel(doc, null, false);
     });
   },
@@ -271,8 +266,7 @@ export default Ember.Mixin.create({
     let docId = definition.docId(modelId);
 
     return this.get('documents').load(docId).then(doc => {
-      internal = this._createExistingInternalModel(modelClass, modelId);
-      return this._onInternalModelLoaded(internal, doc);
+      return this._deserializeSavedDocumentToInternalModel(doc, modelClass, false);
     });
   },
 
@@ -343,17 +337,6 @@ export default Ember.Mixin.create({
     }, err => {
       return this._onInternalModelDeleteFailed(internal, err);
     });
-  },
-
-  _deserializeDocuments(docs, expectedModelClass, optional) {
-    return Ember.A(Ember.A(docs.map(doc => {
-      if(!doc) {
-        // on high load it is possible that view returns row with already deleted document's key, value but w/o doc
-        // see: https://issues.apache.org/jira/browse/COUCHDB-1797
-        return;
-      }
-      return this._deserializeDocumentToInternalModel(doc, expectedModelClass, optional);
-    })).compact());
   },
 
   _expectedModelClassFromOpts(opts) {

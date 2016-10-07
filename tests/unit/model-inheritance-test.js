@@ -17,6 +17,7 @@ let TestSmartYellowDuck = TestYellowDuck.extend({
 let flush = () => {
   store = createStore();
   db = store.get('db.main');
+  db.set('modelNames', [ 'test-duck', 'test-yellow-duck', 'test-smart-yellow-duck' ]);
 };
 
 module('model-inheritance', () => {
@@ -44,7 +45,7 @@ test('load yellow duck', assert => {
   });
 });
 
-test.skip('load yellow duck as a duck', assert => {
+test('load yellow duck as a duck', assert => {
   let model = db.model('test-yellow-duck', { id: 'hello', name: 'yellow' });
   return model.save().then(() => {
     flush();
@@ -65,7 +66,7 @@ test('load duck as yellow-duck fails', assert => {
   }, err => {
     assert.deepEqual({
       "error": "invalid_document",
-      "reason": "document 'hello' is expected to be 'test-yellow-duck'"
+      "reason": "document 'hello' is expected to be 'test-yellow-duck' not 'test-duck'"
     }, err.toJSON());
   });
 });

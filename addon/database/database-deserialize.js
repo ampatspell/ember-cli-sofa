@@ -39,6 +39,7 @@ export default Ember.Mixin.create({
 
   _deserializeDocument(internal, doc) {
     let definition = internal.definition;
+    this._assertDefinitionMatchesDocument(definition, doc);
     internal.withPropertyChanges(changed => {
       definition.onLoaded(internal, doc, changed);
       this._storeLoadedInternalModel(internal);
@@ -49,9 +50,13 @@ export default Ember.Mixin.create({
     let docId = doc._id;
 
     let modelClass = this._modelClassForDocument(doc);
-    if(!modelClass) {
+    if(!modelClass && !expectedModelClass) {
       assert({ error: 'unknown_model', reason: `unknown model for document ${docId}` }, optional);
       return;
+    }
+
+    if(!modelClass) {
+      modelClass = expectedModelClass;
     }
 
     let internal = this._internalModelWithDocId(docId, true);
@@ -89,6 +94,17 @@ export default Ember.Mixin.create({
     } else {
       return this._deserializeSavedDocumentToInternalModel(doc, expectedModelClass, optional);
     }
+  },
+
+  _deserializeDocuments(docs, expectedModelClass, optional) {
+    return Ember.A(Ember.A(docs.map(doc => {
+      if(!doc) {
+        // on high load it is possible that view returns row with already deleted document's key, value but w/o doc
+        // see: https://issues.apache.org/jira/browse/COUCHDB-1797
+        return;
+      }
+      return this._deserializeDocumentToInternalModel(doc, expectedModelClass, optional);
+    })).compact());
   },
 
   _deserializeDocIdToInternalModel(modelClass, docId) {
