@@ -13,6 +13,9 @@ Router.map(function() {
       this.route('edit');
     });
   });
+  this.route('images', function() {
+    this.route('new');
+  });
 });
 
 export default Router;
