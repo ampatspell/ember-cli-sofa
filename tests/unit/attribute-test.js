@@ -34,13 +34,13 @@ test('attribute can be set', assert => {
   assert.equal(model.get('name'), 'other');
 });
 
-test.skip('initial value is set if opts is undefined', assert => {
+test('initial value is set if opts is undefined', assert => {
   let model = db.model('test-house');
   assert.equal(model.get('_internal').values.name, 'untitled');
   assert.equal(model.get('name'), 'untitled');
 });
 
-test.skip('initial value fn is set if opts is undefined', assert => {
+test('initial value fn is set if opts is undefined', assert => {
   let model = db.model('test-house');
   assert.equal(model.get('_internal').values.location, 'unknown');
   assert.equal(model.get('location'), 'unknown');

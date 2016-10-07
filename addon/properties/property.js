@@ -3,7 +3,8 @@ import { getInternalModel } from '../internal-model';
 
 const {
   merge,
-  assert
+  assert,
+  copy
 } = Ember;
 
 function expandPersist(opts) {
@@ -50,12 +51,26 @@ export default class Property {
     this.store = store;
   }
 
+  initialValue() {
+    let initial = this.opts.initial;
+    if(initial === undefined) {
+      return;
+    }
+    if(typeof initial === 'function') {
+      return initial();
+    }
+    return copy(initial);
+  }
+
   prepareInternalModel(internal, opts, changed) {
     if(!this.setsModelInitialValueFromOptions) {
       return;
     }
     let name = this.name;
     let value = opts[name];
+    if(value === undefined) {
+      value = this.initialValue();
+    }
     let transformed = this.transformValueToInternalModel(internal, value);
     this.setValue(internal, transformed, changed);
     return name;
