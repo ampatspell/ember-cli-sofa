@@ -32,7 +32,8 @@ test('serialize persist:false relationship', assert => {
   let house = db.model('house', { id: 'big', duck });
   assert.deepEqual(house.serialize(), {
     "_id": "house:big",
-    "type": "house"
+    "_attachments": {},
+    "type": "house",
   });
 });
 
@@ -121,6 +122,7 @@ test('load', assert => {
     assert.deepEqual_(duck.serialize(), {
       "_id": "duck:duck",
       "_rev": "ignored",
+      "_attachments": {},
       "house": "house:house",
       "type": "duck"
     });

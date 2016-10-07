@@ -42,6 +42,7 @@ test('deserialize', assert => {
   }, changed);
 
   assert.deepEqual(Ember.copy(model.get('_internal').values), {
+    "attachments": model.get('_internal').values.attachments,
     "age": 10,
     "id": "yellow",
     "name": "Yellow Duck",
@@ -50,6 +51,7 @@ test('deserialize', assert => {
 
   assert.deepEqual(model.serialize(), {
     "_id": "duck:yellow",
+    "_attachments": {},
     "age": 10,
     "name": "Yellow Duck",
     "type": "the-duck"
@@ -84,6 +86,7 @@ test('deserialize and serialize keeps additional doc props', assert => {
 
   assert.deepEqual(Ember.copy(model.get('_internal').values), {
     "age": 10,
+    "attachments": model._internal.values.attachments,
     "id": "yellow",
     "name": "Yellow Duck",
     "type": "the-duck"
@@ -91,6 +94,7 @@ test('deserialize and serialize keeps additional doc props', assert => {
 
   assert.deepEqual(model.serialize(), {
     "_id": "duck:yellow",
+    "_attachments": {},
     "age": 10,
     "name": "Yellow Duck",
     "type": "the-duck",

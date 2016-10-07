@@ -12,7 +12,7 @@ export default class AttachmentStringContent extends AttachmentContent {
     return 'string';
   }
 
-  serialize(preview) {
+  serialize() {
     return {
       content_type: this.contentType,
       data:         this.data

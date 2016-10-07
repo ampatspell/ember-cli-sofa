@@ -26,6 +26,7 @@ test('serialize relationship', assert => {
   let duck = db.model('duck', { id: 'yellow', house });
   assert.deepEqual(duck.serialize(), {
     "_id": "duck:yellow",
+    "_attachments": {},
     "type": "duck",
     "house": "house:big"
   });
@@ -35,6 +36,7 @@ test('deserialize relationship', assert => {
   let model = db.push({ _id: 'duck:yellow', type: 'duck', house: 'house:big' });
   assert.deepEqual(model.serialize(), {
     "_id": "duck:yellow",
+    "_attachments": {},
     "type": "duck",
     "house": "house:big"
   });

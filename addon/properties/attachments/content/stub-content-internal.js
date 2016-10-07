@@ -28,7 +28,7 @@ export default class AttachmentStubContent extends AttachmentContent {
     return this.data.length;
   }
 
-  serialize(preview) {
+  serialize() {
     return this.data;
   }
 

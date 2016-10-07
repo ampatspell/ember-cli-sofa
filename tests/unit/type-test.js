@@ -65,7 +65,7 @@ test('custom key and value', assert => {
   var model = db.model('custom-duck');
   assert.deepEqual(model.serialize(), {
     kind: 'custom_duck',
-    // "_attachments": {},
+    _attachments: {},
   });
 });
 

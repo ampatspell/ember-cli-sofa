@@ -120,9 +120,11 @@ export default class AttachmentsInternal {
     let add = Ember.A();
     let remove = Ember.A(copy(content));
 
+    const byName = (name) => (attachment) => attachment.name === name;
+
     for(let name in hash) {
       let value = hash[name];
-      let current = content.find(attachment => attachment.name === name);
+      let current = content.find(byName(name));
       if(current) {
         // exists
         current.deserialize(value);

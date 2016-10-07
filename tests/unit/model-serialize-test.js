@@ -28,6 +28,7 @@ test('serialize', assert => {
 
   assert.deepEqual(model.serialize(), {
     "_id": "duck:yellow",
+    "_attachments": {},
     "age": 10,
     "name": "Yellow Duck",
     "type": "the-duck"

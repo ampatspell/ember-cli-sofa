@@ -51,7 +51,7 @@ test('do not serialize serialize:false attr', assert => {
   assert.deepEqual({
     "name": "yellow",
     "type": "test-duck",
-    // "_attachments": {},
+    "_attachments": {},
   }, model.serialize());
 });
 
