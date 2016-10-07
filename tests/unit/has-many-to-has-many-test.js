@@ -66,7 +66,7 @@ test('save', assert => {
   small.get('ducks').pushObject(green);
 
   return all([ yellow, green, big, small ].map(model => model.save())).then(() => {
-    return db.get('documents').mango({ selector: { type: { $gt: null } }});
+    return db.get('documents.mango').find({ selector: { type: { $gt: null } }});
   }).then(json => {
     assert.deepEqual_(json.docs, [
       {

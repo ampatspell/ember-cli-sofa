@@ -7,6 +7,7 @@ import Database from 'sofa/couch/database';
 import Security from 'sofa/couch/database/security';
 import Design from 'sofa/couch/database/design';
 import DatabaseDatabase from 'sofa/couch/database/database';
+import Mango from 'sofa/couch/database/mango';
 
 export default {
   name: 'sofa:couch',
@@ -20,5 +21,6 @@ export default {
     container.register('couch:database-database', DatabaseDatabase, { instantiate: false });
     container.register('couch:database-security', Security, { instantiate: false });
     container.register('couch:database-design', Design, { instantiate: false });
+    container.register('couch:database-mango', Mango, { instantiate: false });
   }
 };
