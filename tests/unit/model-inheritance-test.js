@@ -17,7 +17,7 @@ let TestSmartYellowDuck = TestYellowDuck.extend({
 let flush = () => {
   store = createStore();
   db = store.get('db.main');
-}
+};
 
 module('model-inheritance', () => {
   registerModels({ TestDuck, TestYellowDuck, TestSmartYellowDuck });
