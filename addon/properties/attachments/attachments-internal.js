@@ -150,4 +150,39 @@ export default class AttachmentsInternal {
 
   }
 
+  //
+
+  // add({ name: 'original', data: file, contentType: 'text/plain' })
+  // add('original', file)
+  // add('original', file, 'text/plain')
+  addAttachmentWithVariableArguments() {
+    let hash = {};
+    if(typeof arguments[0] === 'object') {
+      hash = arguments[0];
+    } else if(typeof arguments[0] === 'string') {
+      hash = {
+        name: arguments[0],
+        data: arguments[1],
+        type: arguments[2]
+      };
+    }
+
+    let existing = this.getAttachmentInternalByName(hash.name);
+    if(existing) {
+      this.removeAttachments([ existing ]);
+    }
+
+    let added = this.addAttachmentHashes([ hash ]);
+    let internal = added[0];
+    return internal.getAttachmentModel();
+  }
+
+  removeAttachmentWithName(name) {
+    let internal = this.getAttachmentInternalWithName(name);
+    if(!internal) {
+      return;
+    }
+    this.removeAttachments([ internal ]);
+  }
+
 }
