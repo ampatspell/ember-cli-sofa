@@ -45,6 +45,37 @@ export default Ember.Object.extend({
 
   explain(opts) {
     return this._query('_explain', opts);
+  },
+
+  //
+
+  save(ddoc, name, index) {
+    return this.request({
+      method: 'post',
+      url: '_index',
+      json: true,
+      data: {
+        ddoc,
+        name,
+        index
+      }
+    });
+  },
+
+  all() {
+    return this.request({
+      method: 'get',
+      url: '_index',
+      json: true
+    });
+  },
+
+  delete(ddoc, name) {
+    return this.request({
+      method: 'delete',
+      url: `_index/${ddoc}/json/${name}`,
+      json: true,
+    });
   }
 
 });
