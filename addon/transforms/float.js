@@ -8,16 +8,16 @@ const {
 
 export default class FloatTransform extends SimpleTransform {
 
- transform(value, opts) {
-   var number = parseFloat(value);
-   if(isNaN(number)) {
-     return null;
-   }
-   let decimals = opts.round;
-   if(decimals) {
-     number = round(number, decimals);
-   }
-   return number;
- }
+  transform(value, opts) {
+    var number = parseFloat(value);
+    if(isNaN(number)) {
+      return copy(opts.fallback);
+    }
+    let decimals = opts.round;
+    if(decimals) {
+      number = round(number, decimals);
+    }
+    return number;
+  }
 
 }

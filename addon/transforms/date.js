@@ -2,8 +2,7 @@ import Ember from 'ember';
 import Transform from './transform';
 
 const {
-  typeOf,
-  copy
+  typeOf
 } = Ember;
 
 export default class DateTransform extends Transform {
@@ -15,7 +14,7 @@ export default class DateTransform extends Transform {
     return date;
   }
 
-  toModel(value, attr) {
+  toModel(value) {
     let type = typeOf(value);
     if(type === 'date') {
       return this._validDate(value);

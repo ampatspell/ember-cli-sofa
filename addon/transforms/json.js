@@ -2,13 +2,12 @@ import Ember from 'ember';
 import SimpleTransform from './simple';
 
 const {
-  copy,
   Logger: { error }
 } = Ember;
 
 export default class JSONTransform extends SimpleTransform {
 
-  transform(value, opts) {
+  transform(value) {
     try {
       let string = JSON.stringify(value);
       if(string === undefined) {
