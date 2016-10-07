@@ -39,4 +39,7 @@ export default class AttachmentsInternal {
     return this.content.find(internal => internal.name === name);
   }
 
+  // observe public array proxy
+  // didAdd, didRemove lalala
+
 }
