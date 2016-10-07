@@ -1,7 +1,7 @@
 # TODO
 
-* root collections
 * model attachments
+* root collections
 * model inheritance
 * per-database models (each database is initialized with model folder name which is returned by store.databaseOptionsForIdentifier)
 * embedded models (persisted as a `{ key: { model } }`)
