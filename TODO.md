@@ -1,6 +1,5 @@
 # TODO
 
-* replace attachment
 * root collections
 * model inheritance
 * per-database models (each database is initialized with model folder name which is returned by store.databaseOptionsForIdentifier)
@@ -26,3 +25,4 @@
 * support cross-database model loads (`{ user: { database: 'users', _id: 'user:ampatspell' } }`
 * couch database tests from old impl
 * couch mango indexes
+* replace attachment
