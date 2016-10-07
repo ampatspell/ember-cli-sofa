@@ -28,4 +28,10 @@ export default class AttachmentContent {
     return model;
   }
 
+  destroy() {
+    if(this.contentModel) {
+      this.contentModel.destroy();
+    }
+  }
+
 }

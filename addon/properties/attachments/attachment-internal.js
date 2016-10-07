@@ -36,4 +36,12 @@ export default class Attachment {
     return this.content.getContentModel();
   }
 
+  destroy() {
+    this.content.destroy();
+    if(this.attachmentModel) {
+      this.attachmentModel.destroy();
+      this.attachmentModel = null;
+    }
+  }
+
 }

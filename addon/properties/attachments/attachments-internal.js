@@ -54,13 +54,12 @@ export default class AttachmentsInternal {
   //
 
   willRemoveAttachment(attachment) {
-    console.log('willRemoveAttachment', attachment);
+    attachment.destroy();
     this.dirty();
   }
 
   didAddAttachment(attachment) {
     assert(`attachment '${attachment.name}' is already assigned to ${attachment.attachments.internalModel.modelName} with id '${attachment.attachments.internalModel.docId}'`, attachment.attachments === this);
-    console.log('didAddAttachment', attachment);
     this.dirty();
   }
 
