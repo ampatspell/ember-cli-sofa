@@ -43,10 +43,18 @@ export default class Property {
     }
   }
 
+  validateDocumentKey(key) {
+    let required = this.requiredDocumentKey;
+    if(required) {
+      assert(`${this.name} can only be saved as a ${required} document key`, required === key);
+    }
+  }
+
   prepareModelClass(name, declaringModelClass, store) {
     this.validatePropertyName(name);
     this.name = name;
     this.opts.key = this.opts.key || this.name;
+    this.validateDocumentKey(this.opts.key);
     this.declaringModelClass = declaringModelClass;
     this.store = store;
   }
@@ -171,11 +179,11 @@ export default class Property {
     this.setDocValue(doc, transformed);
   }
 
-  serialize(internal, doc) {
+  serialize(internal, doc, preview) {
     if(!this.opts.serialize) {
       return;
     }
-    return this._serialize(internal, doc);
+    return this._serialize(internal, doc, preview);
   }
 
   _deserialize(internal, doc, changed) {

@@ -79,7 +79,7 @@ test('load duck', assert => {
   duck.set('user', user);
   return all([duck, user].map(model => model.save())).then(() => {
     flush();
-    return wait().then(() => main.load('duck', 'yellow')); // sleep for mango
+    return wait(1000).then(() => main.load('duck', 'yellow')); // sleep for mango
   }).then(duck => {
     return duck.get('user.promise');
   }).then(user => {

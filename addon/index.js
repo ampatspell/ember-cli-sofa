@@ -9,7 +9,8 @@ import {
   type,
   attr,
   belongsTo,
-  hasMany
+  hasMany,
+  attachments
 } from './properties/helpers';
 
 const hasOne = belongsTo;
@@ -22,6 +23,7 @@ export {
   id,
   prefix,
   rev,
+  attachments,
   type,
   attr,
   belongsTo,

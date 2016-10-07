@@ -9,7 +9,8 @@ const {
 
 const routes = [
   { title: 'index' },
-  { title: 'authors' }
+  { title: 'authors' },
+  { title: 'images' }
 ];
 
 const Route = Ember.Object.extend({

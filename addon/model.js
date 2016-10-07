@@ -2,7 +2,7 @@ import Ember from 'ember';
 import Error from './util/error';
 import { internalPropertyName, getInternalModel } from './internal-model';
 import { create as definition } from './model-definition';
-import { type, rev, id } from './properties/helpers';
+import { type, rev, id, attachments } from './properties/helpers';
 import ModelStateMixin from './model-state-mixin';
 
 const {
@@ -73,6 +73,7 @@ const Model = Ember.Object.extend(ModelStateMixin, {
   [internalPropertyName]: null,
 
   type: type(),
+  attachments: attachments(),
   rev: rev(),
   id: id(),
 

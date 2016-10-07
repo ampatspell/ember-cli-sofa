@@ -88,8 +88,9 @@ export default Ember.Mixin.create({
   },
 
   _reloadInternalModelAttachments(internal, json) {
-    console.log('TODO: database-model-operations._reloadInternalModelAttachments', internal, json);
-    return resolve();
+    return this.get('documents').load(json.id, { rev: json.rev }).then(doc => {
+      this._deserializeInternalModelAttachments(internal, doc);
+    });
   },
 
   _saveInternalModel(internal, opts) {

@@ -56,6 +56,7 @@ test('serialize deleted belongsTo', assert => {
 
   assert.deepEqual(duck.serialize(), {
     "_id": "duck:yellow",
+    "_attachments": {},
     "house": null,
     "type": "duck"
   });
@@ -64,6 +65,7 @@ test('serialize deleted belongsTo', assert => {
 
   assert.deepEqual(duck.serialize(), {
     "_id": "duck:yellow",
+    "_attachments": {},
     "house": "house:big",
     "type": "duck"
   });

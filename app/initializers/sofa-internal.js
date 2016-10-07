@@ -19,6 +19,12 @@ import BelongsToLoaded from 'sofa/properties/relations/proxies/belongs-to-loaded
 import HasManyPersisted from 'sofa/properties/relations/proxies/has-many-persisted';
 import HasManyLoaded from 'sofa/properties/relations/proxies/has-many-loaded';
 
+import Attachments from 'sofa/properties/attachments/attachments';
+import Attachment from 'sofa/properties/attachments/attachment';
+import AttachmentStringContent from 'sofa/properties/attachments/content/string-content';
+import AttachmentFileContent from 'sofa/properties/attachments/content/file-content';
+import AttachmentStubContent from 'sofa/properties/attachments/content/stub-content';
+
 export default {
   name: 'sofa:internal',
   after: 'sofa:couch',
@@ -46,5 +52,11 @@ export default {
     container.register('sofa:transform/boolean', BooleanTransform, { instantiate: false });
     container.register('sofa:transform/date', DateTransform, { instantiate: false });
     container.register('sofa:transform/json', JSONTransform, { instantiate: false });
+
+    container.register('sofa:attachments', Attachments, { instantiate: false });
+    container.register('sofa:attachment', Attachment, { instantiate: false });
+    container.register('sofa:attachment-content/string', AttachmentStringContent, { instantiate: false });
+    container.register('sofa:attachment-content/file', AttachmentFileContent, { instantiate: false });
+    container.register('sofa:attachment-content/stub', AttachmentStubContent, { instantiate: false });
   }
 };

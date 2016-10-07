@@ -1,0 +1,26 @@
+{{#ui-block title='Add a new image'}}
+  {{#ui-row title='file'}}
+    {{ui-file action=(action 'file')}}
+  {{/ui-row}}
+  {{#with model.attachments.original as |image|}}
+    {{#ui-row title='Image'}}
+      {{#if image.isLocal}}
+        {{#if image.isLoading}}
+          Loading…
+        {{else if image.isLoaded}}
+          <img src={{image.url}}/>
+        {{else}}
+          Error loading {{image.error.message}}
+        {{/if}}
+      {{else}}
+        <img src={{image.url}}/>
+      {{/if}}
+    {{/ui-row}}
+  {{/with}}
+  {{#ui-row title='comment'}}
+    {{ui-input value=model.comment}}
+  {{/ui-row}}
+  {{#ui-row}}
+    {{ui-button title='Save' action=(action 'save')}}
+  {{/ui-row}}
+{{/ui-block}}

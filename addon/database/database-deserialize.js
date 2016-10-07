@@ -14,6 +14,14 @@ export default Ember.Mixin.create({
     return internal;
   },
 
+  _deserializeInternalModelAttachments(internal, doc) {
+    let definition = internal.definition;
+    internal.withPropertyChanges(changed => {
+      definition.deserializeAttachments(internal, doc, changed);
+    }, true);
+    return internal;
+  },
+
   _deserializeDeletedDocumentToInternalModel(doc) {
     let docId = doc._id;
 

@@ -1,0 +1,18 @@
+{{#each model as |image|}}
+  {{#ui-block title=image.id}}
+    {{#ui-row}}
+      <img src={{image.attachments.original.url}}/>
+    {{/ui-row}}
+    {{#if image.comment}}
+      {{#ui-row}}
+        {{image.comment}}
+      {{/ui-row}}
+    {{/if}}
+  {{/ui-block}}
+{{/each}}
+
+{{#ui-block}}
+  {{#ui-row}}
+    {{ui-button title='Add new' action=(action 'new')}}
+  {{/ui-row}}
+{{/ui-block}}

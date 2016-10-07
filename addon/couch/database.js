@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import SofaError from '../util/error';
-import wrap from './util/file';
+import { wrapFile } from './util/file';
 import { isFileOrBlob, hasToBase64, toBase64 } from './util/file-availability';
 
 const {
@@ -88,7 +88,7 @@ export default Ember.Object.extend({
   },
 
   _loadFileAttachment(attachment, file) {
-    file = wrap(file);
+    file = wrapFile(file);
     attachment.content_type = file.contentType;
     return file.base64String();
   },

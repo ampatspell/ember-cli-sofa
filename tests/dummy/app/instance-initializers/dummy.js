@@ -1,6 +1,6 @@
 import { later } from 'sofa/util/run';
 
-function throttle(db) {
+export function throttle(db) {
   let documents = db.get('documents');
   let request = documents.request;
   documents.request = (...args) => {
@@ -19,7 +19,7 @@ export default {
     store.set('_applicationName', 'dummy');
 
     let main = store.get('db.main');
-    throttle(main);
+    // throttle(main);
 
     window.store = store;
     window.db = main;
