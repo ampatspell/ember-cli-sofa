@@ -3,13 +3,11 @@ import Ember from 'ember';
 import { module, test, createStore, cleanup, admin } from '../helpers/setup';
 
 const {
-  copy,
   RSVP: { all }
 } = Ember;
 
 let store;
 let db;
-let design;
 
 module('couch-documents', () => {
   store = createStore();
