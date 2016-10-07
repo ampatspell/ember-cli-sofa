@@ -4,7 +4,7 @@ import AttachmentContent from './content-internal';
 import { wrapFile, addFileObserver, removeFileObserver } from '../../../couch/util/file';
 
 const {
-  run: { next }
+  run: { next, cancel }
 } = Ember;
 
 export default class AttachmentFileContent extends AttachmentContent {
@@ -50,9 +50,19 @@ export default class AttachmentFileContent extends AttachmentContent {
   getURL() {
     let url = this.url;
     if(!url) {
-      this.getPromise();
+      this.enqueueLoadIfNeeded();
     }
     return url;
+  }
+
+  enqueueLoadIfNeeded() {
+    // TODO: get rid of this crap along with wrapFile
+    if(this._enqueueLoadIfNeeded) {
+      return;
+    }
+    this._enqueueLoadIfNeeded = next(() => {
+      this.getPromise();
+    });
   }
 
   getPromise() {
@@ -74,12 +84,7 @@ export default class AttachmentFileContent extends AttachmentContent {
   }
 
   getStateProperty(key) {
-    // TODO: get rid of this crap along with wrapFile
-    if(this.state.isLoading === false) {
-      next(() => {
-        this.getPromise();
-      });
-    }
+    this.enqueueLoadIfNeeded();
     return this.state[key];
   }
 
@@ -100,6 +105,7 @@ export default class AttachmentFileContent extends AttachmentContent {
   }
 
   destroy() {
+    cancel(this._enqueueLoadIfNeeded);
     removeFileObserver(this.file, this);
     super.destroy();
   }
