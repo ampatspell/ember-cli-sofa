@@ -13,6 +13,7 @@ import IntegerTransform from 'sofa/transforms/integer';
 import FloatTransform from 'sofa/transforms/float';
 import BooleanTransform from 'sofa/transforms/boolean';
 import DateTransform from 'sofa/transforms/date';
+import JSONTransform from 'sofa/transforms/json';
 
 import BelongsToLoaded from 'sofa/properties/relations/proxies/belongs-to-loaded';
 import HasManyPersisted from 'sofa/properties/relations/proxies/has-many-persisted';
@@ -44,5 +45,6 @@ export default {
     container.register('sofa:transform/float', FloatTransform, { instantiate: false });
     container.register('sofa:transform/boolean', BooleanTransform, { instantiate: false });
     container.register('sofa:transform/date', DateTransform, { instantiate: false });
+    container.register('sofa:transform/json', JSONTransform, { instantiate: false });
   }
 };
