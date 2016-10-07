@@ -34,7 +34,7 @@ export default class Identifier extends Attribute {
     this.setDocValue(doc, value);
   }
 
-  matchesDocument(modelClass, doc) {
+  matchesDocument(modelClass, doc={}) {
     let expected = this.valueForModelClass(modelClass);
     let value = this.getDocValue(doc);
     return expected === value;

@@ -46,8 +46,13 @@ function rev() {
   return make(new Revision());
 }
 
-function type(value) {
-  return make(new Type(value));
+function type(value, opts) {
+  if(typeof value === 'object') {
+    opts = value;
+    value = opts.value;
+    delete opts.value;
+  }
+  return make(new Type(value, opts));
 }
 
 function belongsTo(modelName, opts={}) {

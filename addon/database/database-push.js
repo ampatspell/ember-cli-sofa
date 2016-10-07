@@ -7,7 +7,7 @@ const {
 export default Ember.Mixin.create({
 
   push(doc, opts) {
-    opts = merge({ optional: true, instantiate: true }, opts);
+    opts = merge({ optional: false, instantiate: true }, opts);
 
     let ExpectedModelClass;
     if(opts.model) {

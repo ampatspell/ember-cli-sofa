@@ -13,7 +13,7 @@ let TestDuck = Model.extend({
 });
 
 let CustomDuck = Model.extend({
-  type: type({ key: 'kind', value: 'custom_duck', foof:true }),
+  type: type({ key: 'kind', value: 'custom_duck', foof: true }),
 });
 
 let flush = () => {
@@ -61,7 +61,7 @@ test('initial value cannot be changed', assert => {
   })
 });
 
-test.only('custom key and value', assert => {
+test('custom key and value', assert => {
   var model = db.model('custom-duck');
   assert.deepEqual(model.serialize(), {
     kind: 'custom_duck',
@@ -69,11 +69,9 @@ test.only('custom key and value', assert => {
   });
 });
 
-// TODO: ....
-
 test('matchedDocument', assert => {
-  var model = db.model('test-duck', { type: 'foof' });
-  var type = model.get('modelProperties').type;
+  var model = db.model('test-duck', {});
+  var type = model.get('_internal').getProperty('type');
   var modelClass = model.constructor;
 
   assert.ok(!type.matchesDocument(modelClass));
@@ -86,8 +84,8 @@ test('matchedDocument', assert => {
 });
 
 test('matchesDocument for custom key-value', assert => {
-  var model = db.model('custom-duck', { type: 'foof' });
-  var type = model.get('modelProperties').type;
+  var model = db.model('custom-duck', {});
+  var type = model.get('_internal').getProperty('type');
   var modelClass = model.constructor;
 
   assert.ok(!type.matchesDocument(modelClass));
@@ -122,9 +120,7 @@ test('deserialize document without knowing the type', assert => {
     db.set('modelNames', [ 'custom-duck' ]);
     return db.get('documents').load('duck');
   }).then(doc => {
-    let resp = db.get('modelManager.deserializer').deserializeDocument(null, doc);
-    assert.ok(resp);
-    let model = resp.model;
+    let model = db.push(doc);
     assert.ok(model);
     assert.ok(model.get('modelName') === 'custom-duck');
   });
