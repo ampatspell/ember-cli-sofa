@@ -34,3 +34,13 @@ test('add attachment, get attachment', assert => {
   assert.ok(attachments.get('note') === att);
   assert.ok(attachments.named('note') === att);
 });
+
+test('add marks model dirty', assert => {
+  return db.model('duck', { id: 'yellow' }).save().then(duck => {
+    assert.ok(duck.get('isDirty') === false);
+    duck.get('attachments');
+    assert.ok(duck.get('isDirty') === false);
+    duck.get('attachments').pushObject({ name: 'note', type: 'text/plain', data: 'heyy' });
+    assert.ok(duck.get('isDirty') === true);
+  });
+});

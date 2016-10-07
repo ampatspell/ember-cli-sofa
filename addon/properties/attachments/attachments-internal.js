@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import { isObject_ } from '../../util/assert';
+import { isObject_, assert } from '../../util/assert';
 import AttachmentInternal from './attachment-internal';
 
 const {
@@ -15,6 +15,13 @@ export default class AttachmentsInternal {
     this.content = Ember.A();
   }
 
+  dirty() {
+    let internal = this.internalModel;
+    internal.withPropertyChanges(changed => {
+      internal.onDirty(changed);
+    }, true);
+  }
+
   createAttachmentsModel() {
     let _internal = this;
     let content = this.content;
@@ -25,6 +32,10 @@ export default class AttachmentsInternal {
     let model = this.attachmentsModel;
     if(!model) {
       model = this.createAttachmentsModel();
+      model.addEnumerableObserver(this, {
+        willChange: this.attachmentModelsWillChange,
+        didChange: this.attachmentModelsDidChange
+      });
       this.attachmentsModel = model;
     }
     return model;
@@ -39,7 +50,33 @@ export default class AttachmentsInternal {
     return this.content.find(internal => internal.name === name);
   }
 
-  // observe public array proxy
-  // didAdd, didRemove lalala
+  //
+
+  willRemoveAttachment(attachment) {
+    console.log('willRemoveAttachment', attachment);
+    this.dirty();
+  }
+
+  didAddAttachment(attachment) {
+    assert(`attachment '${attachment.name}' is already assigned to ${attachment.attachments.internalModel.modelName} with id '${attachment.attachments.internalModel.docId}'`, attachment.attachments === this);
+    console.log('didAddAttachment', attachment);
+    this.dirty();
+  }
+
+  //
+
+  attachmentModelsWillChange(proxy, removing) {
+    removing.forEach(model => {
+      let internal = model._internal;
+      this.willRemoveAttachment(internal);
+    });
+  }
+
+  attachmentModelsDidChange(proxy, removeCount, adding) {
+    adding.forEach(model => {
+      let internal = model._internal;
+      this.didAddAttachment(internal);
+    });
+  }
 
 }
