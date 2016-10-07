@@ -81,7 +81,7 @@ export default Ember.Object.extend({
   load(name, opts) {
     opts = merge({ optional: false }, opts);
     let id = this.id(name);
-    return this.get('database').load(id).then((doc) => {
+    return this.get('database').load(id, { encoded: true }).then((doc) => {
       return doc;
     }, (err) => {
       if(opts.optional && err.status === 404) {
@@ -93,14 +93,14 @@ export default Ember.Object.extend({
 
   save(name, hash) {
     let doc = this._build(name, hash);
-    return this.load(name, { optional: true }).then((cur) => {
+    return this.load(name, { encoded: true, optional: true }).then((cur) => {
       if(cur) {
         doc._rev = cur._rev;
         if(this._deepEqual(doc, cur)) {
           return { ok: true, id: doc._id, rev: doc._rev, saved: false };
         }
       }
-      return this.get('database').save(doc).then((data) => {
+      return this.get('database').save(doc, { encoded: true }).then((data) => {
         data.saved = true;
         return data;
       });
@@ -111,7 +111,7 @@ export default Ember.Object.extend({
     opts = merge({ optional: false }, opts);
     return this.load(name, { optional: opts.optional }).then((cur) => {
       if(cur) {
-        return this.get('database').delete(cur._id, cur._rev).then((data) => {
+        return this.get('database').delete(cur._id, cur._rev, { encoded: true }).then((data) => {
           data.deleted = true;
           return data;
         });

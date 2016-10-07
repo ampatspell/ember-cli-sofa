@@ -64,14 +64,22 @@ export default Ember.Object.extend({
     return this.get('database').info();
   },
 
+  _encodedIdUrl(id, opts) {
+    let encoded = opts.encoded;
+    delete opts.encoded;
+    if(!id || encoded) {
+      return id;
+    }
+    return encodeURIComponent(id);
+  },
+
   load(id, opts) {
     assert(`id must be string not ${id}`, typeOf(id) === 'string');
-
     opts = merge({}, opts);
 
     return this.request({
       type: 'get',
-      url: encodeURIComponent(id),
+      url: this._encodedIdUrl(id, opts),
       qs: {
         rev: opts.rev,
       },
@@ -125,8 +133,10 @@ export default Ember.Object.extend({
     });
   },
 
-  save(doc) {
+  save(doc, opts={}) {
     assert(`Document must be object not ${doc}`, typeOf(doc) === 'object');
+
+    let encodedId = this._encodedIdUrl(doc._id, opts);
 
     let scope = {};
     return resolve().then(() => {
@@ -137,7 +147,7 @@ export default Ember.Object.extend({
 
       if(doc._id) {
         type = 'put';
-        url = encodeURIComponent(doc._id);
+        url = encodedId;
       } else {
         type = 'post';
       }
@@ -156,13 +166,13 @@ export default Ember.Object.extend({
     }, null, 'sofa:database save');
   },
 
-  delete(id, rev) {
+  delete(id, rev, opts={}) {
     assert(`id must be string not ${id}`, typeOf(id) === 'string');
     assert(`rev must be string not ${rev}`, typeOf(rev) === 'string');
 
     return this.request({
       type: 'delete',
-      url: encodeURIComponent(id),
+      url: this._encodedIdUrl(id, opts),
       qs: {
         rev: rev
       },

@@ -41,7 +41,7 @@ test('design is inserted', assert => {
       "rev": "ignored",
       "saved": true
     });
-    return design.load('_design/foof');
+    return design.load('foof');
   }).then(doc => {
     assert.deepEqual_(doc, {
       "_id": "_design/foof",
