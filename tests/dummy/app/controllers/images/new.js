@@ -4,12 +4,7 @@ export default Ember.Controller.extend({
 
   actions: {
     file(file) {
-      let attachments = this.get('model.attachments');
-      let original = attachments.findBy('name', 'original');
-      if(original) {
-        attachments.removeObject(original);
-      }
-      attachments.pushObject({ name: 'original', data: file });
+      this.get('model.attachments').add('original', file);
     },
     save() {
       this.get('model').save();
