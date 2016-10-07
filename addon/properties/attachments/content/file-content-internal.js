@@ -23,7 +23,6 @@ export default class AttachmentFileContent extends AttachmentContent {
   }
 
   filePropertiesDidChange(props) {
-    console.log(props);
     let state = this.state;
     this.withPropertyChanges(changed => {
       for(let key in props) {

@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import { Content, internal } from './content';
+import { Content } from './content';
 
 const {
   computed
