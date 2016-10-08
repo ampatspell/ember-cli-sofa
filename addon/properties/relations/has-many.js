@@ -80,23 +80,25 @@ export default class HasManyRelation extends Relation {
     this.dirty();
   }
 
+  // TODO: get rid of getWrappedContent()!!!!1111oneoneone
+
   inverseDeleted(internal) {
-    console.log('removing from hasMany in', this.internal.docId, internal.docId);
+    // console.log('removing from hasMany in', this.internal.docId, internal.docId);
     this.ignoreValueChanges = true;
     this.getWrappedContent().removeObject(internal);
-    console.log('removed', internal.docId);
-    console.log(this.content.length);
-    console.log(this.value.get('length'));
+    // console.log('removed', internal.docId);
+    // console.log(this.content.length);
+    // console.log(this.value.get('length'));
     internal.removeObserver(this);
     this.dirty();
     this.ignoreValueChanges = false;
   }
 
   getWrappedContent() {
-    let value = this.value;
-    if(value) {
-      return new ArrayWrapper(value, internal => internal.getModel());
-    }
+    // let value = this.value;
+    // if(value) {
+    //   return new ArrayWrapper(value, internal => internal.getModel());
+    // }
     let content = this.getContent();
     return new ArrayWrapper(content, internal => internal);
   }

@@ -1,5 +1,6 @@
 # TODO
 
+* get rid of getWrappedContent() in has-many
 * destroy isNew model -> model is removed from identity.new _and_ all assigned relationships
 * root collections
 * per-database models (each database is initialized with model folder name which is returned by store.databaseOptionsForIdentifier)
