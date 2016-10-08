@@ -19,8 +19,16 @@ export default Ember.Mixin.create({
     }
   },
 
+  _createModelForName(modelName, props) {
+    let store = this.get('store');
+    let Model = this.modelClassForName(modelName);
+    let { internal, instance } = store._createNewInternalModel(Model, this, props);
+    this._storeNewInternalModel(internal);
+    return internal.getModel(instance);
+  },
+
   model(modelName, props) {
-    return this.get('store')._createModelForName(modelName, this, props);
+    return this._createModelForName(modelName, props);
   },
 
   existing(modelName, modelId, opts) {
