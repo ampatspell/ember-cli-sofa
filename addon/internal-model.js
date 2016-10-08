@@ -330,4 +330,13 @@ export default class InternalModel {
     this.setLazyLoadModelPromise(this.createLazyLoadPromise());
   }
 
+  modelWillDestroy() {
+    let database = this._database;
+    if(database) {
+      database._internalModelWillDestroy(this);
+    }
+    this.definition.onDestroy(this);
+    this.model = null;
+  }
+
 }

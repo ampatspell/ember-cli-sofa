@@ -208,4 +208,9 @@ export default class Property {
     internal.enqueueLazyLoadModelIfNeeded();
   }
 
+  //
+
+  modelWillDestroy() {
+  }
+
 }

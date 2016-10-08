@@ -37,9 +37,9 @@ export default class Relationship extends Property {
     return internal.database;
   }
 
-  getRelation(internal) {
+  getRelation(internal, create=true) {
     let relation = this.getInternalValue(internal);
-    if(!relation) {
+    if(!relation && create) {
       relation = this.createRelation(internal);
       this.setInternalValue(internal, relation, K);
     }
@@ -79,6 +79,16 @@ export default class Relationship extends Property {
 
   onDeleted(internal) {
     this.getRelation(internal).onDeleted();
+  }
+
+  modelWillDestroy(internal) {
+    if(!internal.state.isNew) {
+      return;
+    }
+    let relation = this.getRelation(internal, false);
+    if(relation) {
+      relation.modelWillDestroy();
+    }
   }
 
 }

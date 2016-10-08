@@ -4,7 +4,8 @@ import { getInternalModel, internalModelDidChangeIsDeleted } from '../../interna
 
 const {
   getOwner,
-  assert
+  assert,
+  copy
 } = Ember;
 
 const getDiff = (curr, next) => {
@@ -80,8 +81,12 @@ export default class HasManyRelation extends Relation {
   }
 
   inverseDeleted(internal) {
+    console.log('removing from hasMany in', this.internal.docId, internal.docId);
     this.ignoreValueChanges = true;
     this.getWrappedContent().removeObject(internal);
+    console.log('removed', internal.docId);
+    console.log(this.content.length);
+    console.log(this.value.get('length'));
     internal.removeObserver(this);
     this.dirty();
     this.ignoreValueChanges = false;
@@ -223,6 +228,25 @@ export default class HasManyRelation extends Relation {
       return null;
     }
     return internal.getModel();
+  }
+
+  //
+
+  modelWillDestroy() {
+    if(!this.internal.state.isNew) {
+      return;
+    }
+
+    let content = this.content;
+    if(content) {
+      content = Ember.A(copy(content));
+      content.forEach(internal => {
+        let inverse = this.getInverseRelation(internal);
+        if(inverse) {
+          inverse.inverseDeleted(this.internal);
+        }
+      });
+    }
   }
 
 }

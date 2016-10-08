@@ -103,4 +103,7 @@ export default class Relation {
     return null;
   }
 
+  modelWillDestroy() {
+  }
+
 }

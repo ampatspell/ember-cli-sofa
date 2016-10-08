@@ -37,7 +37,8 @@ export default class BelongsToRelation extends Relation {
     }, true);
   }
 
-  inverseDeleted() {
+  inverseDeleted(internal) {
+    console.log(this.internal.docId, 'sets its value to null becuse', internal.docId, 'was deleteed');
     this.withPropertyChanges(changed => {
       this.setValue(null, changed);
     });
@@ -129,6 +130,20 @@ export default class BelongsToRelation extends Relation {
     let internal = this.toInternalModel(value);
     this.setContent(internal, changed);
     return this.getValue();
+  }
+
+  //
+
+  modelWillDestroy() {
+    if(!this.internal.state.isNew) {
+      return;
+    }
+
+    let content = this.content;
+    if(content) {
+      let inverse = this.getInverseRelation(content);
+      inverse.inverseDeleted(this.internal);
+    }
   }
 
 }

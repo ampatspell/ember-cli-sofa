@@ -91,6 +91,11 @@ const Model = Ember.Object.extend(ModelStateMixin, {
   willSave: Ember.K,
   willDelete: Ember.K,
 
+  willDestroy() {
+    getInternalModel(this).modelWillDestroy();
+    this._super();
+  }
+
 });
 
 Model.reopenClass({

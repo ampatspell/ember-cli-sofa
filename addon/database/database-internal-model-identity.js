@@ -89,11 +89,15 @@ export default Ember.Mixin.create({
 
   //
 
-  _internalModelWillChangeDatabase(internal) {
+  _unstoreNewInternalModel(internal) {
     assert('internal model must be isNew', internal.state.isNew);
     let storage = this._modelIdentity;
     storage.all.removeObject(internal);
     storage.new.removeObject(internal);
+  },
+
+  _internalModelWillChangeDatabase(internal) {
+    this._unstoreNewInternalModel(internal);
   },
 
   _internalModelDidChangeDatabase(internal) {
@@ -102,5 +106,12 @@ export default Ember.Mixin.create({
     storage.all.addObject(internal);
     storage.new.addObject(internal);
   },
+
+  _internalModelWillDestroy(internal) {
+    if(!internal.state.isNew) {
+      return;
+    }
+    this._unstoreNewInternalModel(internal);
+  }
 
 });

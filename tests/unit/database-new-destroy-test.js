@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import { module, test, createStore, registerModels, cleanup } from '../helpers/setup';
 import { Model, prefix, belongsTo, hasMany } from 'sofa';
+import { next } from 'sofa/util/run';
 
 const {
   RSVP: { map }
@@ -43,16 +44,24 @@ module('model-new-destroy', () => {
 test('destroyed new model is removed from relationships', assert => {
   let blog = db.model('the-blog', { id: 'big' });
   let post = db.model('the-post', { id: 'nice' });
+  let duck;
   return map([ blog, post ], model => model.save()).then(() => {
-    let duck = db.model('duck', { blog, posts: [ post ] });
+    duck = db.model('duck', { id: 'yellow', blog, posts: [ post ] });
 
     assert.ok(blog.get('ducks').objectAt(0) === duck);
     assert.ok(post.get('duck') === duck);
 
     duck.destroy();
 
-    assert.equal(blog.get('ducks.length') === 0);
-    assert.ok(post.get('duck') === null);
+    return next();
+  }).then(() => {
+    assert.ok(duck.isDestroyed);
 
+    assert.ok(duck.get('blog') === null);
+    assert.ok(duck.get('posts.length') === 0); // f
+
+    assert.ok(blog.get('ducks._relation').value.length === 0);
+    assert.ok(blog.get('ducks.length') === 0); // f
+    assert.ok(post.get('duck') === null);
   });
 });
