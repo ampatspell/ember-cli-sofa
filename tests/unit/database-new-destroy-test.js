@@ -33,7 +33,7 @@ let ThePost = Model.extend({
 
 });
 
-module('model-new', () => {
+module('model-new-destroy', () => {
   registerModels({ Duck, TheBlog, ThePost });
   store = createStore();
   db = store.get('db.main');
@@ -56,5 +56,3 @@ test('destroyed new model is removed from relationships', assert => {
 
   });
 });
-
-// TODO: also all isNew models, assigned in relationships are destroyed
