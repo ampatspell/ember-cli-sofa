@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import EmptyObject from '../util/empty-object';
-import { isString } from '../util/assert';
+import { isString, assert } from '../util/assert';
 
 const {
   on
@@ -85,6 +85,22 @@ export default Ember.Mixin.create({
     if(array) {
       array.removeObject(internal);
     }
-  }
+  },
+
+  //
+
+  _internalModelWillChangeDatabase(internal) {
+    assert('internal model must be isNew', internal.state.isNew);
+    let storage = this._modelIdentity;
+    storage.all.removeObject(internal);
+    storage.new.removeObject(internal);
+  },
+
+  _internalModelDidChangeDatabase(internal) {
+    assert('internal model must be isNew', internal.state.isNew);
+    let storage = this._modelIdentity;
+    storage.all.addObject(internal);
+    storage.new.addObject(internal);
+  },
 
 });

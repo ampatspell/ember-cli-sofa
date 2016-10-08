@@ -26,3 +26,19 @@ test('saved model is removed from new', assert => {
     assert.ok(db._modelIdentity.all[0] === model._internal);
   });
 });
+
+test.only('store created model is added to identity on database assign', assert => {
+  let model = store.model('duck');
+  model.set('database', db);
+  assert.ok(db._modelIdentity.new[0] === model._internal);
+  assert.ok(db._modelIdentity.all[0] === model._internal);
+
+  let second = store.database('second');
+  model.set('database', second);
+
+  assert.ok(db._modelIdentity.new.length === 0);
+  assert.ok(db._modelIdentity.all.length === 0);
+
+  assert.ok(second._modelIdentity.new[0] === model._internal);
+  assert.ok(second._modelIdentity.all[0] === model._internal);
+});

@@ -74,10 +74,28 @@ export default class InternalModel {
   }
 
   set database(database) {
+    this.willSetDatabase();
     if(this._database !== database) {
       assert({ error: 'internal', reason: 'Database can be set only while model is new' }, this.state.isNew);
       this._database = database;
     }
+    this.didSetDatabase();
+  }
+
+  willSetDatabase() {
+    let database = this._database;
+    if(!database) {
+      return;
+    }
+    database._internalModelWillChangeDatabase(this);
+  }
+
+  didSetDatabase() {
+    let database = this._database;
+    if(!database) {
+      return;
+    }
+    database._internalModelDidChangeDatabase(this);
   }
 
   notifyPropertyChange(key) {
