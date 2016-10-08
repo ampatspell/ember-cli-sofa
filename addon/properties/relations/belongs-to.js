@@ -1,10 +1,5 @@
-import Ember from 'ember';
 import Relation from './relation';
 import { internalModelDidChangeIsDeleted, internalModelDidChangeWillDestroy } from '../../internal-model';
-
-const {
-  assert
-} = Ember;
 
 export default class BelongsToRelation extends Relation {
 
@@ -42,7 +37,7 @@ export default class BelongsToRelation extends Relation {
     }, true);
   }
 
-  inverseDeleted(internal) {
+  inverseDeleted() {
     this.withPropertyChanges(changed => {
       this.setValue(null, changed);
     });
@@ -97,12 +92,10 @@ export default class BelongsToRelation extends Relation {
   }
 
   onInternalDestroyed() {
-    let internal = this.internal;
     this.onInternalDeleted();
   }
 
   onContentDestroyed() {
-    let internal = this.content;
     this.onContentDeleted();
   }
 

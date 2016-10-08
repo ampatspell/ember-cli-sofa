@@ -4,8 +4,7 @@ import { getInternalModel, internalModelDidChangeIsDeleted, internalModelDidChan
 
 const {
   getOwner,
-  assert,
-  copy
+  assert
 } = Ember;
 
 const getDiff = (curr, next) => {
@@ -165,7 +164,6 @@ export default class HasManyRelation extends Relation {
   }
 
   onInternalDestroyed() {
-    let internal = this.internal;
   }
 
   onContentDestroyed(internal) {
