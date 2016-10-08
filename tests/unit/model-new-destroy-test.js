@@ -42,13 +42,19 @@ module('model-new-destroy', () => {
 });
 
 test('destroyed new model is removed from relationships', assert => {
-  let blog = db.model('the-blog', { id: 'big' });
   let post = db.model('the-post', { id: 'nice' });
+  let blog = db.model('the-blog', { id: 'big', posts: [ post ] });
   let duck;
   return map([ blog, post ], model => model.save()).then(() => {
     duck = db.model('duck', { id: 'yellow', blog, posts: [ post ] });
 
+    assert.ok(duck.get('blog') === blog);
+    assert.ok(duck.get('posts').objectAt(0) === post);
+
     assert.ok(blog.get('ducks').objectAt(0) === duck);
+    assert.ok(blog.get('posts').objectAt(0) === post);
+
+    assert.ok(post.get('blog') === blog);
     assert.ok(post.get('duck') === duck);
 
     duck.destroy();
@@ -57,11 +63,11 @@ test('destroyed new model is removed from relationships', assert => {
   }).then(() => {
     assert.ok(duck.isDestroyed);
 
-    assert.ok(duck.get('blog') === null);                        // 4
-    assert.ok(duck.get('posts.length') === 0);                   // 5
+    assert.ok(duck.get('blog') === null);                        // 8
+    assert.ok(duck.get('posts.length') === 0);                   // 9
 
-    assert.ok(blog.get('ducks._relation').content.length === 0); // 6
-    assert.ok(blog.get('ducks.length') === 0);                   // 7
-    assert.ok(post.get('duck') === null);                        // 8
+    assert.ok(blog.get('ducks._relation').content.length === 0); // 10
+    assert.ok(blog.get('ducks.length') === 0);                   // 11
+    assert.ok(post.get('duck') === null);                        // 12
   });
 });
