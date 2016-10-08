@@ -77,22 +77,24 @@ export default class BelongsToRelation extends Relation {
   //
 
   onInternalDeleted() {
+  }
+
+  onContentDeleted() {
+    let content = this.content;
+    if(!content) {
+      return;
+    }
     this.withPropertyChanges(changed => {
-      let content = this.content;
       content.removeObserver(this);
       this.content = null;
       this.notifyPropertyChange(changed);
     });
   }
 
-  onContentDeleted() {
-    this.withPropertyChanges(changed => {
-      this.setContent(null, changed);
-    });
-  }
-
   onInternalDestroyed() {
-    this.onInternalDeleted();
+    this.withPropertyChanges(changed => {
+      this.setValue(null, changed);
+    });
   }
 
   onContentDestroyed() {

@@ -3,8 +3,7 @@ import Relation from './relation';
 import { getInternalModel, internalModelDidChangeIsDeleted, internalModelDidChangeWillDestroy } from '../../internal-model';
 
 const {
-  getOwner,
-  assert
+  getOwner
 } = Ember;
 
 const getDiff = (curr, next) => {
@@ -178,7 +177,6 @@ export default class HasManyRelation extends Relation {
         this.onInternalDestroyed();
       }
     } else {
-      assert(`internalModelDidChange content must include internal`, this.getContent().includes(internal));
       if(internalModelDidChangeIsDeleted(internal, props)) {
         this.onContentDeleted(internal);
       } else if(internalModelDidChangeWillDestroy(internal, props)) {
