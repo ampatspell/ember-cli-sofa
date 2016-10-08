@@ -19,33 +19,6 @@ const getDiff = (curr, next) => {
   return { remove, add };
 };
 
-class ArrayWrapper {
-
-  constructor(array, fn) {
-    this.array = array;
-    this.fn = fn;
-  }
-
-  _array(array) {
-    return Ember.A(array).map(model => {
-      return this.fn(model);
-    });
-  }
-
-  addObjects(array) {
-    this.array.addObjects(this._array(array));
-  }
-
-  addObject(internal) {
-    this.array.addObject(this.fn(internal));
-  }
-
-  removeObject(internal) {
-    this.array.removeObject(this.fn(internal));
-  }
-
-}
-
 export default class HasManyRelation extends Relation {
 
   constructor(relationship, internal) {
@@ -65,7 +38,7 @@ export default class HasManyRelation extends Relation {
     if(this.isValueChanging) {
       return;
     }
-    this.getWrappedContent().removeObject(internal);
+    this.getContent().removeObject(internal);
     internal.removeObserver(this);
     this.dirty();
   }
@@ -75,25 +48,16 @@ export default class HasManyRelation extends Relation {
       return;
     }
     internal.addObserver(this);
-    this.getWrappedContent().addObject(internal);
+    this.getContent().addObject(internal);
     this.dirty();
   }
 
   inverseDeleted(internal) {
     this.ignoreValueChanges = true;
-    this.getWrappedContent().removeObject(internal);
+    this.getContent().removeObject(internal);
     internal.removeObserver(this);
     this.dirty();
     this.ignoreValueChanges = false;
-  }
-
-  getWrappedContent() {
-    let value = this.value;
-    if(value) {
-      return new ArrayWrapper(value, internal => internal.getModel());
-    }
-    let content = this.getContent();
-    return new ArrayWrapper(content, internal => internal);
   }
 
   getContent() {
@@ -183,7 +147,7 @@ export default class HasManyRelation extends Relation {
 
   onContentInternalModelDeleted(internal) {
     this.ignoreValueChanges = true;
-    this.getWrappedContent().removeObject(internal);
+    this.getContent().removeObject(internal);
     this.ignoreValueChanges = false;
   }
 
