@@ -13,28 +13,28 @@ let db;
 let Duck = Model.extend({
 
   id: prefix(),
-  blog: belongsTo('the-blog', { inverse: 'ducks' }),
-  posts: hasMany('the-post', { inverse: 'duck' })
+  blog: belongsTo('the-blog', { }),
+  posts: hasMany('the-post', { })
 
 });
 
 let TheBlog = Model.extend({
 
   id: prefix(),
-  ducks: hasMany('duck', { inverse: 'blog' }),
-  posts: hasMany('the-post', { inverse: 'blog' })
+  ducks: hasMany('duck', { }),
+  posts: hasMany('the-post', { })
 
 });
 
 let ThePost = Model.extend({
 
   id: prefix(),
-  blog: belongsTo('the-blog', { inverse: 'posts' }),
-  duck: belongsTo('duck', { inverse: 'posts' })
+  blog: belongsTo('the-blog', { }),
+  duck: belongsTo('duck', { })
 
 });
 
-module('model-new-destroy', () => {
+module('model-new-destroy-noinverses', () => {
   registerModels({ Duck, TheBlog, ThePost });
   store = createStore();
   db = store.get('db.main');
@@ -44,16 +44,17 @@ module('model-new-destroy', () => {
 test('destroyed new model is removed from relationships', assert => {
   let post = db.model('the-post', { id: 'nice' });
   let blog = db.model('the-blog', { id: 'big', posts: [ post ] });
+  post.set('blog', blog);
   let duck;
   return map([ blog, post ], model => model.save()).then(() => {
     duck = db.model('duck', { id: 'yellow', blog, posts: [ post ] });
+    blog.get('ducks').pushObject(duck);
+    post.set('duck', duck);
 
     assert.ok(duck.get('blog') === blog);
     assert.ok(duck.get('posts').objectAt(0) === post);
-
     assert.ok(blog.get('ducks').objectAt(0) === duck);
     assert.ok(blog.get('posts').objectAt(0) === post);
-
     assert.ok(post.get('blog') === blog);
     assert.ok(post.get('duck') === duck);
 
@@ -63,7 +64,6 @@ test('destroyed new model is removed from relationships', assert => {
   }).then(() => {
     assert.ok(duck.isDestroyed);
     assert.ok(duck.get('blog') === null);
-    assert.ok(duck.get('posts.length') === 0);
     assert.ok(blog.get('ducks.length') === 0);
     assert.ok(post.get('duck') === null);
   });
