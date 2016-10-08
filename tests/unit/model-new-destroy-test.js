@@ -58,10 +58,10 @@ test('destroyed new model is removed from relationships', assert => {
     assert.ok(duck.isDestroyed);
 
     assert.ok(duck.get('blog') === null);
-    assert.ok(duck.get('posts.length') === 0); // f
+    assert.ok(duck.get('posts.length') === 0);
 
-    assert.ok(blog.get('ducks._relation').value.length === 0);
-    assert.ok(blog.get('ducks.length') === 0); // f
+    assert.ok(blog.get('ducks._relation').content.length === 0);
+    assert.ok(blog.get('ducks.length') === 0);
     assert.ok(post.get('duck') === null);
   });
 });

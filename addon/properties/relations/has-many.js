@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import Relation from './relation';
-import { getInternalModel, internalModelDidChangeIsDeleted } from '../../internal-model';
+import { getInternalModel, internalModelDidChangeIsDeleted, internalModelDidChangeWillDestroy } from '../../internal-model';
 
 const {
   getOwner,
@@ -54,11 +54,7 @@ export default class HasManyRelation extends Relation {
   }
 
   inverseDeleted(internal) {
-    // console.log('removing from hasMany in', this.internal.docId, internal.docId);
     this.ignoreValueChanges = true;
-    // console.log('removed', internal.docId);
-    // console.log(this.content.length);
-    // console.log(this.value.get('length'));
     this.getContent().removeObject(internal);
     internal.removeObserver(this);
     this.dirty();
@@ -171,11 +167,15 @@ export default class HasManyRelation extends Relation {
     if(internal === this.internal) {
       if(internalModelDidChangeIsDeleted(internal, props)) {
         this.onInternalModelDeleted(internal);
+      } else if(internalModelDidChangeWillDestroy(internal, props)) {
+        console.log('hasMany this.internal willDestroy', internal.docId);
       }
     } else {
       assert(`internalModelDidChange content must include internal`, this.getContent().includes(internal));
       if(internalModelDidChangeIsDeleted(internal, props)) {
         this.onContentInternalModelDeleted(internal);
+      } else if(internalModelDidChangeWillDestroy(internal, props)) {
+        console.log('hasMany this.content object willDestroy', internal.docId);
       }
     }
   }
@@ -192,25 +192,6 @@ export default class HasManyRelation extends Relation {
       return null;
     }
     return internal.getModel();
-  }
-
-  //
-
-  modelWillDestroy() {
-    if(!this.internal.state.isNew) {
-      return;
-    }
-
-    let content = this.content;
-    if(content) {
-      content = Ember.A(copy(content));
-      content.forEach(internal => {
-        let inverse = this.getInverseRelation(internal);
-        if(inverse) {
-          inverse.inverseDeleted(this.internal);
-        }
-      });
-    }
   }
 
 }

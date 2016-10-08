@@ -166,10 +166,4 @@ export default class Definition {
     internal.onDeleted(changed);
   }
 
-  onDestroy(internal) {
-    this.eachProperty(property => {
-      property.modelWillDestroy(internal);
-    });
-  }
-
 }

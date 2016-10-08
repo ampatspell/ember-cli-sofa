@@ -22,6 +22,10 @@ export function internalModelDidChangeIsDeleted(internal, props) {
   return internal.state.isDeleted && props.includes('isDeleted');
 }
 
+export function internalModelDidChangeWillDestroy(internal, props) {
+  return props.includes('willDestroy');
+}
+
 export default class InternalModel {
 
   constructor(store, modelClass, database = null) {
@@ -335,7 +339,7 @@ export default class InternalModel {
     if(database) {
       database._internalModelWillDestroy(this);
     }
-    this.definition.onDestroy(this);
+    this.notifyObservers([ 'willDestroy' ]);
     this.model = null;
   }
 

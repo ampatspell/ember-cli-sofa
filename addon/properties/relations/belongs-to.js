@@ -1,12 +1,17 @@
 import Ember from 'ember';
 import Relation from './relation';
-import { internalModelDidChangeIsDeleted } from '../../internal-model';
+import { internalModelDidChangeIsDeleted, internalModelDidChangeWillDestroy } from '../../internal-model';
 
 const {
   assert
 } = Ember;
 
 export default class BelongsToRelation extends Relation {
+
+  constructor(relationship, internal) {
+    super(...arguments);
+    internal.addObserver(this);
+  }
 
   dirty(changed) {
     this.relationship.dirty(this.internal, changed);
@@ -38,7 +43,6 @@ export default class BelongsToRelation extends Relation {
   }
 
   inverseDeleted(internal) {
-    console.log(this.internal.docId, 'sets its value to null becuse', internal.docId, 'was deleteed');
     this.withPropertyChanges(changed => {
       this.setValue(null, changed);
     });
@@ -87,9 +91,16 @@ export default class BelongsToRelation extends Relation {
   }
 
   internalModelDidChange(internal, props) {
-    assert(`internalModelDidChange internal must be this.content`, internal === this.content);
-    if(internalModelDidChangeIsDeleted(internal, props)) {
-      this.onContentDeleted();
+    if(internal === this.internal) {
+      if(internalModelDidChangeIsDeleted(internal, props)) {
+        this.onContentDeleted();
+      } else if(internalModelDidChangeWillDestroy(internal, props)) {
+        console.log('belongs-to this.internal willDestroy', internal.docId);
+      }
+    } else {
+      if(internalModelDidChangeWillDestroy(internal, props)) {
+        console.log('belongs-to this.content willDestroy', internal.docId);
+      }
     }
   }
 
@@ -130,20 +141,6 @@ export default class BelongsToRelation extends Relation {
     let internal = this.toInternalModel(value);
     this.setContent(internal, changed);
     return this.getValue();
-  }
-
-  //
-
-  modelWillDestroy() {
-    if(!this.internal.state.isNew) {
-      return;
-    }
-
-    let content = this.content;
-    if(content) {
-      let inverse = this.getInverseRelation(content);
-      inverse.inverseDeleted(this.internal);
-    }
   }
 
 }
