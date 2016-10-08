@@ -2,6 +2,7 @@
 
 * get rid of getWrappedContent() in has-many
 * destroy isNew model -> model is removed from identity.new _and_ all assigned relationships
+* destroy store -> kills off all models, relationship proxies and so on
 * root collections
 * per-database models (each database is initialized with model folder name which is returned by store.databaseOptionsForIdentifier)
 * embedded models (persisted as a `{ key: { model } }`)
