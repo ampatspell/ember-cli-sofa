@@ -27,7 +27,7 @@ test('saved model is removed from new', assert => {
   });
 });
 
-test.only('store created model is added to identity on database assign', assert => {
+test('store created model is added to identity on database assign', assert => {
   let model = store.model('duck');
   model.set('database', db);
   assert.ok(db._modelIdentity.new[0] === model._internal);
