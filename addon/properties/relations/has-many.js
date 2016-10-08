@@ -166,11 +166,9 @@ export default class HasManyRelation extends Relation {
 
   onInternalDestroyed() {
     let internal = this.internal;
-    // console.log('hasMany', this.relationship.name, 'this.internal willDestroy', internal.docId);
   }
 
   onContentDestroyed(internal) {
-    // console.log('hasMany', this.relationship.name, 'this.content object willDestroy', internal.docId);
     this.onContentDeleted(internal);
   }
 

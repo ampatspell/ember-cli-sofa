@@ -6,7 +6,8 @@ import Relationship from './properties/relationship';
 import globalOptions from './util/global-options';
 
 const {
-  Logger: { error }
+  Logger: { error },
+  copy
 } = Ember;
 
 export const internalPropertyName = '_internal';
@@ -150,7 +151,8 @@ export default class InternalModel {
   }
 
   notifyObservers(props) {
-    this.observers.forEach(observer => {
+    let observers = copy(this.observers);
+    observers.forEach(observer => {
       observer.internalModelDidChange(this, props);
     });
   }

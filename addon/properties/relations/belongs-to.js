@@ -98,12 +98,11 @@ export default class BelongsToRelation extends Relation {
 
   onInternalDestroyed() {
     let internal = this.internal;
-    console.log('belongs-to', this.relationship.name, 'this.internal willDestroy', internal.docId);
+    this.onInternalDeleted();
   }
 
   onContentDestroyed() {
     let internal = this.content;
-    // console.log('belongs-to', this.relationship.name, 'this.content willDestroy', internal.docId);
     this.onContentDeleted();
   }
 
