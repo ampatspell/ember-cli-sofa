@@ -146,13 +146,8 @@ export default class HasManyRelation extends Relation {
     this.dirty();
   }
 
-  onContentInternalModelDeleted(internal) {
-    this.ignoreValueChanges = true;
-    this.getContent().removeObject(internal);
-    this.ignoreValueChanges = false;
-  }
-
-  onInternalModelDeleted(internal) {
+  onInternalDeleted() {
+    let internal = this.internal;
     this.isValueChanging = true;
     this.getContent().forEach(contentInternal => {
       let inverse = this.getInverseRelation(contentInternal);
@@ -163,19 +158,34 @@ export default class HasManyRelation extends Relation {
     this.isValueChanging = false;
   }
 
+  onContentDeleted(internal) {
+    this.ignoreValueChanges = true;
+    this.getContent().removeObject(internal);
+    this.ignoreValueChanges = false;
+  }
+
+  onInternalDestroyed() {
+    let internal = this.internal;
+    console.log('hasMany', this.relationship.name, 'this.internal willDestroy', internal.docId);
+  }
+
+  onContentDestroyed(internal) {
+    console.log('hasMany', this.relationship.name, 'this.content object willDestroy', internal.docId);
+  }
+
   internalModelDidChange(internal, props) {
     if(internal === this.internal) {
       if(internalModelDidChangeIsDeleted(internal, props)) {
-        this.onInternalModelDeleted(internal);
+        this.onInternalDeleted();
       } else if(internalModelDidChangeWillDestroy(internal, props)) {
-        console.log('hasMany this.internal willDestroy', internal.docId);
+        this.onInternalDestroyed();
       }
     } else {
       assert(`internalModelDidChange content must include internal`, this.getContent().includes(internal));
       if(internalModelDidChangeIsDeleted(internal, props)) {
-        this.onContentInternalModelDeleted(internal);
+        this.onContentDeleted(internal);
       } else if(internalModelDidChangeWillDestroy(internal, props)) {
-        console.log('hasMany this.content object willDestroy', internal.docId);
+        this.onContentDestroyed(internal);
       }
     }
   }

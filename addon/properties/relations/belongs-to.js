@@ -81,7 +81,7 @@ export default class BelongsToRelation extends Relation {
 
   //
 
-  onContentDeleted() {
+  onInternalDeleted() {
     this.withPropertyChanges(changed => {
       let content = this.content;
       content.removeObserver(this);
@@ -90,16 +90,30 @@ export default class BelongsToRelation extends Relation {
     });
   }
 
+  onContentDeleted(internal) {
+  }
+
+  onInternalDestroyed() {
+    let internal = this.internal;
+    console.log('belongs-to', this.relationship.name, 'this.internal willDestroy', internal.docId);
+  }
+
+  onContentDestroyed(internal) {
+    console.log('belongs-to', this.relationship.name, 'this.content willDestroy', internal.docId);
+  }
+
   internalModelDidChange(internal, props) {
     if(internal === this.internal) {
       if(internalModelDidChangeIsDeleted(internal, props)) {
-        this.onContentDeleted();
+        this.onInternalDeleted();
       } else if(internalModelDidChangeWillDestroy(internal, props)) {
-        console.log('belongs-to this.internal willDestroy', internal.docId);
+        this.onInternalDestroyed();
       }
     } else {
       if(internalModelDidChangeWillDestroy(internal, props)) {
-        console.log('belongs-to this.content willDestroy', internal.docId);
+        this.onContentDeleted(internal);
+      } else if(internalModelDidChangeWillDestroy(internal, props)) {
+        this.onContentDestroyed(internal);
       }
     }
   }
