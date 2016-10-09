@@ -28,36 +28,23 @@ export default class HasManyRelation extends Relation {
 
   dirty() {
     let internal = this.internal;
-    let relationship = this.relationship;
     internal.withPropertyChanges(changed => {
-      relationship.dirty(internal, changed);
+      this.relationship.dirty(internal, changed);
     }, true);
   }
 
+  //
+
   inverseWillChange(internal) {
-    if(this.isValueChanging) {
-      return;
-    }
-    this.getContent().removeObject(internal);
-    internal.removeObserver(this);
-    this.dirty();
+    this.removeContentObject(internal, false);
   }
 
   inverseDidChange(internal) {
-    if(this.isValueChanging) {
-      return;
-    }
-    internal.addObserver(this);
-    this.getContent().addObject(internal);
-    this.dirty();
+    this.addContentObject(internal, false);
   }
 
   inverseDeleted(internal) {
-    this.ignoreValueChanges = true;
-    this.getContent().removeObject(internal);
-    internal.removeObserver(this);
-    this.dirty();
-    this.ignoreValueChanges = false;
+    this.removeContentObject(internal, false);
   }
 
   getContent() {
@@ -69,21 +56,49 @@ export default class HasManyRelation extends Relation {
     return content;
   }
 
-  willRemoveInternalModel(internal) {
+  //
+
+  willRemoveContentObject(internal, updateInverse=true) {
     internal.removeObserver(this);
-    let inverse = this.getInverseRelation(internal);
-    if(inverse) {
-      inverse.inverseWillChange(this.internal);
+
+    if(updateInverse) {
+      let inverse = this.getInverseRelation(internal);
+      if(inverse) {
+        inverse.inverseWillChange(this.internal);
+      }
     }
   }
 
-  didAddInternalModel(internal) {
+  didAddContentObject(internal, updateInverse=true) {
     internal.addObserver(this);
-    let inverse = this.getInverseRelation(internal);
-    if(inverse) {
-      inverse.inverseDidChange(this.internal);
+
+    if(updateInverse) {
+      let inverse = this.getInverseRelation(internal);
+      if(inverse) {
+        inverse.inverseDidChange(this.internal);
+      }
     }
   }
+
+  addContentObject(internal, updateInverse=true) {
+    if(!internal) {
+      return;
+    }
+    this.getContent().addObject(internal);
+    this.didAddContentObject(internal, updateInverse);
+    this.dirty();
+  }
+
+  removeContentObject(internal, updateInverse=true) {
+    if(!internal) {
+      return;
+    }
+    this.willRemoveContentObject(internal, updateInverse);
+    this.getContent().removeObject(internal);
+    this.dirty();
+  }
+
+  //
 
   getValue() {
     let value = this.value;
@@ -109,14 +124,14 @@ export default class HasManyRelation extends Relation {
     let { remove, add } = getDiff(curr, next);
 
     remove.forEach(internal => {
-      this.willRemoveInternalModel(internal);
+      this.willRemoveContentObject(internal, true);
     });
 
     curr.removeObjects(remove);
     curr.pushObjects(add);
 
     add.forEach(internal => {
-      this.didAddInternalModel(internal);
+      this.didAddContentObject(internal, true);
     });
 
     this.ignoreValueChanges = false;
@@ -126,52 +141,41 @@ export default class HasManyRelation extends Relation {
     if(this.ignoreValueChanges) {
       return;
     }
-    this.isValueChanging = true;
+    this.ignoreValueChanges = true;
     removing.forEach(model => {
       let internal = getInternalModel(model);
-      this.willRemoveInternalModel(internal);
+      this.willRemoveContentObject(internal, true);
     });
   }
 
   valueDidChange(proxy, removeCount, adding) {
-    if(this.ignoreValueChanges) {
-      return;
-    }
     adding.forEach(model => {
       let internal = getInternalModel(model);
-      this.didAddInternalModel(internal);
+      this.didAddContentObject(internal, true);
     });
-    this.isValueChanging = false;
+    this.ignoreValueChanges = false;
     this.dirty();
   }
 
+  //
+
   onInternalDeleted() {
-    let internal = this.internal;
-    this.isValueChanging = true;
-    let content = copy(this.getContent());
-    content.forEach(contentInternal => {
-      let inverse = this.getInverseRelation(contentInternal);
-      if(inverse) {
-        inverse.inverseDeleted(internal);
-      }
-    });
-    this.isValueChanging = false;
   }
 
   onContentDeleted(internal) {
     this.ignoreValueChanges = true;
-    internal.removeObserver(this);
-    this.getContent().removeObject(internal);
+    {
+      this.removeContentObject(internal, false);
+    }
     this.ignoreValueChanges = false;
   }
 
   onInternalDestroyed() {
     this.ignoreValueChanges = true;
-    let content = this.getContent();
-    content.forEach(internal => {
-      internal.removeObserver(this);
-    });
-    content.clear();
+    {
+      let content = copy(this.getContent());
+      content.forEach(internal => this.removeContentObject(internal, false));
+    }
     this.ignoreValueChanges = false;
   }
 
@@ -194,6 +198,8 @@ export default class HasManyRelation extends Relation {
       }
     }
   }
+
+  //
 
   internalModelFromModel(model) {
     if(!model) {
