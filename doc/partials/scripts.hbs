@@ -1,0 +1,78 @@
+<script type="text/javascript">
+
+  hljs.initHighlightingOnLoad();
+
+  if(window.location.hostname.indexOf('amateurinmotion.com') !== -1) {
+    $('.content blockquote:first-of-type').hide();
+  }
+
+  var ids = {};
+
+  $('.content h1, .content h2, .content h3').wrapInner(function() {
+    var el = $(this);
+    var id = el.attr('id');
+
+    var tagName = el.prop('tagName').toLowerCase();
+
+    var h1 = el.prevAll('h1:first');
+    var h2 = el.prevAll('h2:first');
+
+    if(tagName === 'h3') {
+      if(h2.length) {
+        id = h2.attr('id') + '-' + id;
+      }
+    }
+
+    if(tagName === 'h2' || tagName === 'h3') {
+      if(h1.length) {
+        id = h1.attr('id') + '-' + id;
+      }
+    }
+
+    return $('<a/>', { name: id, class: 'anchor', href: '#' + id });
+  });
+
+  var sidebar = $('.sidebar');
+  var mapping = [];
+
+  $('.content h1, .content h2, .content h3').each(function() {
+    var el = $(this);
+    var tagName = el.prop('tagName').toLowerCase();
+
+    var output;
+    var a = el.find('a');
+    output = $('<a/>', {
+      class: tagName,
+      href: '#' + a.attr('name'),
+      text: el.text().split('→')[0].trim()
+    });
+    mapping.push([el, output]);
+    sidebar.append(output);
+  });
+
+  function updateSidebarActive() {
+    var first;
+    $(mapping).each(function() {
+      var content = $(this[0]);
+      var link = this[1];
+      var top = content.offset().top;
+      var scroll = $(window).scrollTop();
+      var visible = scroll - top > -60;
+      if(visible) {
+        first = link;
+      }
+      link.removeClass('active');
+    });
+    if(first) {
+      first.addClass('active');
+      // window.location.hash = first.attr('href');
+    }
+  }
+
+  $(window).on('scroll', function() {
+    updateSidebarActive();
+  });
+
+  updateSidebarActive();
+
+</script>

@@ -1,0 +1,260 @@
+@import "_reset.less";
+@import "_mixins.less";
+@import "_code.less";
+
+@import (css) url(http://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700);
+@fontFamilyBase: 'Ubuntu Mono';
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  cursor: default;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  -webkit-font-smoothing: subpixel-antialiased;
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  font-family: @fontFamilyBase;
+  background: lighten(#000, 98%);
+  padding: 20px 0;
+  font-size: 14/16em;
+  line-height: 1em * 1.5;
+  cursor: default;
+}
+
+.noselect() {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.animate() {
+  animation-property: all;
+  transition-duration: 0.2s;
+}
+
+* {
+  color: #555;
+}
+
+*[data-ember-action] {
+  cursor: pointer;
+}
+
+b {
+  font-weight: bold;
+}
+
+hr {
+  border: none;
+  margin: 0;
+}
+
+a {
+  outline: none;
+  text-decoration: none;
+  @media @print {
+    text-decoration: none !important;
+  }
+}
+
+strong {
+  font-weight: bold;
+}
+
+ul {
+  overflow-x: scroll;
+  > li {
+    display: table-row;
+    &:before {
+      display: table-cell;
+      content: "›";
+      padding-right: 5px;
+    }
+  }
+}
+
+@sidebar: 200px;
+@sidebarTablet: 170px;
+
+.sidebar {
+  .noselect;
+  .animate;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: @sidebar;
+  bottom: 0;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  padding: 33px 0;
+  background: lighten(#000, 96%);
+  border-right: 1px solid lighten(#000, 94%);
+  > a {
+    display: block;
+    margin: 0 10px 0 20px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    font-size: 0.9em;
+    line-height: 1.4em;
+    &.h1 {
+      margin-top: 2em;
+      margin-bottom: 0.2em;
+      font-weight: bold;
+      &:first-child {
+        margin-top: 1em;
+      }
+    }
+    &.h2 {
+      margin-top: 1em;
+    }
+    &.h3 {
+      &:before {
+        content: "—";
+        padding-right: 5px;
+        color: #bbb;
+      }
+    }
+  }
+  .active {
+    font-weight: bold;
+  }
+  @media @mobile, @print {
+    width: 0;
+  }
+  @media @print {
+    display: none;
+  }
+  @media @tablet {
+    font-size: 0.9em;
+    width: @sidebarTablet;
+  }
+}
+
+.content {
+  .animate;
+  border-left: solid lighten(#000, 98%) @sidebar;
+  @media @mobile, @print {
+    border-left-width: 0;
+  }
+  @media @tablet {
+    border-left-width: @sidebarTablet;
+  }
+  overflow-x: hidden;
+  .pad() {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  h1, h2 {
+    font-size: 1.6em;
+    margin-top: 60px;
+    margin-bottom: 30px;
+    .pad;
+    a {
+      padding-top: 40px;
+      display: block;
+    }
+    &:first-child {
+      margin-top: -20px;
+    }
+  }
+  h3, h4 {
+    font-size: 1.2em;
+    margin-top: 60px;
+    margin-bottom: 20px;
+    .pad;
+    a {
+      padding-top: 40px;
+      display: block;
+    }
+  }
+  h1 > a,
+  h2 > a,
+  h3 > a {
+    text-decoration: none;
+  }
+  @media @print {
+    h1, h2, h3, h4 {
+      page-break-after: avoid;
+    }
+  }
+  a {
+    text-decoration: underline;
+  }
+  p {
+    margin-bottom: 10px;
+    .pad;
+  }
+  code {
+    font-weight: bold;
+    color: #333;
+  }
+  pre, code {
+    white-space: pre;
+    @media @mobile {
+      font-size: 0.9em;
+      line-height: 1.3em;
+    }
+    @media @print {
+      white-space: pre-wrap;
+    }
+  }
+  ul {
+    .pad;
+    margin-bottom: 10px;
+  }
+  blockquote {
+    margin-bottom: 10px;
+    border-left: 1px solid #999;
+    margin-left: 20px;
+    p {
+      padding-left: 10px;
+    }
+    * {
+      color: #999;
+    }
+  }
+  pre {
+    font-size: 0.91em;
+    line-height: 1em * 1.5;
+    background: lighten(#000, 97%);
+    border-top: 1px solid lighten(#000, 95%);
+    border-bottom: 1px solid lighten(#000, 95%);
+    @media @print {
+      border-top: none;
+      border-bottom: none;
+      page-break-inside: avoid;
+    }
+    padding: 10px 0;
+    margin: 10px 0;
+    > code {
+      .pad;
+      display: block;
+      font-weight: normal;
+      overflow-x: scroll;
+    }
+  }
+  @media @print {
+    page-break-inside: avoid;
+  }
+}
+
+.hljs {
+  background: inherit;
+}
+
+.inspect {
+  white-space: pre;
+  font-size: 12px;
+  line-height: 14px;
+}
+
+.content blockquote:first-of-type {
+  margin-bottom: 2em;
+}
