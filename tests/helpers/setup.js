@@ -130,6 +130,10 @@ export function registerModels(hash) {
   registerHash('model', hash);
 }
 
+export function registerCollections(hash) {
+  registerHash('collection', hash);
+}
+
 export const admin = {
   name: 'ampatspell',
   password: 'hello'

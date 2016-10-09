@@ -8,6 +8,7 @@ import StoreModel from './store/store-model';
 import StoreTransform from './store/store-transform';
 import StoreDestroy from './store/store-destroy';
 import StoreModelNames from './store/store-model-names';
+import StoreCollectionClass from './store/store-collection-class';
 
 const {
   Logger: { warn }
@@ -22,7 +23,8 @@ export default Ember.Service.extend(
   StoreModel,
   StoreTransform,
   StoreModelNames,
-  StoreDestroy, {
+  StoreDestroy,
+  StoreCollectionClass, {
 
   find() {
     warn(this+'', '`find`', ...arguments);
