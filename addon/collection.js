@@ -17,8 +17,8 @@ const Transform = createTransform({
 });
 
 const models = () => {
-  return computed('_internal.models.[]', function() {
-    return Ember.A(this._internal.models.map(internal => internal.getModel()));
+  return computed('_internal.internalModels.[]', function() {
+    return Ember.A(this._internal.internalModels.map(internal => internal.getModel()));
   }).readOnly();
 };
 

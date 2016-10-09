@@ -14,7 +14,7 @@ export default class InternalCollection {
     this.opts = opts;
     this.collectionModel = null;
     this.content = Ember.A();
-    this.models = database._modelIdentity.all;
+    this.internalModels = database._modelIdentity.all;
   }
 
   normalizeModelName(modelName) {
