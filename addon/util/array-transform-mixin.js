@@ -8,7 +8,7 @@ export default function(hash) {
   return Ember.Mixin.create({
 
     objectAtContent(idx) {
-      let object = get(this, 'arrangedContent').objectAt(idx);
+      let object = Ember.A(get(this, 'arrangedContent')).objectAt(idx);
       return hash.public.call(this, object);
     },
 
