@@ -3,8 +3,7 @@ import createTransform from './util/array-transform-mixin';
 import { getInternalModel } from './internal-model';
 
 const {
-  computed,
-  computed: { oneWay }
+  computed
 } = Ember;
 
 const Transform = createTransform({
@@ -28,31 +27,33 @@ const matchToInternalModels = () => {
   }).readOnly();
 };
 
-const Base = Ember.ArrayProxy.extend(Transform, {
+const normalizedModelName = () => {
+  return computed('modelName', function() {
+    return this._internal.normalizeModelName(this.get('modelName'));
+  }).readOnly();
+};
+
+const match = () => {
+  return computed('normalizedModelName', 'models.[]', function() {
+    let modelName = this.get('normalizedModelName');
+    let models = this.get('models');
+    if(!modelName) {
+      return models;
+    }
+    return models.filterBy('modelName', modelName);
+  }).readOnly();
+};
+
+export default Ember.ArrayProxy.extend(Transform, {
 
   _internal: null,
+  arrangedContent: matchToInternalModels(),
 
   models: models(),
 
-  match: oneWay('models').readOnly(),
-
-  arrangedContent: matchToInternalModels(),
-
-});
-
-const Collection = Base.extend({
-
   modelName: null,
+  normalizedModelName: normalizedModelName(),
 
-  match: computed('modelName', 'models.[]', function() {
-    let model = this.get('modelName');
-    let models = this.get('models');
-    if(!model) {
-      return models;
-    }
-    return models.filterBy('modelName', model);
-  }).readOnly(),
+  match: match(),
 
 });
-
-export default Collection;

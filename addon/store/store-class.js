@@ -12,8 +12,10 @@ export default Ember.Mixin.create({
 
   _classes: object(),
 
-  _normalizeModelName(modelName, prefix) {
-    notBlank(`${prefix} name`, modelName);
+  _normalizeModelName(modelName, prefix, optional=false) {
+    if(!optional) {
+      notBlank(`${prefix} name`, modelName);
+    }
     return dasherize(modelName);
   },
 

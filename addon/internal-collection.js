@@ -12,6 +12,10 @@ export default class InternalCollection {
     this.models = database._modelIdentity.all;
   }
 
+  normalizeModelName(modelName) {
+    return this.database._normalizeModelName(modelName, 'model', true);
+  }
+
   createCollectionModel() {
     let content = this.content;
     let _internal = this;

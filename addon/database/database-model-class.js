@@ -28,6 +28,10 @@ export default Ember.Mixin.create({
       let definition = this._definitionForModelClass(modelClass);
       return definition.matchesDocument(doc);
     });
+  },
+
+  _normalizeModelName() {
+    return this.get('store')._normalizeModelName(...arguments);
   }
 
 });
