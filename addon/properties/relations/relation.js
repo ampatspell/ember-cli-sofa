@@ -105,8 +105,6 @@ export default class Relation {
 
   onInternalDestroyed() {
     this.internal.removeObserver(this);
-    this.internal = null;
-    this.relationship = null;
     this.destroyed = true;
   }
 

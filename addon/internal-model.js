@@ -7,7 +7,7 @@ import Relationship from './properties/relationship';
 import globalOptions from './util/global-options';
 
 const {
-  Logger: { error },
+  Logger: { error, warn },
   copy
 } = Ember;
 
@@ -17,7 +17,11 @@ export function getInternalModel(model) {
   if(model instanceof InternalModel) {
     return model;
   }
-  return model.get('_internal');
+  let internal = model.get('_internal');
+  if(internal.destroyed) {
+    warn(`Model ${internal.modelName} ${internal.docId} is destroyed`);
+  }
+  return internal;
 }
 
 export function internalModelDidChangeIsDeleted(internal, props) {
