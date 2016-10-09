@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import SofaError from '../util/error';
-import { wrapFile } from './util/file';
-import { isFileOrBlob, hasToBase64, toBase64 } from './util/file-availability';
+import createFileLoader from '../util/file-loader/create';
+import toBase64 from '../util/base64';
 
 const {
   getOwner,
@@ -87,32 +87,19 @@ export default Ember.Object.extend({
     }).then(null, null, 'sofa:database load');
   },
 
-  _loadFileAttachment(attachment, file) {
-    file = wrapFile(file);
-    attachment.content_type = file.contentType;
-    return file.base64String();
-  },
-
   _loadAttachment(attachment) {
     if(attachment.stub === true) {
       return false;
     } else {
-      return resolve(attachment.data).then((data) => {
-        let type = typeOf(data);
-        if(isFileOrBlob(data)) {
-          return this._loadFileAttachment(attachment, data);
-        } else if(type === 'string') {
-          if(!hasToBase64()) {
-            return reject(new SofaError({ error: 'file_load', reason: 'File uploads not supported' }));
-          }
-          let string = toBase64(data);
-          if(!string) {
-            return reject(new SofaError({ error: 'file_load', reason: 'File too large' }));
-          }
-          return string;
+      return resolve(attachment.data).then(data => {
+        if(typeof data === 'string') {
+          return toBase64(data);
+        } else {
+          let file = createFileLoader(data);
+          attachment.content_type = file.contentType;
+          return file.base64String();
         }
-        return reject(new SofaError({ error: 'file_load', reason: `Unsupported file type '${type}'` }));
-      }).then((data) => {
+      }).then(data => {
         attachment.data = data;
         return true;
       });

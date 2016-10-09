@@ -1,3 +1,4 @@
+import createFileLoader from 'sofa/util/file-loader/create';
 import Ember from 'ember';
 
 export default Ember.Controller.extend({

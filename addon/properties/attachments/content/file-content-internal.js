@@ -1,43 +1,37 @@
 import Ember from 'ember';
 import AttachmentContent from './content-internal';
-// TODO: crappy import
-import { wrapFile, addFileObserver, removeFileObserver } from '../../../couch/util/file';
+import createFileLoader from '../../../util/file-loader/create';
 
 const {
-  run: { next, cancel }
+  merge
 } = Ember;
 
 export default class AttachmentFileContent extends AttachmentContent {
 
   constructor(attachment, file) {
     super(attachment);
-    this.file = wrapFile(file);
-    addFileObserver(file, this);
+    this.file = createFileLoader(file);
     this.state = {
       isLoading: false,
       isLoaded: false,
       isError: false,
-      progress: 0,
       error: null
     };
     this.url = null;
+    this.promise = null;
   }
 
   get contentModelName() {
     return 'file';
   }
 
-  filePropertiesDidChange(props) {
-    let state = this.state;
-    this.withPropertyChanges(changed => {
-      for(let key in props) {
-        let value = props[key];
-        if(value !== state[key]) {
-          state[key] = value;
-          changed(key);
-        }
-      }
-    });
+  setState(state, notify) {
+    merge(this.state, state);
+    if(notify) {
+      this.withPropertyChanges(changed => {
+        changed('state');
+      });
+    }
   }
 
   didCreateURL(url) {
@@ -48,45 +42,50 @@ export default class AttachmentFileContent extends AttachmentContent {
   }
 
   getURL() {
-    let url = this.url;
-    if(!url) {
-      this.enqueueLoadIfNeeded();
-    }
-    return url;
+    return this.url;
   }
 
-  enqueueLoadIfNeeded() {
-    // TODO: get rid of this crap along with wrapFile
-    if(this._enqueueLoadIfNeeded) {
-      return;
+  getURLPromise(notify=true) {
+    let promise = this.promise;
+    if(promise) {
+      return promise;
     }
-    this._enqueueLoadIfNeeded = next(() => {
-      this.getPromise();
-    });
-  }
-
-  getPromise() {
-    return this.file.base64String().then(string => {
+    this.setState({
+      isLoading: true,
+    }, notify);
+    promise = this.file.toBase64String().then(string => {
       let contentType = this.file.contentType;
       let url = `data:${contentType};base64,`;
       url += string;
       this.didCreateURL(url);
+      this.setState({
+        isLoading: false,
+        isLoaded: true,
+      }, true);
       return url;
+    }, err => {
+      this.setState({
+        isLoading: false,
+        isLoaded: false,
+        isError: true,
+        error: err
+      }, true);
+      return reject(err);
     });
-  }
-
-  getArrayBufferPromise() {
-    return this.file.arrayBuffer();
+    this.promise = promise;
+    return promise;
   }
 
   getBase64Promise() {
-    return this.file.base64String();
+    return this.file.toBase64String();
   }
 
-  getStateProperty(key) {
-    this.enqueueLoadIfNeeded();
-    return this.state[key];
+  getState() {
+    this.getURLPromise(false);
+    return this.state;
   }
+
+  //
 
   serialize(preview) {
     if(preview) {
@@ -105,8 +104,7 @@ export default class AttachmentFileContent extends AttachmentContent {
   }
 
   destroy() {
-    cancel(this._enqueueLoadIfNeeded);
-    removeFileObserver(this.file, this);
+    this.file = null;
     super.destroy();
   }
 
