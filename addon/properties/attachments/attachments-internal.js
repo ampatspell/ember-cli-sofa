@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import { isObject_, isString_, assert } from '../../util/assert';
 import AttachmentInternal from './attachment-internal';
+import { internalModelDidChangeWillDestroy } from '../../internal-model';
 
 const {
   getOwner,
@@ -11,6 +12,7 @@ export default class AttachmentsInternal {
 
   constructor(internalModel, property) {
     this.internalModel = internalModel;
+    this.internalModel.addObserver(this);
     this.attachmentsModel = null;
     this.property = property;
     this.content = Ember.A();
@@ -29,14 +31,18 @@ export default class AttachmentsInternal {
     return getOwner(this.property.store).lookup('sofa:attachments').create({ _internal, content });
   }
 
+  get attachmentsModelObserverOptions() {
+    return {
+      willChange: this.attachmentModelsWillChange,
+      didChange: this.attachmentModelsDidChange
+    };
+  }
+
   getAttachmentsModel() {
     let model = this.attachmentsModel;
     if(!model) {
       model = this.createAttachmentsModel();
-      model.addEnumerableObserver(this, {
-        willChange: this.attachmentModelsWillChange,
-        didChange: this.attachmentModelsDidChange
-      });
+      model.addEnumerableObserver(this, this.attachmentsModelObserverOptions);
       this.attachmentsModel = model;
     }
     return model;
@@ -121,7 +127,6 @@ export default class AttachmentsInternal {
   }
 
   deserialize(hash={}) {
-
     let content = this.content;
 
     let add = Ember.A();
@@ -147,7 +152,6 @@ export default class AttachmentsInternal {
     if(remove.length > 0) {
       this.removeAttachments(remove);
     }
-
   }
 
   //
@@ -183,6 +187,29 @@ export default class AttachmentsInternal {
       return;
     }
     this.removeAttachments([ internal ]);
+  }
+
+  onInternalDestroyed() {
+    let content = this.content;
+    content.forEach(attachment => attachment.destroy());
+    this.content = null;
+
+    let attachmentsModel = this.attachmentsModel;
+    if(attachmentsModel) {
+      attachmentsModel.removeEnumerableObserver(this, this.attachmentsModelObserverOptions);
+      this.attachmentsModel = null;
+    }
+
+    this.internalModel.removeObserver(this);
+    this.internalModel = null;
+    this.destroyed = true;
+  }
+
+  internalModelDidChange(internal, props) {
+    Ember.assert(`internal model should be this.internalModel`, internal === this.internalModel);
+    if(internalModelDidChangeWillDestroy(internal, props)) {
+      this.onInternalDestroyed();
+    }
   }
 
 }

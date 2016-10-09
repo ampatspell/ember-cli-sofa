@@ -102,6 +102,9 @@ test('destroyed new model is cleaned up', assert => {
     assert.ok(!internal.values.blog.content, 'belongsTo content');
     assert.ok(!internal.values.posts.content, 'hasMany content');
     assert.ok(!internal.values.posts.value, 'hasMany value');
-    // assert.ok(internal.values.attachments.)
+
+    assert.ok(internal.values.blog.destroyed);
+    assert.ok(internal.values.posts.destroyed);
+    assert.ok(internal.values.attachments.destroyed);
   });
 });
