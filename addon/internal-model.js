@@ -33,7 +33,7 @@ export function internalModelDidChangeInternalWillDestroy(internal, props) {
 }
 
 export function internalModelDidChangeModelWillDestroy(internal, props) {
-  return props.includes('onDestroyInternalModel');
+  return props.includes('onDestroyModel');
 }
 
 export default class InternalModel {
