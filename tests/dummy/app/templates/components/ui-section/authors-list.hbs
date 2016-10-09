@@ -7,3 +7,19 @@
 {{/ui-block}}
 
 {{ui-button title='Create new author' action=(action attrs.createNew)}}
+
+{{#ui-block title='all models'}}
+  {{#each store.allModels as |model|}}
+    {{#ui-row title=model}}
+      {{model.docId}} {{if model.isNew 'New'}} {{if model.isDirty 'Dirty'}}
+    {{/ui-row}}
+  {{/each}}
+{{/ui-block}}
+
+{{#ui-block title='dirty models'}}
+  {{#each store.dirtyModels as |model|}}
+    {{#ui-row title=model}}
+      {{model.docId}} {{if model.isNew 'New'}}
+    {{/ui-row}}
+  {{/each}}
+{{/ui-block}}
