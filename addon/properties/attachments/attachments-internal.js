@@ -1,7 +1,10 @@
 import Ember from 'ember';
 import { isObject_, isString_, assert } from '../../util/assert';
 import AttachmentInternal from './attachment-internal';
-import { internalModelDidChangeInternalWillDestroy } from '../../internal-model';
+import {
+  internalModelDidChangeInternalWillDestroy,
+  internalModelDidChangeModelWillDestroy
+} from '../../internal-model';
 
 const {
   getOwner,
@@ -189,26 +192,39 @@ export default class AttachmentsInternal {
     this.removeAttachments([ internal ]);
   }
 
+  destroyAttachmentsModel() {
+    let attachmentsModel = this.attachmentsModel;
+    if(!attachmentsModel) {
+      return;
+    }
+    attachmentsModel.removeEnumerableObserver(this, this.attachmentsModelObserverOptions);
+    this.attachmentsModel = null;
+  }
+
   onInternalDestroyed() {
     let content = this.content;
     content.forEach(attachment => attachment.destroy());
     this.content = null;
 
-    let attachmentsModel = this.attachmentsModel;
-    if(attachmentsModel) {
-      attachmentsModel.removeEnumerableObserver(this, this.attachmentsModelObserverOptions);
-      this.attachmentsModel = null;
-    }
+    this.destroyAttachmentsModel();
 
     this.internalModel.removeObserver(this);
     this.internalModel = null;
     this.destroyed = true;
   }
 
+  onModelDestroyed() {
+    this.content.forEach(attachment => attachment.onModelDestroyed());
+    this.destroyAttachmentsModel();
+    this.property.notifyPropertyChange(this.internalModel);
+  }
+
   internalModelDidChange(internal, props) {
     Ember.assert(`internal model should be this.internalModel`, internal === this.internalModel);
     if(internalModelDidChangeInternalWillDestroy(internal, props)) {
       this.onInternalDestroyed();
+    } else if(internalModelDidChangeModelWillDestroy(internal, props)) {
+      this.onModelDestroyed();
     }
   }
 

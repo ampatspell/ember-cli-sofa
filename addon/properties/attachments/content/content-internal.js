@@ -55,10 +55,20 @@ export default class AttachmentContent {
     }
   }
 
-  destroy() {
-    if(this.contentModel) {
-      this.contentModel.destroy();
+  destroyContentModel() {
+    if(!this.contentModel) {
+      return;
     }
+    this.contentModel.destroy();
+    this.contentModel = null;
+  }
+
+  destroy() {
+    this.destroyContentModel();
+  }
+
+  onModelDestroyed() {
+    this.destroyContentModel();
   }
 
 }

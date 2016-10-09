@@ -63,12 +63,22 @@ export default class Attachment {
     }
   }
 
+  destroyAttachmentModel() {
+    if(!this.attachmentModel) {
+      return;
+    }
+    this.attachmentModel.destroy();
+    this.attachmentModel = null;
+  }
+
   destroy() {
     this.content.destroy();
-    if(this.attachmentModel) {
-      this.attachmentModel.destroy();
-      this.attachmentModel = null;
-    }
+    this.destroyAttachmentModel();
+  }
+
+  onModelDestroyed() {
+    this.content.onModelDestroyed();
+    this.destroyAttachmentModel();
   }
 
 }
