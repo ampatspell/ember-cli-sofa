@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import Relation from './relation';
 import { getInternalModel, internalModelDidChangeIsDeleted, internalModelDidChangeWillDestroy } from '../../internal-model';
+import Ignore from './util/ignore';
 
 const {
   getOwner,
@@ -24,6 +25,7 @@ export default class HasManyRelation extends Relation {
   constructor(relationship, internal) {
     super(...arguments);
     internal.addObserver(this);
+    this.ignoreValueChanges = new Ignore();
   }
 
   dirty() {
@@ -84,18 +86,26 @@ export default class HasManyRelation extends Relation {
     if(!internal) {
       return;
     }
-    this.getContent().addObject(internal);
-    this.didAddContentObject(internal, updateInverse);
-    this.dirty();
+
+    this.ignoreValueChanges.with(() => {
+      let content = this.getContent();
+      content.addObject(internal);
+      this.didAddContentObject(internal, updateInverse);
+      this.dirty();
+    });
   }
 
   removeContentObject(internal, updateInverse=true) {
     if(!internal) {
       return;
     }
-    this.willRemoveContentObject(internal, updateInverse);
-    this.getContent().removeObject(internal);
-    this.dirty();
+
+    this.ignoreValueChanges.with(() => {
+      let content = this.getContent();
+      this.willRemoveContentObject(internal, updateInverse);
+      content.removeObject(internal);
+      this.dirty();
+    });
   }
 
   //
@@ -116,45 +126,48 @@ export default class HasManyRelation extends Relation {
   }
 
   setValue(value) {
-    this.ignoreValueChanges = true;
+    this.ignoreValueChanges.with(() => {
+      let curr = this.getContent();
+      let next = Ember.A(value).map(model => getInternalModel(model));
 
-    let curr = this.getContent();
-    let next = Ember.A(value).map(model => getInternalModel(model));
+      let { remove, add } = getDiff(curr, next);
 
-    let { remove, add } = getDiff(curr, next);
+      remove.forEach(internal => {
+        this.willRemoveContentObject(internal, true);
+      });
 
-    remove.forEach(internal => {
-      this.willRemoveContentObject(internal, true);
+      curr.removeObjects(remove);
+      curr.pushObjects(add);
+
+      add.forEach(internal => {
+        this.didAddContentObject(internal, true);
+      });
     });
-
-    curr.removeObjects(remove);
-    curr.pushObjects(add);
-
-    add.forEach(internal => {
-      this.didAddContentObject(internal, true);
-    });
-
-    this.ignoreValueChanges = false;
   }
 
   valueWillChange(proxy, removing) {
-    if(this.ignoreValueChanges) {
+    if(this.ignoreValueChanges.ignore()) {
       return;
     }
-    this.ignoreValueChanges = true;
-    removing.forEach(model => {
-      let internal = getInternalModel(model);
-      this.willRemoveContentObject(internal, true);
+    this.ignoreValueChanges.with(() => {
+      removing.forEach(model => {
+        let internal = getInternalModel(model);
+        this.willRemoveContentObject(internal, true);
+      });
     });
   }
 
   valueDidChange(proxy, removeCount, adding) {
-    adding.forEach(model => {
-      let internal = getInternalModel(model);
-      this.didAddContentObject(internal, true);
+    if(this.ignoreValueChanges.ignore()) {
+      return;
+    }
+    this.ignoreValueChanges.with(() => {
+      adding.forEach(model => {
+        let internal = getInternalModel(model);
+        this.didAddContentObject(internal, true);
+      });
+      this.dirty();
     });
-    this.ignoreValueChanges = false;
-    this.dirty();
   }
 
   //
@@ -163,20 +176,16 @@ export default class HasManyRelation extends Relation {
   }
 
   onContentDeleted(internal) {
-    this.ignoreValueChanges = true;
-    {
+    this.ignoreValueChanges.with(() => {
       this.removeContentObject(internal, false);
-    }
-    this.ignoreValueChanges = false;
+    });
   }
 
   onInternalDestroyed() {
-    this.ignoreValueChanges = true;
-    {
+    this.ignoreValueChanges.with(() => {
       let content = copy(this.getContent());
       content.forEach(internal => this.removeContentObject(internal, false));
-    }
-    this.ignoreValueChanges = false;
+    });
   }
 
   onContentDestroyed(internal) {
