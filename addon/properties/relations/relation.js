@@ -35,6 +35,22 @@ export default class Relation {
     return this.internal.store;
   }
 
+  //
+
+  dirty(changed) {
+    this.relationship.dirty(this.internal, changed);
+  }
+
+  propertyDidChange(changed) {
+    changed(this.relationship.name);
+  }
+
+  withPropertyChanges(cb) {
+    return this.internal.withPropertyChanges(cb, true);
+  }
+
+  //
+
   getQuery() {
     let query = this.query;
     if(!query) {

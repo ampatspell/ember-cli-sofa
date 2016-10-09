@@ -12,21 +12,9 @@ export default class BelongsToRelation extends Relation {
     internal.addObserver(this);
   }
 
-  dirty(changed) {
-    this.relationship.dirty(this.internal, changed);
-  }
-
-  propertyDidChange(changed) {
-    changed(this.relationship.name);
-  }
-
   notifyPropertyChange(changed) {
     this.dirty(changed);
     this.propertyDidChange(changed);
-  }
-
-  withPropertyChanges(cb) {
-    return this.internal.withPropertyChanges(cb, true);
   }
 
   inverseWillChange() {
@@ -76,10 +64,10 @@ export default class BelongsToRelation extends Relation {
   }
 
   onContentModelDestroyed() {
-
   }
 
   internalModelDidChange(internal, props) {
+    console.log(internal.docId, props);
     if(internal === this.internal) {
       if(internalModelDidChangeIsDeleted(internal, props)) {
         this.onInternalDeleted();

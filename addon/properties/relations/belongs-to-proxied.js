@@ -61,7 +61,16 @@ export default class BelongsToProxiedRelation extends BelongsToRelation {
   }
 
   onContentModelDestroyed() {
+    let value = this.value;
+    console.log(value+'', value.isDestroying);
     super.onContentModelDestroyed();
+  }
+
+  valueWillDestroy() {
+    this.value = null;
+    this.withPropertyChanges(changed => {
+      this.propertyDidChange(changed);
+    });
   }
 
 }

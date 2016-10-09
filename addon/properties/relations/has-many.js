@@ -34,10 +34,9 @@ export default class HasManyRelation extends Relation {
   }
 
   dirty() {
-    let internal = this.internal;
-    internal.withPropertyChanges(changed => {
-      this.relationship.dirty(internal, changed);
-    }, true);
+    this.withPropertyChanges(changed => {
+      super.dirty(changed);
+    });
   }
 
   //
@@ -256,6 +255,15 @@ export default class HasManyRelation extends Relation {
       return null;
     }
     return internal.getModel();
+  }
+
+  //
+
+  valueWillDestroy() {
+    this.value = null;
+    this.withPropertyChanges(changed => {
+      this.propertyDidChange(changed);
+    });
   }
 
 }
