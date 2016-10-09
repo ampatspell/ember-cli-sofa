@@ -36,6 +36,7 @@ export default Ember.Mixin.create({
     return this._internalToModel(internal);
   },
 
+  // TODO: remove this when live model collections will be implemented
   _modelsWithModelNameAndState(modelName, key, value) {
     let modelClass = this.modelClassForName(modelName);
     let internals = this._internalModelsWithModelName(get(modelClass, 'modelName'));
@@ -45,6 +46,7 @@ export default Ember.Mixin.create({
     return this._internalArrayToModelsArray(filtered);
   },
 
+  // TODO: remove this when live model collections will be implemented
   dirty(modelName) {
     return this._modelsWithModelNameAndState(modelName, 'isDirty', true);
   },
