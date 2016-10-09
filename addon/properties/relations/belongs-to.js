@@ -27,51 +27,20 @@ export default class BelongsToRelation extends Relation {
 
   inverseWillChange() {
     this.withPropertyChanges(changed => {
-      this.setValue(null, changed);
-    }, true);
+      this.setContent(null, changed, false);
+    });
   }
 
   inverseDidChange(internal) {
     this.withPropertyChanges(changed => {
-      this.setValue(internal, changed);
-    }, true);
+      this.setContent(internal, changed, false);
+    });
   }
 
   inverseDeleted() {
     this.withPropertyChanges(changed => {
-      this.setValue(null, changed);
+      this.setContent(null, changed, false);
     });
-  }
-
-  //
-
-
-  willSetContent() {
-    let content = this.content;
-    if(!content) {
-      return;
-    }
-
-    content.removeObserver(this);
-
-    let inverse = this.getInverseRelation(content);
-    if(inverse) {
-      inverse.inverseWillChange(this.internal);
-    }
-  }
-
-  didSetContent() {
-    let content = this.content;
-    if(!content) {
-      return;
-    }
-
-    content.addObserver(this);
-
-    let inverse = this.getInverseRelation(content);
-    if(inverse) {
-      inverse.inverseDidChange(this.internal);
-    }
   }
 
   //
@@ -80,25 +49,21 @@ export default class BelongsToRelation extends Relation {
   }
 
   onContentDeleted() {
-    let content = this.content;
-    if(!content) {
-      return;
-    }
     this.withPropertyChanges(changed => {
-      content.removeObserver(this);
-      this.content = null;
-      this.notifyPropertyChange(changed);
+      this.setContent(null, changed, false);
     });
   }
 
   onInternalDestroyed() {
     this.withPropertyChanges(changed => {
-      this.setValue(null, changed);
+      this.setContent(null, changed, false);
     });
   }
 
   onContentDestroyed() {
-    this.onContentDeleted();
+    this.withPropertyChanges(changed => {
+      this.setContent(null, changed, false);
+    });
   }
 
   internalModelDidChange(internal, props) {
@@ -119,25 +84,49 @@ export default class BelongsToRelation extends Relation {
 
   //
 
+  willSetContent(updateInverse=true) {
+    let content = this.content;
+    if(!content) {
+      return;
+    }
+
+    content.removeObserver(this);
+
+    if(updateInverse) {
+      let inverse = this.getInverseRelation(content);
+      if(inverse) {
+        inverse.inverseWillChange(this.internal);
+      }
+    }
+  }
+
+  didSetContent(updateInverse=true) {
+    let content = this.content;
+    if(!content) {
+      return;
+    }
+
+    content.addObserver(this);
+
+    if(updateInverse) {
+      let inverse = this.getInverseRelation(content);
+      if(inverse) {
+        inverse.inverseDidChange(this.internal);
+      }
+    }
+  }
+
   getContent() {
     return this.content;
   }
 
-  setContent(internal, changed) {
-    if(this.isSettingContent) {
-      return;
-    }
-
-    this.isSettingContent = true;
-
+  setContent(internal, changed, updateInverse=true) {
     if(this.content !== internal) {
-      this.willSetContent();
+      this.willSetContent(updateInverse);
       this.content = internal;
       this.notifyPropertyChange(changed);
-      this.didSetContent();
+      this.didSetContent(updateInverse);
     }
-
-    this.isSettingContent = false;
   }
 
   //
@@ -152,7 +141,7 @@ export default class BelongsToRelation extends Relation {
 
   setValue(value, changed) {
     let internal = this.toInternalModel(value);
-    this.setContent(internal, changed);
+    this.setContent(internal, changed, true);
     return this.getValue();
   }
 
