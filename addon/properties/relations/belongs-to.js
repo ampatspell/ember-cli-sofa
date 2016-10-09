@@ -1,5 +1,9 @@
 import Relation from './relation';
-import { internalModelDidChangeIsDeleted, internalModelDidChangeInternalWillDestroy } from '../../internal-model';
+import {
+  internalModelDidChangeIsDeleted,
+  internalModelDidChangeInternalWillDestroy,
+  internalModelDidChangeModelWillDestroy
+} from '../../internal-model';
 
 export default class BelongsToRelation extends Relation {
 
@@ -61,10 +65,18 @@ export default class BelongsToRelation extends Relation {
     super.onInternalDestroyed();
   }
 
+  onInternalModelDestroyed() {
+
+  }
+
   onContentDestroyed() {
     this.withPropertyChanges(changed => {
       this.setContent(null, changed, false);
     });
+  }
+
+  onContentModelDestroyed() {
+
   }
 
   internalModelDidChange(internal, props) {
@@ -73,12 +85,16 @@ export default class BelongsToRelation extends Relation {
         this.onInternalDeleted();
       } else if(internalModelDidChangeInternalWillDestroy(internal, props)) {
         this.onInternalDestroyed();
+      } else if(internalModelDidChangeModelWillDestroy(internal, props)) {
+        this.onInternalModelDestroyed();
       }
     } else {
       if(internalModelDidChangeIsDeleted(internal, props)) {
         this.onContentDeleted();
       } else if(internalModelDidChangeInternalWillDestroy(internal, props)) {
         this.onContentDestroyed();
+      } else if(internalModelDidChangeModelWillDestroy(internal, props)) {
+        this.onContentModelDestroyed();
       }
     }
   }

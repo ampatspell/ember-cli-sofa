@@ -60,4 +60,8 @@ export default class BelongsToProxiedRelation extends BelongsToRelation {
     super.onInternalDestroyed();
   }
 
+  onContentModelDestroyed() {
+    super.onContentModelDestroyed();
+  }
+
 }

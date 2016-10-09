@@ -1,7 +1,12 @@
 import Ember from 'ember';
 import Relation from './relation';
-import { getInternalModel, internalModelDidChangeIsDeleted, internalModelDidChangeInternalWillDestroy } from '../../internal-model';
 import Ignore from './util/ignore';
+import {
+  getInternalModel,
+  internalModelDidChangeIsDeleted,
+  internalModelDidChangeInternalWillDestroy,
+  internalModelDidChangeModelWillDestroy
+} from '../../internal-model';
 
 const {
   getOwner,
@@ -205,8 +210,16 @@ export default class HasManyRelation extends Relation {
     super.onInternalDestroyed();
   }
 
+  onInternalModelDestroyed() {
+
+  }
+
   onContentDestroyed(internal) {
     this.onContentDeleted(internal);
+  }
+
+  onContentModelDestroyed() {
+
   }
 
   internalModelDidChange(internal, props) {
@@ -215,12 +228,16 @@ export default class HasManyRelation extends Relation {
         this.onInternalDeleted();
       } else if(internalModelDidChangeInternalWillDestroy(internal, props)) {
         this.onInternalDestroyed();
+      } else if(internalModelDidChangeModelWillDestroy(internal, props)) {
+        this.onInternalModelDestroyed();
       }
     } else {
       if(internalModelDidChangeIsDeleted(internal, props)) {
         this.onContentDeleted(internal);
       } else if(internalModelDidChangeInternalWillDestroy(internal, props)) {
         this.onContentDestroyed(internal);
+      } else if(internalModelDidChangeModelWillDestroy(internal, props)) {
+        this.onContentModelDestroyed(internal);
       }
     }
   }
