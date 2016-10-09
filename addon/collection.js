@@ -4,7 +4,8 @@ import Error from './util/error';
 import { getInternalModel } from './internal-model';
 
 const {
-  computed
+  computed,
+  computed: { oneWay }
 } = Ember;
 
 const Transform = createTransform({
@@ -17,8 +18,13 @@ const Transform = createTransform({
 });
 
 const models = () => {
-  return computed('_internal.internalModels.[]', function() {
-    return Ember.A(this._internal.internalModels.map(internal => internal.getModel()));
+  return computed('_internal.internalModels.[]', 'normalizedModelName', function() {
+    let modelName = this.get('normalizedModelName');
+    let models = Ember.A(this._internal.internalModels);
+    if(modelName) {
+      models = Ember.A(models.filter(internal => internal.modelName === modelName));
+    }
+    return Ember.A(models.map(internal => internal.getModel()));
   }).readOnly();
 };
 
@@ -34,28 +40,25 @@ const normalizedModelName = () => {
   }).readOnly();
 };
 
-const match = () => {
-  return computed('normalizedModelName', 'models.[]', function() {
-    let modelName = this.get('normalizedModelName');
-    let models = this.get('models');
-    if(!modelName) {
-      return models;
-    }
-    return models.filterBy('modelName', modelName);
+const database = () => {
+  return computed(function() {
+    return this._internal.database;
   }).readOnly();
 };
 
 const Collection = Ember.ArrayProxy.extend(Transform, {
 
   _internal: null,
-  arrangedContent: matchToInternalModels(),
 
+  database: database(),
   models: models(),
 
   modelName: null,
   normalizedModelName: normalizedModelName(),
 
-  match: match(),
+  match: oneWay('models').readOnly(),
+
+  arrangedContent: matchToInternalModels(),
 
 });
 

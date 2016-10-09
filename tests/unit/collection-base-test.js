@@ -43,7 +43,8 @@ test('collection has models', assert => {
   db.model('house', { id: 'one' });
 
   let collection = db.collection('ducks');
-  assert.deepEqual(collection.get('models').mapBy('docId'), [ "duck:one", "duck:two", "house:one"]);
+
+  assert.deepEqual(collection.get('models').mapBy('docId'), [ "duck:one", "duck:two" ]);
   assert.deepEqual(collection.mapBy('docId'), [ 'duck:one', 'duck:two' ]);
 });
 
