@@ -4,6 +4,8 @@
 
 * `collection.query`
 * `model.save()`, `model.delete()`, ... second call while 1st is pending should return the same promise
+* option to delete documents by saving with `_deleted:true`
+* delete models with `type` property
 * per-database models (each database is initialized with model folder name which is returned by `store.databaseOptionsForIdentifier`)
 * embedded models (persisted as a `{ key: { model } }`)
 * abstract Couch, have also PouchDB
