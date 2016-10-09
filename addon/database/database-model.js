@@ -79,12 +79,14 @@ export default Ember.Mixin.create({
 
   // { model: 'duck', key: 'yellow' }
   all(opts) {
+    opts = merge({ optional: true }, opts);
     return this._internalModelAll(opts).then(array => {
       return this._internalArrayToModelsArray(array);
     });
   },
 
   find(opts) {
+    opts = merge({ optional: true }, opts);
     return this._internalModelFind(opts).then(({ result, type }) => {
       if(type === 'array') {
         return this._internalArrayToModelsArray(result);
