@@ -18,6 +18,12 @@
     {{/if}}
   {{/ui-row}}
 
+  {{#ui-row title='All Posts'}}
+    {{#each author.posts as |post|}}
+      <div>{{post}} {{post.id}} {{post.title}}</div>
+    {{/each}}
+  {{/ui-row}}
+
   {{#ui-row title='Blogs'}}
     {{#if author.blogs.isLoading}}
       <div>Loading array…</div>

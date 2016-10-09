@@ -1,10 +1,15 @@
 import Ember from 'ember';
 import Relation from './relation';
-import { getInternalModel, internalModelDidChangeIsDeleted } from '../../internal-model';
+import Ignore from './util/ignore';
+import {
+  getInternalModel,
+  internalModelDidChangeIsDeleted,
+  internalModelDidChangeInternalWillDestroy
+} from '../../internal-model';
 
 const {
   getOwner,
-  assert
+  copy
 } = Ember;
 
 const getDiff = (curr, next) => {
@@ -24,40 +29,27 @@ export default class HasManyRelation extends Relation {
   constructor(relationship, internal) {
     super(...arguments);
     internal.addObserver(this);
+    this.ignoreValueChanges = new Ignore();
   }
 
   dirty() {
-    let internal = this.internal;
-    let relationship = this.relationship;
-    internal.withPropertyChanges(changed => {
-      relationship.dirty(internal, changed);
-    }, true);
+    this.withPropertyChanges(changed => {
+      super.dirty(changed);
+    });
   }
 
+  //
+
   inverseWillChange(internal) {
-    if(this.isValueChanging) {
-      return;
-    }
-    this.getContent().removeObject(internal);
-    internal.removeObserver(this);
-    this.dirty();
+    this.removeContentObject(internal, false);
   }
 
   inverseDidChange(internal) {
-    if(this.isValueChanging) {
-      return;
-    }
-    internal.addObserver(this);
-    this.getContent().addObject(internal);
-    this.dirty();
+    this.addContentObject(internal, false);
   }
 
   inverseDeleted(internal) {
-    this.ignoreValueChanges = true;
-    this.getContent().removeObject(internal);
-    internal.removeObserver(this);
-    this.dirty();
-    this.ignoreValueChanges = false;
+    this.removeContentObject(internal, false);
   }
 
   getContent() {
@@ -69,20 +61,63 @@ export default class HasManyRelation extends Relation {
     return content;
   }
 
-  willRemoveInternalModel(internal) {
+  //
+
+  willRemoveContentObject(internal, updateInverse=true) {
     internal.removeObserver(this);
-    let inverse = this.getInverseRelation(internal);
-    if(inverse) {
-      inverse.inverseWillChange(this.internal);
+
+    if(updateInverse) {
+      let inverse = this.getInverseRelation(internal);
+      if(inverse) {
+        inverse.inverseWillChange(this.internal);
+      }
     }
   }
 
-  didAddInternalModel(internal) {
+  didAddContentObject(internal, updateInverse=true) {
     internal.addObserver(this);
-    let inverse = this.getInverseRelation(internal);
-    if(inverse) {
-      inverse.inverseDidChange(this.internal);
+
+    if(updateInverse) {
+      let inverse = this.getInverseRelation(internal);
+      if(inverse) {
+        inverse.inverseDidChange(this.internal);
+      }
     }
+  }
+
+  addContentObject(internal, updateInverse=true) {
+    if(!internal) {
+      return;
+    }
+
+    this.ignoreValueChanges.with(() => {
+      let content = this.getContent();
+      content.addObject(internal);
+      this.didAddContentObject(internal, updateInverse);
+      this.dirty();
+    });
+  }
+
+  removeContentObject(internal, updateInverse=true) {
+    if(!internal) {
+      return;
+    }
+
+    this.ignoreValueChanges.with(() => {
+      let content = this.getContent();
+      this.willRemoveContentObject(internal, updateInverse);
+      content.removeObject(internal);
+      this.dirty();
+    });
+  }
+
+  //
+
+  get valueObserverOptions() {
+    return {
+      willChange: this.valueWillChange,
+      didChange: this.valueDidChange
+    };
   }
 
   getValue() {
@@ -91,89 +126,109 @@ export default class HasManyRelation extends Relation {
       let content = this.getContent();
       let owner = getOwner(this.relationship.store);
       value = this.createArrayProxy(owner, content);
-      value.addEnumerableObserver(this, {
-        willChange: this.valueWillChange,
-        didChange: this.valueDidChange
-      });
+      value.addEnumerableObserver(this, this.valueObserverOptions);
       this.value = value;
     }
     return value;
   }
 
   setValue(value) {
-    this.ignoreValueChanges = true;
+    this.ignoreValueChanges.with(() => {
+      let curr = this.getContent();
+      let next = Ember.A(value).map(model => getInternalModel(model));
 
-    let curr = this.getContent();
-    let next = Ember.A(value).map(model => getInternalModel(model));
+      let { remove, add } = getDiff(curr, next);
 
-    let { remove, add } = getDiff(curr, next);
+      remove.forEach(internal => {
+        this.willRemoveContentObject(internal, true);
+      });
 
-    remove.forEach(internal => {
-      this.willRemoveInternalModel(internal);
+      curr.removeObjects(remove);
+      curr.pushObjects(add);
+
+      add.forEach(internal => {
+        this.didAddContentObject(internal, true);
+      });
     });
-
-    curr.removeObjects(remove);
-    curr.pushObjects(add);
-
-    add.forEach(internal => {
-      this.didAddInternalModel(internal);
-    });
-
-    this.ignoreValueChanges = false;
   }
 
   valueWillChange(proxy, removing) {
-    if(this.ignoreValueChanges) {
+    if(this.ignoreValueChanges.ignore()) {
       return;
     }
-    this.isValueChanging = true;
-    removing.forEach(model => {
-      let internal = getInternalModel(model);
-      this.willRemoveInternalModel(internal);
+    this.ignoreValueChanges.with(() => {
+      removing.forEach(model => {
+        let internal = getInternalModel(model);
+        this.willRemoveContentObject(internal, true);
+      });
     });
   }
 
   valueDidChange(proxy, removeCount, adding) {
-    if(this.ignoreValueChanges) {
+    if(this.ignoreValueChanges.ignore()) {
       return;
     }
-    adding.forEach(model => {
-      let internal = getInternalModel(model);
-      this.didAddInternalModel(internal);
+    this.ignoreValueChanges.with(() => {
+      adding.forEach(model => {
+        let internal = getInternalModel(model);
+        this.didAddContentObject(internal, true);
+      });
+      this.dirty();
     });
-    this.isValueChanging = false;
-    this.dirty();
   }
 
-  onContentInternalModelDeleted(internal) {
-    this.ignoreValueChanges = true;
-    this.getContent().removeObject(internal);
-    this.ignoreValueChanges = false;
+  //
+
+  onInternalDeleted() {
   }
 
-  onInternalModelDeleted(internal) {
-    this.isValueChanging = true;
-    this.getContent().forEach(contentInternal => {
-      let inverse = this.getInverseRelation(contentInternal);
-      if(inverse) {
-        inverse.inverseDeleted(internal);
-      }
+  onContentDeleted(internal) {
+    this.ignoreValueChanges.with(() => {
+      this.removeContentObject(internal, false);
     });
-    this.isValueChanging = false;
+  }
+
+  onInternalDestroyed() {
+    let value = this.value;
+    if(value) {
+      value.removeEnumerableObserver(this, this.valueObserverOptions);
+      value.destroy();
+      this.value = null;
+    }
+
+    let content = this.content;
+    if(content) {
+      this.ignoreValueChanges.with(() => {
+        let content_ = copy(content);
+        content_.forEach(internal => this.removeContentObject(internal, false));
+      });
+    }
+    this.content = null;
+
+    super.onInternalDestroyed();
+  }
+
+  onContentDestroyed(internal) {
+    this.onContentDeleted(internal);
   }
 
   internalModelDidChange(internal, props) {
     if(internal === this.internal) {
       if(internalModelDidChangeIsDeleted(internal, props)) {
-        this.onInternalModelDeleted(internal);
+        this.onInternalDeleted();
+      } else if(internalModelDidChangeInternalWillDestroy(internal, props)) {
+        this.onInternalDestroyed();
       }
     } else {
-      assert(`internalModelDidChange content must include internal`, this.getContent().includes(internal));
       if(internalModelDidChangeIsDeleted(internal, props)) {
-        this.onContentInternalModelDeleted(internal);
+        this.onContentDeleted(internal);
+      } else if(internalModelDidChangeInternalWillDestroy(internal, props)) {
+        this.onContentDestroyed(internal);
       }
     }
   }
+
+  //
 
   internalModelFromModel(model) {
     if(!model) {
@@ -187,6 +242,15 @@ export default class HasManyRelation extends Relation {
       return null;
     }
     return internal.getModel();
+  }
+
+  //
+
+  valueWillDestroy() {
+    this.value = null;
+    this.withPropertyChanges(changed => {
+      this.propertyDidChange(changed);
+    });
   }
 
 }

@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import EmptyObject from '../util/empty-object';
-import { isString } from '../util/assert';
+import { isString, assert } from '../util/assert';
 
 const {
   on
@@ -11,6 +11,7 @@ export default Ember.Mixin.create({
   _createModelIdentity: on('init', function() {
     let identity = new EmptyObject();
     identity.all = Ember.A([]);           // all new and saved models
+    identity.new = Ember.A([]);           // new models
     identity.saved = new EmptyObject();   // all saved
     identity.deleted = new EmptyObject(); // all deleted
     identity.type = new EmptyObject();    // saved by type
@@ -32,6 +33,12 @@ export default Ember.Mixin.create({
     return storage.type[modelName] || [];
   },
 
+  _storeNewInternalModel(internal) {
+    let storage = this._modelIdentity;
+    storage.new.addObject(internal);
+    storage.all.addObject(internal);
+  },
+
   _storeSavedInternalModel(internal) {
     let docId = internal.docId;
     let storage = this._modelIdentity;
@@ -42,6 +49,7 @@ export default Ember.Mixin.create({
     delete storage.deleted[docId];
 
     storage.all.addObject(internal);
+    storage.new.removeObject(internal);
 
     let name = internal.modelName;
     let array = storage.type[name];
@@ -70,12 +78,40 @@ export default Ember.Mixin.create({
     storage.deleted[docId] = internal;
 
     storage.all.removeObject(internal);
+    storage.new.removeObject(internal);
 
     let name = internal.modelName;
     let array = storage.type[name];
     if(array) {
       array.removeObject(internal);
     }
+  },
+
+  //
+
+  _unstoreNewInternalModel(internal) {
+    assert('internal model must be isNew', internal.isNew);
+    let storage = this._modelIdentity;
+    storage.all.removeObject(internal);
+    storage.new.removeObject(internal);
+  },
+
+  _internalModelWillChangeDatabase(internal) {
+    this._unstoreNewInternalModel(internal);
+  },
+
+  _internalModelDidChangeDatabase(internal) {
+    assert('internal model must be isNew', internal.isNew);
+    let storage = this._modelIdentity;
+    storage.all.addObject(internal);
+    storage.new.addObject(internal);
+  },
+
+  _internalModelWillDestroy(internal) {
+    if(!internal.isNew) {
+      return;
+    }
+    this._unstoreNewInternalModel(internal);
   }
 
 });

@@ -31,9 +31,8 @@ export default class BelongsToLoadedRelation extends BelongsToProxiedRelation {
     });
   }
 
-  getModel() {
+  onWillGetModel() {
     this.loader.load();
-    return super.getModel(...arguments);
   }
 
 }

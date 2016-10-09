@@ -27,7 +27,7 @@ export default class HasManyPersistedRelation extends HasManyRelation {
   }
 
   serialize(preview) {
-    let content = this.content;
+    let content = this.getContent();
     return Ember.A(content.map(internal => {
       return this.serializeInternalModelToDocId(internal, preview);
     })).compact();

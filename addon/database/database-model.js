@@ -19,8 +19,16 @@ export default Ember.Mixin.create({
     }
   },
 
+  _createModelForName(modelName, props) {
+    let store = this.get('store');
+    let Model = this.modelClassForName(modelName);
+    let { internal, instance } = store._createNewInternalModel(Model, this, props);
+    this._storeNewInternalModel(internal);
+    return internal.getModel(instance);
+  },
+
   model(modelName, props) {
-    return this.get('store')._createModelForName(modelName, this, props);
+    return this._createModelForName(modelName, props);
   },
 
   existing(modelName, modelId, opts) {
@@ -28,6 +36,7 @@ export default Ember.Mixin.create({
     return this._internalToModel(internal);
   },
 
+  // TODO: remove this when live model collections will be implemented
   _modelsWithModelNameAndState(modelName, key, value) {
     let modelClass = this.modelClassForName(modelName);
     let internals = this._internalModelsWithModelName(get(modelClass, 'modelName'));
@@ -37,6 +46,7 @@ export default Ember.Mixin.create({
     return this._internalArrayToModelsArray(filtered);
   },
 
+  // TODO: remove this when live model collections will be implemented
   dirty(modelName) {
     return this._modelsWithModelNameAndState(modelName, 'isDirty', true);
   },

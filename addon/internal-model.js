@@ -1,12 +1,14 @@
 import Ember from 'ember';
 import EmptyObject from './util/empty-object';
 import { assert } from './util/assert';
+import Error from './util/error';
 import { getDefinition } from './model';
 import Relationship from './properties/relationship';
 import globalOptions from './util/global-options';
 
 const {
-  Logger: { error }
+  Logger: { error, warn },
+  copy
 } = Ember;
 
 export const internalPropertyName = '_internal';
@@ -15,11 +17,23 @@ export function getInternalModel(model) {
   if(model instanceof InternalModel) {
     return model;
   }
-  return model.get('_internal');
+  let internal = model.get('_internal');
+  if(internal.destroyed) {
+    warn(`Model ${internal.modelName} ${internal.docId} is destroyed`);
+  }
+  return internal;
 }
 
 export function internalModelDidChangeIsDeleted(internal, props) {
   return internal.state.isDeleted && props.includes('isDeleted');
+}
+
+export function internalModelDidChangeInternalWillDestroy(internal, props) {
+  return props.includes('onDestroyInternalModel');
+}
+
+export function internalModelDidChangeModelWillDestroy(internal, props) {
+  return props.includes('onDestroyModel');
 }
 
 export default class InternalModel {
@@ -45,6 +59,10 @@ export default class InternalModel {
       isError: false,
       error: null
     };
+  }
+
+  get isNew() {
+    return this.state.isNew;
   }
 
   get url() {
@@ -74,10 +92,28 @@ export default class InternalModel {
   }
 
   set database(database) {
+    this.willSetDatabase();
     if(this._database !== database) {
       assert({ error: 'internal', reason: 'Database can be set only while model is new' }, this.state.isNew);
       this._database = database;
     }
+    this.didSetDatabase();
+  }
+
+  willSetDatabase() {
+    let database = this._database;
+    if(!database) {
+      return;
+    }
+    database._internalModelWillChangeDatabase(this);
+  }
+
+  didSetDatabase() {
+    let database = this._database;
+    if(!database) {
+      return;
+    }
+    database._internalModelDidChangeDatabase(this);
   }
 
   notifyPropertyChange(key) {
@@ -128,7 +164,8 @@ export default class InternalModel {
   }
 
   notifyObservers(props) {
-    this.observers.forEach(observer => {
+    let observers = copy(this.observers);
+    observers.forEach(observer => {
       observer.internalModelDidChange(this, props);
     });
   }
@@ -263,6 +300,9 @@ export default class InternalModel {
   }
 
   getModel(props) {
+    if(this.destroyed) {
+      throw new Error({ error: 'destroyed', reason: 'internal model is destroyed' });
+    }
     let model = this.model;
     if(!model) {
       model = this.store._createModelForInternalModel(this, props);
@@ -310,6 +350,20 @@ export default class InternalModel {
       return;
     }
     this.setLazyLoadModelPromise(this.createLazyLoadPromise());
+  }
+
+  modelWillDestroy() {
+    let database = this._database;
+    if(database) {
+      database._internalModelWillDestroy(this);
+    }
+    if(this.isNew) {
+      this.notifyObservers([ 'onDestroyInternalModel' ]);
+      this.destroyed = true;
+    } else {
+      this.notifyObservers([ 'onDestroyModel' ]);
+    }
+    this.model = null;
   }
 
 }
