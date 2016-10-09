@@ -4,8 +4,7 @@ import Ignore from './util/ignore';
 import {
   getInternalModel,
   internalModelDidChangeIsDeleted,
-  internalModelDidChangeInternalWillDestroy,
-  internalModelDidChangeModelWillDestroy
+  internalModelDidChangeInternalWillDestroy
 } from '../../internal-model';
 
 const {
@@ -213,10 +212,6 @@ export default class HasManyRelation extends Relation {
     this.onContentDeleted(internal);
   }
 
-  onContentModelDestroyed() {
-
-  }
-
   internalModelDidChange(internal, props) {
     if(internal === this.internal) {
       if(internalModelDidChangeIsDeleted(internal, props)) {
@@ -229,8 +224,6 @@ export default class HasManyRelation extends Relation {
         this.onContentDeleted(internal);
       } else if(internalModelDidChangeInternalWillDestroy(internal, props)) {
         this.onContentDestroyed(internal);
-      } else if(internalModelDidChangeModelWillDestroy(internal, props)) {
-        this.onContentModelDestroyed(internal);
       }
     }
   }
