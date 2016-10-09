@@ -21,6 +21,11 @@ next().then(() => {
   this.value.destroy(); // BelongsToProxied, HasMany
   this.value = null;
 
+  // needs separate test for belongsTo proxied
+
+  // attachments are destroyed too
+
 });
 
 // Model isNew === false
+// for now just an assert on isNew===true

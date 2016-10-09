@@ -39,12 +39,25 @@ export default class BelongsToProxiedRelation extends BelongsToRelation {
     });
   }
 
+  onWillGetModel() {
+  }
+
   getModel() {
     let internal = this.content;
     if(!internal) {
       return null;
     }
+    this.onWillGetModel();
     return internal.getModel();
+  }
+
+  onInternalDestroyed() {
+    let value = this.value;
+    if(value) {
+      value.destroy();
+      this.value = null;
+    }
+    super.onInternalDestroyed();
   }
 
 }

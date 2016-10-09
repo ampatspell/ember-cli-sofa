@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import EmptyObject from './util/empty-object';
 import { assert } from './util/assert';
+import Error from './util/error';
 import { getDefinition } from './model';
 import Relationship from './properties/relationship';
 import globalOptions from './util/global-options';
@@ -287,6 +288,9 @@ export default class InternalModel {
   }
 
   getModel(props) {
+    if(this.destroyed) {
+      throw new Error({ error: 'destroyed', reason: 'internal model is destroyed' });
+    }
     let model = this.model;
     if(!model) {
       model = this.store._createModelForInternalModel(this, props);
@@ -344,6 +348,7 @@ export default class InternalModel {
     }
     this.notifyObservers([ 'willDestroy' ]);
     this.model = null;
+    this.destroyed = true;
   }
 
 }

@@ -68,3 +68,40 @@ test('destroyed new model is removed from relationships', assert => {
     assert.ok(post.get('duck') === null);       // 11
   });
 });
+
+test('destroyed new model is cleaned up', assert => {
+  let post = db.model('the-post', { id: 'nice' });
+  let blog = db.model('the-blog', { id: 'big', posts: [ post ] });
+  let duck;
+  let internal;
+  return map([ blog, post ], model => model.save()).then(() => {
+    duck = db.model('duck', { id: 'yellow', blog, posts: [ post ] });
+    internal = duck._internal;
+
+    duck.get('attachments').add('foo', 'hello world');
+
+    assert.ok(duck.get('blog') === blog);
+    duck.get('posts');
+
+    assert.ok(internal);
+
+    assert.ok(internal.values.blog.internal);
+    assert.ok(internal.values.posts.internal);
+
+    assert.ok(internal.values.blog.content);
+
+    assert.ok(internal.values.posts.content);
+    assert.ok(internal.values.posts.value);
+
+    duck.destroy();
+
+    return next();
+  }).then(() => {
+    assert.ok(internal.destroyed === true, 'destroyed');
+    assert.ok(internal.observers.length === 0, 'should be no observers');
+    assert.ok(!internal.values.blog.content, 'belongsTo content');
+    assert.ok(!internal.values.posts.content, 'hasMany content');
+    assert.ok(!internal.values.posts.value, 'hasMany value');
+    // assert.ok(internal.values.attachments.)
+  });
+});

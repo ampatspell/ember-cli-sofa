@@ -110,16 +110,20 @@ export default class HasManyRelation extends Relation {
 
   //
 
+  get valueObserverOptions() {
+    return {
+      willChange: this.valueWillChange,
+      didChange: this.valueDidChange
+    };
+  }
+
   getValue() {
     let value = this.value;
     if(!value) {
       let content = this.getContent();
       let owner = getOwner(this.relationship.store);
       value = this.createArrayProxy(owner, content);
-      value.addEnumerableObserver(this, {
-        willChange: this.valueWillChange,
-        didChange: this.valueDidChange
-      });
+      value.addEnumerableObserver(this, this.valueObserverOptions);
       this.value = value;
     }
     return value;
@@ -182,10 +186,23 @@ export default class HasManyRelation extends Relation {
   }
 
   onInternalDestroyed() {
-    this.ignoreValueChanges.with(() => {
-      let content = copy(this.getContent());
-      content.forEach(internal => this.removeContentObject(internal, false));
-    });
+    let value = this.value;
+    if(value) {
+      value.removeEnumerableObserver(this, this.valueObserverOptions);
+      value.destroy();
+      this.value = null;
+    }
+
+    let content = this.content;
+    if(content) {
+      this.ignoreValueChanges.with(() => {
+        let content_ = copy(content);
+        content_.forEach(internal => this.removeContentObject(internal, false));
+      });
+    }
+    this.content = null;
+
+    super.onInternalDestroyed();
   }
 
   onContentDestroyed(internal) {

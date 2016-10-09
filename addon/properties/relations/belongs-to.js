@@ -58,6 +58,7 @@ export default class BelongsToRelation extends Relation {
     this.withPropertyChanges(changed => {
       this.setContent(null, changed, false);
     });
+    super.onInternalDestroyed();
   }
 
   onContentDestroyed() {
