@@ -1,6 +1,11 @@
 import Ember from 'ember';
 import { getInternalModel } from './internal-model';
 
+const {
+  get,
+  merge
+} = Ember;
+
 export default class InternalCollection {
 
   constructor(database, collectionClass, opts) {
@@ -13,13 +18,18 @@ export default class InternalCollection {
   }
 
   normalizeModelName(modelName) {
-    return this.database._normalizeModelName(modelName, 'model', true);
+    if(!modelName) {
+      return;
+    }
+    let modelClass = this.database.modelClassForName(modelName, 'collection');
+    if(!modelClass) {
+      return;
+    }
+    return get(modelClass, 'modelName');
   }
 
   createCollectionModel() {
-    let content = this.content;
-    let _internal = this;
-    return this.collectionClass.create({ _internal, content });
+    return this.collectionClass._create(merge({ _internal: this, content: this.content }, this.opts));
   }
 
   getCollectionModel() {

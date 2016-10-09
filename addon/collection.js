@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import createTransform from './util/array-transform-mixin';
+import Error from './util/error';
 import { getInternalModel } from './internal-model';
 
 const {
@@ -17,7 +18,7 @@ const Transform = createTransform({
 
 const models = () => {
   return computed('_internal.models.[]', function() {
-    return this._internal.models;
+    return Ember.A(this._internal.models.map(internal => internal.getModel()));
   }).readOnly();
 };
 
@@ -44,7 +45,7 @@ const match = () => {
   }).readOnly();
 };
 
-export default Ember.ArrayProxy.extend(Transform, {
+const Collection = Ember.ArrayProxy.extend(Transform, {
 
   _internal: null,
   arrangedContent: matchToInternalModels(),
@@ -57,3 +58,20 @@ export default Ember.ArrayProxy.extend(Transform, {
   match: match(),
 
 });
+
+Collection.reopenClass({
+
+  modelName: null,
+
+  _create: Collection.create,
+
+  create() {
+    throw new Error({
+      error: 'internal',
+      reason: 'use `database.collection` to create new collections'
+    });
+  }
+
+});
+
+export default Collection;
