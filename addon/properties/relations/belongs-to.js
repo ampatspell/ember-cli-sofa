@@ -64,10 +64,12 @@ export default class BelongsToRelation extends Relation {
   }
 
   onContentModelDestroyed() {
+    this.withPropertyChanges(changed => {
+      this.notifyPropertyChange(changed);
+    });
   }
 
   internalModelDidChange(internal, props) {
-    console.log(internal.docId, props);
     if(internal === this.internal) {
       if(internalModelDidChangeIsDeleted(internal, props)) {
         this.onInternalDeleted();
@@ -121,10 +123,6 @@ export default class BelongsToRelation extends Relation {
     }
   }
 
-  getContent() {
-    return this.content;
-  }
-
   setContent(internal, changed, updateInverse=true) {
     if(this.content !== internal) {
       this.willSetContent(updateInverse);
@@ -137,7 +135,7 @@ export default class BelongsToRelation extends Relation {
   //
 
   getValue() {
-    let internal = this.getContent();
+    let internal = this.content;
     if(!internal) {
       return null;
     }
