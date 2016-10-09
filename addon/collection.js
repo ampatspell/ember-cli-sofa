@@ -28,15 +28,24 @@ const matchToInternalModels = () => {
   }).readOnly();
 };
 
-export default Ember.ArrayProxy.extend(Transform, {
+const Base = Ember.ArrayProxy.extend(Transform, {
 
   _internal: null,
 
-  model: null,
   models: models(),
 
-  match: computed('model', 'models.[]', function() {
-    let model = this.get('model');
+  match: alias('models'),
+
+  arrangedContent: matchToInternalModels(),
+
+});
+
+const Collection = Base.extend({
+
+  modelName: null,
+
+  match: computed('modelName', 'models.[]', function() {
+    let model = this.get('modelName');
     let models = this.get('models');
     if(!model) {
       return models;
@@ -44,6 +53,6 @@ export default Ember.ArrayProxy.extend(Transform, {
     return models.filterBy('modelName', model);
   }).readOnly(),
 
-  arrangedContent: matchToInternalModels(),
-
 });
+
+export default Collection;

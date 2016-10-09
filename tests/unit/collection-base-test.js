@@ -16,7 +16,7 @@ let House = Model.extend({
 
 let Ducks = Collection.extend({
 
-  model: 'duck'
+  modelName: 'duck'
 
 });
 
@@ -64,6 +64,6 @@ test.only('collection has live filtered content', assert => {
   let collection = db.collection('ducks');
   assert.deepEqual(collection.mapBy('docId'), [ 'duck:one', 'duck:two' ]);
 
-  collection.set('model', 'house');
+  collection.set('modelName', 'house');
   assert.deepEqual(collection.mapBy('docId'), [ 'house:one' ]);
 });
