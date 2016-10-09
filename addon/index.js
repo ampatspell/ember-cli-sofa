@@ -1,6 +1,7 @@
 import Store from './store';
 import Model from './model';
 import Query from './query';
+import Collection from './collection';
 
 import {
   id,
@@ -19,6 +20,7 @@ export {
   Store,
   Model,
   Query,
+  Collection,
 
   id,
   prefix,

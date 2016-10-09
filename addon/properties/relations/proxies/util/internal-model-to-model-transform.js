@@ -1,4 +1,4 @@
-import createTransform from './array-transform-mixin';
+import createTransform from '../../../../util/array-transform-mixin';
 
 export default createTransform({
   internal(model) {

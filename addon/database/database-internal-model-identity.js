@@ -109,9 +109,10 @@ export default Ember.Mixin.create({
 
   _internalModelWillDestroy(internal) {
     if(!internal.isNew) {
-      return;
+      this._modelIdentity.all.arrayContentDidChange();
+    } else {
+      this._unstoreNewInternalModel(internal);
     }
-    this._unstoreNewInternalModel(internal);
   }
 
 });

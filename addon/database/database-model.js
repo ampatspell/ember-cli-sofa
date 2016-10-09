@@ -1,7 +1,7 @@
 import Ember from 'ember';
 
 const {
-  get
+  merge
 } = Ember;
 
 export default Ember.Mixin.create({
@@ -36,21 +36,6 @@ export default Ember.Mixin.create({
     return this._internalToModel(internal);
   },
 
-  // TODO: remove this when live model collections will be implemented
-  _modelsWithModelNameAndState(modelName, key, value) {
-    let modelClass = this.modelClassForName(modelName);
-    let internals = this._internalModelsWithModelName(get(modelClass, 'modelName'));
-    let filtered = Ember.A(internals.filter(internal => {
-      return internal.state[key] === value;
-    }));
-    return this._internalArrayToModelsArray(filtered);
-  },
-
-  // TODO: remove this when live model collections will be implemented
-  dirty(modelName) {
-    return this._modelsWithModelNameAndState(modelName, 'isDirty', true);
-  },
-
   load(modelName, id, opts) {
     if(modelName === null) {
       return this._loadInternalModelForDocId(id, opts).then(internal => {
@@ -79,12 +64,14 @@ export default Ember.Mixin.create({
 
   // { model: 'duck', key: 'yellow' }
   all(opts) {
+    opts = merge({ optional: true }, opts);
     return this._internalModelAll(opts).then(array => {
       return this._internalArrayToModelsArray(array);
     });
   },
 
   find(opts) {
+    opts = merge({ optional: true }, opts);
     return this._internalModelFind(opts).then(({ result, type }) => {
       if(type === 'array') {
         return this._internalArrayToModelsArray(result);

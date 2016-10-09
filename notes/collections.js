@@ -1,54 +1,10 @@
-// Collections
-// isNew models also should be included
+// collections/all.js
+export default Collection.extend();
 
-let state = internal.state;
-let values = internal.values;
-let hash = { state, values };
-
-// collections/authors.js
+// collections/loaded-authors.js
 export default Collection.extend({
 
-  observes: [
-    'type'
-  ],
-
-  matches(internal) {
-    if(internal.state.isNew) {
-      return;
-    }
-    return internal.values.type === 'author';
-  }
-
-});
-
-// collections/authors.js
-export default Collection.extend({
-
-  observes: [
-    'type'
-  ],
-
-  query: {
-    model: 'author',
-    selector: { },
-    limit: 25
-  },
-
-  matches(values) {
-    return values.type === 'author';
-  },
-
-});
-
-// collections/authors.js
-export default Collection.extend({
-
-  model: 'author',
-
-  query: {
-    selector: {},
-    limit: 25
-  }
+  model: 'author'
 
 });
 
@@ -57,32 +13,38 @@ export default Collection.extend({
 
   model: 'author',
 
-  query: {
-    selector: { /* type: author, */ approved: true },
-    limit: 25
-  },
-
-  // _matchesModel(values) {
-  //   return values.type === 'author';
-  // },
-
-  // matches(values) {
-  //   return values.approved === true;
-  // }
+  filter: computed('models.@each.isApproved', function() {
+    return this.get('models').filterBy('isApproved', true);
+  }),
 
 });
 
+// collections/loaded-approved-authors.js
+export default Collection.extend({
 
-// Model proxy
+  model: 'author',
 
-export default First.extend({
+  query: 'approved-authors',
 
-  // same thing
-  // calls db.first
+  filter: computed('models.@each.isApproved', function() {
+    return this.get('models').filterBy('isApproved', true);
+  }),
 
 });
 
-// first -- when there are multiple 'first' in identity?
-// one is content, another also matches
-// first doesn't match anymore, should set next
-// implement as a mixin for both
+// queries/approved-authors.js
+export default Query.extend({
+
+  // model -> type from collection
+
+  collection: null,
+
+  find: computed(function() {
+    return { selector: { approved: true } };
+  }),
+
+});
+
+//
+
+let collection = db.collection('approved-authors');

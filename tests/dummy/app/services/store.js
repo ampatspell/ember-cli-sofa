@@ -1,4 +1,15 @@
+import Ember from 'ember';
 import { Store } from 'sofa';
+
+const {
+  computed
+} = Ember;
+
+const coll = (name) => {
+  return computed(function() {
+    return this.get('db.main').collection(name);
+  }).readOnly();
+};
 
 export default Store.extend({
 
@@ -13,6 +24,11 @@ export default Store.extend({
     if(identifier === 'test-main') {
       return { url, name: 'ember-cli-sofa-test-main' };
     }
-  }
+  },
+
+  allModels: coll('all'),
+  dirtyModels: coll('dirty'),
+
+  authors: coll('authors'),
 
 });

@@ -9,12 +9,11 @@ export default Ember.Component.extend({
 
   actions: {
     saveAuthor(author) {
-      all([
-        author.save(),
-        all( this.get('store.db.main').dirty('blog').map(blog => blog.save()) )
-      ]).then(() => {
+      all(this.get('store.dirtyModels').map(model => model.save())).then(() => {
         this.get('router').transitionTo('authors.author', author);
-      }, () => undefined);
+      }, err => {
+        console.error(err);
+      });
     }
   }
 });

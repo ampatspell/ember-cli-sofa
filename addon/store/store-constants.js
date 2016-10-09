@@ -2,3 +2,4 @@ export const __sofa_type__ = '__sofa_type__';
 
 export const __sofa_model_type__ = 'model';
 export const __sofa_query_type__ = 'query';
+export const __sofa_collection_type__ = 'collection';
