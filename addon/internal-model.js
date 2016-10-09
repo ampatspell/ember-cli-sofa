@@ -337,7 +337,7 @@ export default class InternalModel {
   }
 
   modelWillDestroy() {
-    assert(`Do not destroy saved models. Not yet implemented`, this.state.isNew);
+    assert(`model.destroy() for saved models is not implemented yet`, this.state.isNew);
     let database = this._database;
     if(database) {
       database._internalModelWillDestroy(this);
