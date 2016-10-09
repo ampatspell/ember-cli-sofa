@@ -6,7 +6,6 @@
 * abstract Couch, have also PouchDB
 * couch changes listener
 * database changes -> push
-* get rid of wrapFile nonsense. have a nice class and don't keep resolved promises there
 
 # Done
 
@@ -29,3 +28,4 @@
 * get rid of getWrappedContent() in has-many
 * destroy isNew model -> model is removed from identity.new _and_ all assigned relationships
 * destroy store -> kills off all models, relationship proxies and so on
+* get rid of wrapFile nonsense. have a nice class and don't keep resolved promises there
