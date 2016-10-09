@@ -1,5 +1,4 @@
 import Ember from 'ember';
-import SofaError from '../util/error';
 import createFileLoader from '../util/file-loader/create';
 import toBase64 from '../util/base64';
 
@@ -9,7 +8,7 @@ const {
   assert,
   merge,
   typeOf,
-  RSVP: { resolve, reject, all }
+  RSVP: { resolve, all }
 } = Ember;
 
 const stringifyUnlessEmpty = value => {

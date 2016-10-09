@@ -13,6 +13,7 @@ export default class FileLoader {
     this.file = file;
     this.promises = {};
     this.contentType = lookupContentType(file);
+    this.size = file.size;
   }
 
   _cached(name, cb) {

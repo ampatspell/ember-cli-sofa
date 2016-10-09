@@ -1,7 +1,4 @@
 import { later } from 'sofa/util/run';
-import blobutil from 'sofa/blob-util';
-
-window.ww = blobUtil;
 
 export function throttle(db) {
   let documents = db.get('documents');

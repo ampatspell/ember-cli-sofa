@@ -3,7 +3,8 @@ import AttachmentContent from './content-internal';
 import createFileLoader from '../../../util/file-loader/create';
 
 const {
-  merge
+  merge,
+  RSVP: { reject }
 } = Ember;
 
 export default class AttachmentFileContent extends AttachmentContent {
@@ -42,26 +43,33 @@ export default class AttachmentFileContent extends AttachmentContent {
   }
 
   getURL() {
+    this.getURLPromise(true);
     return this.url;
   }
 
   getURLPromise(notify=true) {
     let promise = this.promise;
+
     if(promise) {
       return promise;
     }
+
     this.setState({
       isLoading: true,
     }, notify);
+
     promise = this.file.toBase64String().then(string => {
       let contentType = this.file.contentType;
       let url = `data:${contentType};base64,`;
       url += string;
+
       this.didCreateURL(url);
+
       this.setState({
         isLoading: false,
         isLoaded: true,
       }, true);
+
       return url;
     }, err => {
       this.setState({
@@ -70,8 +78,10 @@ export default class AttachmentFileContent extends AttachmentContent {
         isError: true,
         error: err
       }, true);
+
       return reject(err);
     });
+
     this.promise = promise;
     return promise;
   }

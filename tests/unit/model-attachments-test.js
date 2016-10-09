@@ -262,13 +262,12 @@ test('stub has url', assert => {
   });
 });
 
-test('file has array buffer promise', assert => {
+test('file has url promise', assert => {
   let data = createBlob('hey there', 'text/plain');
   let model = db.model('duck', { id: 'yellow', attachments: [ { name: 'blob', data } ] });
   let att = model.get('attachments.blob');
-  return att.get('arrayBuffer').then(arrayBuffer => {
-    assert.ok(arrayBuffer instanceof ArrayBuffer);
-    assert.ok(arrayBuffer.byteLength === 9);
+  return att.get('promise').then(string => {
+    assert.equal(string, 'data:text/plain;base64,aGV5IHRoZXJl');
   });
 });
 

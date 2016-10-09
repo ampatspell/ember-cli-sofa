@@ -38,8 +38,9 @@ let hash = {
   length:      file('size'),
 
   url:         call('getURL'),
+
   promise:     call('getURLPromise'),
-  toBase64:    call('getBase64Promise'),
+  base64:      call('getBase64Promise'),
 
 };
 
