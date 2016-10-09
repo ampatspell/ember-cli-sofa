@@ -1,5 +1,9 @@
 import Ember from 'ember';
 
+const {
+  isEmpty
+} = Ember;
+
 let _raw = {
   'png':  'image/png',
   'jpg jpeg': 'image/jpeg',
@@ -38,10 +42,25 @@ function extnameFromFilename(name) {
   }
 }
 
-export default function(filename) {
+export function contentTypeForFileName(filename) {
   let extname = extnameFromFilename(filename);
   if(extname) {
     extname = extname.toLowerCase();
     return mapping()[extname];
   }
+}
+
+export default function contentTypeForFile(file) {
+  let type = file.type;
+  if(isEmpty(type)) {
+    let name = file.name;
+    if(name) {
+      type = contentTypeForFileName(name);
+      if(type) {
+        return type;
+      }
+    }
+    return 'application/octet-stream';
+  }
+  return type;
 }

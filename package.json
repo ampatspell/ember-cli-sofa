@@ -1,6 +1,6 @@
 {
   "name": "@ampatspell/ember-cli-sofa",
-  "version": "2.0.0-pre.8",
+  "version": "2.0.0-pre.9",
   "description": "CouchDB persistence library for Ember.js",
   "repository": "https://bitbucket.org/ampatspell/ember-cli-sofa-4",
   "directories": {
@@ -12,7 +12,6 @@
     "start": "ember server",
     "test": "ember try:each"
   },
-  "repository": "",
   "engines": {
     "node": ">= 0.12.0"
   },

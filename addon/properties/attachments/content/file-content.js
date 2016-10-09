@@ -11,9 +11,15 @@ const file = (key) => {
   }).readOnly();
 };
 
-const state = (key) => {
+const state = () => {
   return computed(function() {
-    return this._internal.getStateProperty(key);
+    return this._internal.getState();
+  }).readOnly();
+};
+
+const stateProperty = (name) => {
+  return computed('state', function() {
+    return this.get('state')[name];
   }).readOnly();
 };
 
@@ -26,19 +32,20 @@ const call = (key) => {
 
 let hash = {
 
+  state:       state(),
+
   contentType: file('contentType'),
   length:      file('size'),
 
   url:         call('getURL'),
-  promise:     call('getPromise'),
 
-  arrayBuffer: call('getArrayBufferPromise'),
+  promise:     call('getURLPromise'),
   base64:      call('getBase64Promise'),
 
 };
 
-['isLoading', 'isLoaded', 'isError', 'progress', 'error'].forEach(prop => {
-  hash[prop] = state(prop);
+['isLoading', 'isLoaded', 'isError', 'error'].forEach(prop => {
+  hash[prop] = stateProperty(prop);
 });
 
 export default Content.extend(hash);
