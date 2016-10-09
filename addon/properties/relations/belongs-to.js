@@ -53,10 +53,6 @@ export default class BelongsToRelation extends Relation {
     super.onInternalDestroyed();
   }
 
-  onInternalModelDestroyed() {
-
-  }
-
   onContentDestroyed() {
     this.withPropertyChanges(changed => {
       this.setContent(null, changed, false);
@@ -75,8 +71,6 @@ export default class BelongsToRelation extends Relation {
         this.onInternalDeleted();
       } else if(internalModelDidChangeInternalWillDestroy(internal, props)) {
         this.onInternalDestroyed();
-      } else if(internalModelDidChangeModelWillDestroy(internal, props)) {
-        this.onInternalModelDestroyed();
       }
     } else {
       if(internalModelDidChangeIsDeleted(internal, props)) {

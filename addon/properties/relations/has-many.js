@@ -209,10 +209,6 @@ export default class HasManyRelation extends Relation {
     super.onInternalDestroyed();
   }
 
-  onInternalModelDestroyed() {
-
-  }
-
   onContentDestroyed(internal) {
     this.onContentDeleted(internal);
   }
@@ -227,8 +223,6 @@ export default class HasManyRelation extends Relation {
         this.onInternalDeleted();
       } else if(internalModelDidChangeInternalWillDestroy(internal, props)) {
         this.onInternalDestroyed();
-      } else if(internalModelDidChangeModelWillDestroy(internal, props)) {
-        this.onInternalModelDestroyed();
       }
     } else {
       if(internalModelDidChangeIsDeleted(internal, props)) {
