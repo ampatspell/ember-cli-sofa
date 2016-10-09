@@ -29,4 +29,6 @@ export default Store.extend({
   allModels: coll('all'),
   dirtyModels: coll('dirty'),
 
+  authors: coll('authors'),
+
 });

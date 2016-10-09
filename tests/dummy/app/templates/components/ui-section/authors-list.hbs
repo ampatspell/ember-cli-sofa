@@ -6,7 +6,11 @@
   {{/each}}
 {{/ui-block}}
 
-{{ui-button title='Create new author' action=(action attrs.createNew)}}
+{{#ui-block class='clean'}}
+  {{#ui-row}}
+    {{ui-button title='Create new author' action=(action attrs.createNew)}}
+  {{/ui-row}}
+{{/ui-block}}
 
 {{#ui-block title='all models'}}
   {{#each store.allModels as |model|}}
