@@ -2,8 +2,6 @@ import StringContent from './string-content-internal';
 import StubContent from './stub-content-internal';
 import FileContent from './file-content-internal';
 import Error from '../../../util/error';
-// TODO: crappy import
-import { isFileOrBlob } from '../../../couch/util/file-availability';
 
 export default (attachment, hash) => {
   if(hash.stub === true) {
@@ -18,7 +16,7 @@ export default (attachment, hash) => {
     return new StringContent(attachment, data, contentType);
   }
 
-  if(isFileOrBlob(data)) {
+  if(data instanceof Blob) {
     return new FileContent(attachment, data);
   }
 

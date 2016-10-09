@@ -97,7 +97,7 @@ export default Ember.Object.extend({
         } else {
           let file = createFileLoader(data);
           attachment.content_type = file.contentType;
-          return file.base64String();
+          return file.toBase64String();
         }
       }).then(data => {
         attachment.data = data;
