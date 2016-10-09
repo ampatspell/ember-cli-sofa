@@ -3,7 +3,8 @@ import Relation from './relation';
 import { getInternalModel, internalModelDidChangeIsDeleted, internalModelDidChangeWillDestroy } from '../../internal-model';
 
 const {
-  getOwner
+  getOwner,
+  copy
 } = Ember;
 
 const getDiff = (curr, next) => {
@@ -147,7 +148,8 @@ export default class HasManyRelation extends Relation {
   onInternalDeleted() {
     let internal = this.internal;
     this.isValueChanging = true;
-    this.getContent().forEach(contentInternal => {
+    let content = copy(this.getContent());
+    content.forEach(contentInternal => {
       let inverse = this.getInverseRelation(contentInternal);
       if(inverse) {
         inverse.inverseDeleted(internal);
@@ -158,11 +160,19 @@ export default class HasManyRelation extends Relation {
 
   onContentDeleted(internal) {
     this.ignoreValueChanges = true;
+    internal.removeObserver(this);
     this.getContent().removeObject(internal);
     this.ignoreValueChanges = false;
   }
 
   onInternalDestroyed() {
+    this.ignoreValueChanges = true;
+    let content = this.getContent();
+    content.forEach(internal => {
+      internal.removeObserver(this);
+    });
+    content.clear();
+    this.ignoreValueChanges = false;
   }
 
   onContentDestroyed(internal) {
