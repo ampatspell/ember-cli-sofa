@@ -1,7 +1,6 @@
 import Ember from 'ember';
 
 const {
-  get,
   merge
 } = Ember;
 
@@ -35,21 +34,6 @@ export default Ember.Mixin.create({
   existing(modelName, modelId, opts) {
     let internal = this._existingInternalModelForModelName(modelName, modelId, opts);
     return this._internalToModel(internal);
-  },
-
-  // TODO: remove this when live model collections will be implemented
-  _modelsWithModelNameAndState(modelName, key, value) {
-    let modelClass = this.modelClassForName(modelName);
-    let internals = this._internalModelsWithModelName(get(modelClass, 'modelName'));
-    let filtered = Ember.A(internals.filter(internal => {
-      return internal.state[key] === value;
-    }));
-    return this._internalArrayToModelsArray(filtered);
-  },
-
-  // TODO: remove this when live model collections will be implemented
-  dirty(modelName) {
-    return this._modelsWithModelNameAndState(modelName, 'isDirty', true);
   },
 
   load(modelName, id, opts) {
