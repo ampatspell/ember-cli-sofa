@@ -1,10 +1,6 @@
 import Ember from 'ember';
 import InternalCollection from '../internal-collection';
 
-const {
-  merge
-} = Ember;
-
 export default Ember.Mixin.create({
 
   _collectionClassForName(name) {

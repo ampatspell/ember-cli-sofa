@@ -1,3 +1,4 @@
+import Ember from 'ember';
 import { getInternalModel } from './internal-model';
 
 export default class InternalCollection {

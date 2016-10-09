@@ -38,27 +38,27 @@ test('collection can be created', assert => {
 });
 
 test('collection has models', assert => {
-  let one = db.model('duck', { id: 'one' });
-  let two = db.model('duck', { id: 'two' });
+  db.model('duck', { id: 'one' });
+  db.model('duck', { id: 'two' });
   db.model('house', { id: 'one' });
 
   let collection = db.collection('ducks');
   assert.deepEqual(collection.get('models').mapBy('docId'), [ "duck:one", "duck:two", "house:one"]);
-  assert.equal(collection.mapBy('docId'), [ 'duck:one', 'duck:two' ]);
+  assert.deepEqual(collection.mapBy('docId'), [ 'duck:one', 'duck:two' ]);
 });
 
 test('collection has filtered content', assert => {
-  let one = db.model('duck', { id: 'one' });
-  let two = db.model('duck', { id: 'two' });
+  db.model('duck', { id: 'one' });
+  db.model('duck', { id: 'two' });
   db.model('house', { id: 'one' });
 
   let collection = db.collection('ducks');
   assert.deepEqual(collection.mapBy('docId'), [ 'duck:one', 'duck:two' ]);
 });
 
-test.only('collection has live filtered content', assert => {
-  let one = db.model('duck', { id: 'one' });
-  let two = db.model('duck', { id: 'two' });
+test('collection has live filtered content', assert => {
+  db.model('duck', { id: 'one' });
+  db.model('duck', { id: 'two' });
   db.model('house', { id: 'one' });
 
   let collection = db.collection('ducks');

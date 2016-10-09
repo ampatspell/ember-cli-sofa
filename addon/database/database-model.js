@@ -1,7 +1,8 @@
 import Ember from 'ember';
 
 const {
-  get
+  get,
+  merge
 } = Ember;
 
 export default Ember.Mixin.create({
