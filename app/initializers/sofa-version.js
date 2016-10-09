@@ -9,7 +9,7 @@ const {
 export default {
   name: 'sofa:version',
   after: 'sofa:internal',
-  initialize(container) {
+  initialize() {
     Ember.libraries.register(name, version);
   }
 };
