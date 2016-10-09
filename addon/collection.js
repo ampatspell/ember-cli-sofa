@@ -4,7 +4,7 @@ import { getInternalModel } from './internal-model';
 
 const {
   computed,
-  computed: { alias }
+  computed: { oneWay }
 } = Ember;
 
 const Transform = createTransform({
@@ -34,7 +34,7 @@ const Base = Ember.ArrayProxy.extend(Transform, {
 
   models: models(),
 
-  match: alias('models'),
+  match: oneWay('models').readOnly(),
 
   arrangedContent: matchToInternalModels(),
 
