@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import InternalCollection from '../internal-collection';
 
 const {
   merge
@@ -10,9 +11,14 @@ export default Ember.Mixin.create({
     return this.get('store')._collectionClassForName(name);
   },
 
+  _createInternalCollection(collectionClass, opts) {
+    return new InternalCollection(this, collectionClass, opts);
+  },
+
   collection(name, opts) {
     let collectionClass = this._collectionClassForName(name);
-    return collectionClass.create(merge({ database: this }, opts));
+    let internal = this._createInternalCollection(collectionClass, opts);
+    return internal.getCollectionModel();
   }
 
 });

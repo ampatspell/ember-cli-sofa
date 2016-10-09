@@ -34,4 +34,5 @@ test.only('collection can be created', assert => {
   assert.ok(Ducks.detectInstance(collection));
   assert.ok(collection.constructor.__sofa_type__ === 'collection');
   assert.ok(collection.constructor.modelName === 'ducks');
+  assert.ok(collection._internal);
 });
