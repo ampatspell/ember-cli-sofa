@@ -1,5 +1,5 @@
 import Relation from './relation';
-import { internalModelDidChangeIsDeleted, internalModelDidChangeWillDestroy } from '../../internal-model';
+import { internalModelDidChangeIsDeleted, internalModelDidChangeInternalWillDestroy } from '../../internal-model';
 
 export default class BelongsToRelation extends Relation {
 
@@ -71,13 +71,13 @@ export default class BelongsToRelation extends Relation {
     if(internal === this.internal) {
       if(internalModelDidChangeIsDeleted(internal, props)) {
         this.onInternalDeleted();
-      } else if(internalModelDidChangeWillDestroy(internal, props)) {
+      } else if(internalModelDidChangeInternalWillDestroy(internal, props)) {
         this.onInternalDestroyed();
       }
     } else {
       if(internalModelDidChangeIsDeleted(internal, props)) {
         this.onContentDeleted();
-      } else if(internalModelDidChangeWillDestroy(internal, props)) {
+      } else if(internalModelDidChangeInternalWillDestroy(internal, props)) {
         this.onContentDestroyed();
       }
     }

@@ -28,8 +28,12 @@ export function internalModelDidChangeIsDeleted(internal, props) {
   return internal.state.isDeleted && props.includes('isDeleted');
 }
 
-export function internalModelDidChangeWillDestroy(internal, props) {
-  return props.includes('willDestroy');
+export function internalModelDidChangeInternalWillDestroy(internal, props) {
+  return props.includes('onDestroyInternalModel');
+}
+
+export function internalModelDidChangeModelWillDestroy(internal, props) {
+  return props.includes('onDestroyInternalModel');
 }
 
 export default class InternalModel {
@@ -55,6 +59,10 @@ export default class InternalModel {
       isError: false,
       error: null
     };
+  }
+
+  get isNew() {
+    return this.state.isNew;
   }
 
   get url() {
@@ -345,14 +353,17 @@ export default class InternalModel {
   }
 
   modelWillDestroy() {
-    assert(`model.destroy() for saved models is not implemented yet`, this.state.isNew);
     let database = this._database;
     if(database) {
       database._internalModelWillDestroy(this);
     }
-    this.notifyObservers([ 'willDestroy' ]);
+    if(this.isNew) {
+      this.notifyObservers([ 'onDestroyInternalModel' ]);
+      this.destroyed = true;
+    } else {
+      this.notifyObservers([ 'onDestroyModel' ]);
+    }
     this.model = null;
-    this.destroyed = true;
   }
 
 }

@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import { isObject_, isString_, assert } from '../../util/assert';
 import AttachmentInternal from './attachment-internal';
-import { internalModelDidChangeWillDestroy } from '../../internal-model';
+import { internalModelDidChangeInternalWillDestroy } from '../../internal-model';
 
 const {
   getOwner,
@@ -207,7 +207,7 @@ export default class AttachmentsInternal {
 
   internalModelDidChange(internal, props) {
     Ember.assert(`internal model should be this.internalModel`, internal === this.internalModel);
-    if(internalModelDidChangeWillDestroy(internal, props)) {
+    if(internalModelDidChangeInternalWillDestroy(internal, props)) {
       this.onInternalDestroyed();
     }
   }

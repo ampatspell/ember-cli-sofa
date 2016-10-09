@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import Relation from './relation';
-import { getInternalModel, internalModelDidChangeIsDeleted, internalModelDidChangeWillDestroy } from '../../internal-model';
+import { getInternalModel, internalModelDidChangeIsDeleted, internalModelDidChangeInternalWillDestroy } from '../../internal-model';
 import Ignore from './util/ignore';
 
 const {
@@ -213,13 +213,13 @@ export default class HasManyRelation extends Relation {
     if(internal === this.internal) {
       if(internalModelDidChangeIsDeleted(internal, props)) {
         this.onInternalDeleted();
-      } else if(internalModelDidChangeWillDestroy(internal, props)) {
+      } else if(internalModelDidChangeInternalWillDestroy(internal, props)) {
         this.onInternalDestroyed();
       }
     } else {
       if(internalModelDidChangeIsDeleted(internal, props)) {
         this.onContentDeleted(internal);
-      } else if(internalModelDidChangeWillDestroy(internal, props)) {
+      } else if(internalModelDidChangeInternalWillDestroy(internal, props)) {
         this.onContentDestroyed(internal);
       }
     }
