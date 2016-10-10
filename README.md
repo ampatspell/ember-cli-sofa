@@ -10,124 +10,37 @@
 ember install @ampatspell/ember-cli-sofa
 ```
 
-Full documentation coming soon.
+## Setup
 
-For now just some random examples.
+Easiest way to start using `sofa`, is by extending `Store` service:
 
 ``` javascript
-// models/author.js
-import { Model, prefix, attr, hasMany, belongsTo } from 'sofa';
+// services/store.js
+import { Store } from 'sofa';
 
-export default Model.extend({
+const url = 'http://127.0.0.1:5984';
 
-  id: prefix(),
-  name: attr('string'),
-  email: attr('string'),
+const mapping = {
+  main: 'awesome-app',
+  users: '_users'
+};
 
-  blogs: hasMany('blog', { inverse: 'authors', query: 'author-blogs' }),
-  posts: hasMany('post', { inverse: 'author', persist: false }),
+export default Store.extend({
 
-  post: belongsTo('post', { query: 'author-first-post' }),
-
-  willCreate() {
-    let name = this.get('name');
+  databaseOptionsForIdentifier(identifier) {
+    let name = mapping[identifier];
     if(!name) {
-      name = 'unnamed';
+      return;
     }
-    let id = name.trim().toLowerCase();
-    this.set('id', id);
+    return { url, name };
   }
 
 });
 ```
 
-``` javascript
-// models/blog.js
-import { Model, prefix, attr, hasMany } from 'sofa';
+`sofa` supports multiple CouchDB hosts and databases (soon also PouchDB). Each database in application is accessed by
+using `identifier`. To map identifiers to CouchDB database urls, override `databaseOptionsForIdentifier(identifier)`
+and return `{ url, name }` object.
 
-export default Model.extend({
-
-  id: prefix(),
-  name: attr('string'),
-
-  authors: hasMany('author', { inverse: 'blogs' })
-
-});
-```
-
-``` javascript
-// models/post.js
-import { Model, prefix, attr, belongsTo } from 'sofa';
-import { makeid } from '../util/makeid';
-
-export default Model.extend({
-
-  id: prefix(),
-  title: attr('string'),
-  body: attr('string'),
-
-  author: belongsTo('author', { inverse: 'posts', query: 'author-blogs' }),
-
-  willCreate() {
-    this.set('id', makeid());
-  }
-
-});
-```
-
-``` javascript
-// queries/autor-blogs.js
-import Ember from 'ember';
-import { Query } from 'sofa';
-
-const {
-  computed
-} = Ember;
-
-export default Query.extend({
-
-  find: computed('model.docId', function() {
-    let author = this.get('model.docId');
-    return {
-      selector: {
-        authors: {
-          $elemMatch: {
-            $eq: author
-          }
-        }
-      }
-    };
-  }),
-
-});
-```
-
-``` javascript
-// collections/authors.js
-import { Collection } from 'sofa';
-
-export default Collection.extend({
-
-  modelName: 'author',
-
-});
-
-```
-
-``` javascript
-let db = this.get('store.db.main');
-db.find({ model: 'author', selector: {} }) // => loads all authors
-
-// create new author
-let author = db.model('author', { name: 'Kurt' });
-author.save().then(() => {
-  ...
-});
-
-db.first({ model: 'blog' }).then(blog => {
-  blog.set('author', author);
-  author.get('blogs.firstObject'); // => blog
-});
-
-db.collection('authors'); // => live-updating array of all loaded authors
-```
+For example, if app queries `http://127.0.0.1:5984` `/awesome-app` and `/_users` CouchDB databases,
+you can configure `Store` by using example above to refer to those using `main` and `users` identifiers.
