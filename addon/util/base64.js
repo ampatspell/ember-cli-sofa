@@ -1,21 +1,13 @@
 import Ember from 'ember';
-import Error from './error';
+import blobutil from 'sofa/blob-util';
 
 const {
-  RSVP: { resolve, reject }
+  RSVP: { resolve }
 } = Ember;
 
 export default string => {
   return resolve().then(() => {
-    /* global btoa */
-    if(!window.btoa) {
-      return reject(new Error({ error: 'file_load', reason: 'File uploads not supported' }));
-    }
-    return btoa(string);
-  }).then(result => {
-    if(!result) {
-      return new Error({ error: 'file_load', reason: 'File too large' });
-    }
-    return result;
+    let blob = blobutil.createBlob([ string ]);
+    return blobutil.blobToBase64String(blob);
   });
 };

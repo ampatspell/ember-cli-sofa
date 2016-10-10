@@ -107,3 +107,31 @@ test('save doc with file attachment', assert => {
     }, doc);
   });
 });
+
+test('save text with special chars', assert => {
+  return docs.save({
+    _id: 'hello',
+    _attachments: {
+      text: {
+        content_type: 'text/plain',
+        data: 'āšūč or something'
+      }
+    }
+  }).then(() => {
+    return docs.load('hello').then(doc => {
+      assert.deepEqual_({
+        "_attachments": {
+          "text": {
+            "content_type": "text/plain",
+            "digest": "ignored",
+            "length": 21,
+            "revpos": "ignored",
+            "stub": true
+          }
+        },
+        "_id": "hello",
+        "_rev": "ignored"
+      }, doc);
+    });
+  });
+});
