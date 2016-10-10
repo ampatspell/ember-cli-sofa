@@ -413,7 +413,7 @@ export default Ember.Mixin.create({
   //
   // result: { result, type }
   _internalModelFind(opts) {
-    opts = merge({}, opts);
+    opts = merge({ optional: true }, opts);
 
     let all = opts.all;
     let id = opts.id;

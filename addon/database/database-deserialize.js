@@ -73,7 +73,7 @@ export default Ember.Mixin.create({
     if(internal) {
       definition = internal.definition;
       assert({
-        error: 'inivalid_document',
+        error: 'invalid_document',
         reason: `document '${docId}' is expected to be '${internal.modelName}' not '${get(modelClass, 'modelName')}'`
       }, modelClass === internal.modelClass);
     } else {
@@ -82,15 +82,18 @@ export default Ember.Mixin.create({
       internal = this._createExistingInternalModel(modelClass, modelId);
     }
 
+    this._deserializeDocument(internal, doc);
+
     if(expectedModelClass && !definition.is(expectedModelClass)) {
+      if(optional) {
+        return;
+      }
       assert({
         error: 'invalid_document',
         reason: `document '${doc._id}' is expected to be '${get(expectedModelClass, 'modelName')}' not '${internal.modelName}'`
       }, optional);
       return;
     }
-
-    this._deserializeDocument(internal, doc);
 
     return internal;
   },

@@ -52,7 +52,7 @@ test('deserialize wrong type', assert => {
     assert.ok(false, 'should reject');
   }, err => {
     assert.deepEqual(err.toJSON(), {
-      "error": "inivalid_document",
+      "error": "invalid_document",
       "reason": "document 'the-duck:yellow' is expected to be 'duck' not 'fish'"
     });
   });
