@@ -54,7 +54,7 @@ test('load duck using view which also loads house', assert => {
   let duck = db.model('duck', { id: 'yellow', house });
   return all([ duck, house ].map(model => model.save())).then(() => {
     flush();
-    return db.first({ model: 'duck', ddoc: 'duck', view: 'with-house', key: 'duck:yellow', limit: 2, optional: true });
+    return db.first({ model: 'duck', ddoc: 'duck', view: 'with-house', key: 'duck:yellow', limit: 2 });
   }).then(model => {
     assert.ok(model);
     assert.ok(model.get('modelName') === 'duck');
