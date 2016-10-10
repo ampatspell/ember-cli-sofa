@@ -48,7 +48,7 @@ module('model-linked-documents', () => {
   });
 });
 
-// { limit: 2, optional: true }
+// { limit: 2 }
 test('load duck using view which also loads house', assert => {
   let house = db.model('house', { id: 'big' });
   let duck = db.model('duck', { id: 'yellow', house });
