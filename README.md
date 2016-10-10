@@ -66,7 +66,7 @@ export default Model.extend({
   title: attr('string'),
   body: attr('string'),
 
-  author: belongsTo('author', { inverse: 'posts' }),
+  author: belongsTo('author', { inverse: 'posts', query: 'author-blogs' }),
 
   willCreate() {
     this.set('id', makeid());
