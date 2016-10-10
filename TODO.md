@@ -4,6 +4,7 @@
 
 * `collection.query`
 * `model.save()`, `model.delete()`, ... second call while 1st is pending should return the same promise
+* `hasMany('duck', { collection: 'barn-ducks' })` and `Collection.extend()` with `query: 'barn-ducks'` so there is a place for `paginated: ...`
 * option to delete documents by saving with `_deleted:true`
 * delete models with `type` property
 * per-database models (each database is initialized with model folder name which is returned by `store.databaseOptionsForIdentifier`)
