@@ -1,3 +1,4 @@
+/* global emit */
 import Ember from 'ember';
 import { module, test, createStore, registerModels, cleanup } from '../helpers/setup';
 import { Model, prefix, hasMany, belongsTo } from 'sofa';
@@ -22,6 +23,7 @@ const House = Model.extend({
 const flush = () => {
   store = createStore();
   db = store.get('db.main');
+  db.set('modelNames', [ 'house', 'duck' ]);
 };
 
 const ddoc = {
@@ -31,6 +33,7 @@ const ddoc = {
         if(doc.type !== 'duck') {
           return;
         }
+        emit(doc._id, null);
         emit(doc._id, { _id: doc.house });
       }
     }
@@ -41,16 +44,17 @@ module('model-linked-documents', () => {
   registerModels({ Duck, House });
   flush();
   return cleanup(store, [ 'main' ]).then(() => {
-    db.get('documents.design').save('duck', ddoc);
-  })
+    return db.get('documents.design').save('duck', ddoc);
+  });
 });
 
-test.only('load duck using view which also loads house', assert => {
+// { limit: 2, optional: true }
+test('load duck using view which also loads house', assert => {
   let house = db.model('house', { id: 'big' });
   let duck = db.model('duck', { id: 'yellow', house });
   return all([ duck, house ].map(model => model.save())).then(() => {
     flush();
-    return db.first({ model: 'duck', ddoc: 'duck', view: 'with-house', key: 'duck:yellow' });
+    return db.first({ model: 'duck', ddoc: 'duck', view: 'with-house', key: 'duck:yellow', limit: 2, optional: true });
   }).then(model => {
     assert.ok(model);
     assert.ok(model.get('modelName') === 'duck');
