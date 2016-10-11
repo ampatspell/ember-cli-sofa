@@ -4,7 +4,8 @@ Ember.Resolver.reopen({
   init() {
     this._super(...arguments);
     this.pluralizedTypes = {
-      query: 'queries'
+      query: 'queries',
+      'sofa/query': 'sofa/queries'
     };
   }
 });

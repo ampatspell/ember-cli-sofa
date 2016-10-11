@@ -39,12 +39,18 @@ export default Ember.Mixin.create({
     return couch.get('documents').database(name);
   },
 
+  _lookupDatabaseClass(identifier) {
+    let owner = getOwner(this);
+    return owner.lookup(`sofa/database:${identifier}`) || owner.lookup('sofa:database');
+  },
+
   _createDatabase(identifier) {
     let databaseOptions = this._databaseOptionsForIdentifier(identifier);
     let couch = this._createCouch(databaseOptions);
     let documents = this._createDocuments(couch, databaseOptions);
     let store = this;
-    return getOwner(this).lookup('sofa:database').create({ identifier, store, couch, documents });
+    let Database = this._lookupDatabaseClass(identifier);
+    return Database.create({ identifier, store, couch, documents });
   },
 
   database(identifier) {

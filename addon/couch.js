@@ -1,14 +1,17 @@
 import Ember from 'ember';
-import { lookup } from './util/computed';
 
 const {
+  getOwner,
+  computed,
   computed: { oneWay }
 } = Ember;
 
 const session = function() {
-  return lookup('sofa:session', function() {
-    return { couch: this };
-  });
+  return computed(function() {
+    let owner = getOwner(this);
+    let Session = owner.lookup('sofa/session:main') || owner.lookup('sofa:session');
+    return Session.create({ couch: this });
+  }).readOnly();
 };
 
 export default Ember.Object.extend({
