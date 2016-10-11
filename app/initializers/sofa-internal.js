@@ -38,7 +38,7 @@ export default {
     // sofa/query:all -> dummy/sofa/queries/all (?)
     container.registerOptionsForType('sofa/session', { instantiate: false });
     container.registerOptionsForType('sofa/database', { instantiate: false });
-    container.registerOptionsForType('sofa/query', { instantiate: false });
+    // container.registerOptionsForType('sofa/query', { instantiate: false });
 
     container.register('sofa:store', Store, { instantiate: false });
     container.register('sofa:couches', Couches, { instantiate: false });
