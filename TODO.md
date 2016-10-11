@@ -2,6 +2,11 @@
 
 ### sofa
 
+* collection initial content
+* load sections as a mango query (portfolio) doesnt match error
+* load sections as ddoc without `model:...` -- docs dissapear somewhere for some reason
+* collection modelName can also be base class. so can't compare using ===
+* createdAt defaults to created_at key
 * `collection.query`
 * `model.save()`, `model.delete()`, ... second call while 1st is pending should return the same promise
 * `hasMany('duck', { collection: 'barn-ducks' })` and `Collection.extend()` with `query: 'barn-ducks'` so there is a place for `paginated: ...`
