@@ -1,4 +1,3 @@
-import Resolver from './resolver';
 import Store from './store';
 import Database from './database';
 import Session from './session';
@@ -20,7 +19,6 @@ import {
 const hasOne = belongsTo;
 
 export {
-  Resolver,
   Database,
   Session,
   Store,

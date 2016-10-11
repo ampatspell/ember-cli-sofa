@@ -1,4 +1,4 @@
-import { Database } from 'ember';
+import { Database } from 'sofa';
 
 export default Database.extend({
 
