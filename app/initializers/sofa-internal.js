@@ -32,7 +32,7 @@ export default {
     container.registerOptionsForType('model', { instantiate: false });
     container.registerOptionsForType('query', { instantiate: false });
     container.registerOptionsForType('collection', { instantiate: false });
-    container.registerOptionsForType('sofa-database', { instantiate: false });
+    container.registerOptionsForType('database', { instantiate: false });
 
     container.register('sofa:store', Store, { instantiate: false });
     container.register('sofa:couches', Couches, { instantiate: false });

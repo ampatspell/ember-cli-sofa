@@ -1,5 +1,5 @@
-import Ember from 'ember';
+import { Database } from 'ember';
 
-export default Ember.Object.extend({
+export default Database.extend({
 
 });

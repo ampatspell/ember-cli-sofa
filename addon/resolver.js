@@ -12,13 +12,12 @@ export default Resolver.extend({
     return patterns;
   }),
 
+  // sofa/session
+  // sofa/databases/main
+  // sofa/databases/users
+
   sofaModuleName(parsedName) {
-    if(parsedName.type !== 'sofa-database') {
-      return;
-    }
-    let ret = parsedName.prefix + '/sofa/databases/' + parsedName.fullNameWithoutType;
-    console.log(parsedName, ret);
-    return ret;
+    return parsedName.prefix + '/sofa/' +  this.pluralize(parsedName.type) + '/' + parsedName.fullNameWithoutType;
   },
 
 });
