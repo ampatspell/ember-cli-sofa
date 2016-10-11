@@ -1,3 +1,4 @@
+import Resolver from './resolver';
 import Store from './store';
 import Model from './model';
 import Query from './query';
@@ -17,6 +18,7 @@ import {
 const hasOne = belongsTo;
 
 export {
+  Resolver,
   Store,
   Model,
   Query,
