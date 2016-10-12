@@ -4,7 +4,8 @@ import { getInternalModel } from '../internal-model';
 const {
   merge,
   assert,
-  copy
+  copy,
+  String: { underscore }
 } = Ember;
 
 function expandPersist(opts) {
@@ -53,7 +54,7 @@ export default class Property {
   prepareModelClass(name, declaringModelClass, store) {
     this.validatePropertyName(name);
     this.name = name;
-    this.opts.key = this.opts.key || this.name;
+    this.opts.key = this.opts.key || underscore(this.name);
     this.validateDocumentKey(this.opts.key);
     this.declaringModelClass = declaringModelClass;
     this.store = store;
