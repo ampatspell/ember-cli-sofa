@@ -8,8 +8,8 @@ const {
 
 export default Ember.Mixin.create({
 
-  _createExistingInternalModel(modelClass, modelId) {
-    let internal = this.get('store')._createExistingInternalModel(modelClass, this, modelId);
+  _createExistingInternalModel(modelClass, modelId, isReady=true) {
+    let internal = this.get('store')._createExistingInternalModel(modelClass, this, modelId, isReady);
     this._storeCreatedInternalModel(internal);
     return internal;
   },
@@ -79,7 +79,7 @@ export default Ember.Mixin.create({
     } else {
       definition = this._definitionForModelClass(modelClass);
       let modelId = definition.modelId(docId);
-      internal = this._createExistingInternalModel(modelClass, modelId);
+      internal = this._createExistingInternalModel(modelClass, modelId, false);
     }
 
     this._deserializeDocument(internal, doc);

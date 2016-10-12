@@ -16,8 +16,9 @@ export default Ember.Mixin.create({
   },
 
   // { isNew: false, isLoaded: true, id }
-  _createExistingInternalModel(modelClass, database, modelId) {
+  _createExistingInternalModel(modelClass, database, modelId, isReady=true) {
     let internal = new InternalModel(this, modelClass, database);
+    internal.isReady = isReady;
     this._prepareInternalModel(internal, { id: modelId });
     internal.setState({ isNew: false, isDirty: false }, false);
     return internal;

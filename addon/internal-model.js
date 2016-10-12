@@ -49,6 +49,7 @@ export default class InternalModel {
     this.loadPromise = null;
     this.boundNotifyPropertyChange = this.notifyPropertyChange.bind(this);
     this.observers = Ember.A();
+    this.isReady = true;
     this.state = {
       isNew: true,
       isLoading: false,
@@ -321,6 +322,9 @@ export default class InternalModel {
       return;
     }
     if(checkForExistingLoad && this.loadPromise) {
+      return;
+    }
+    if(!this.isReady) {
       return;
     }
     let state = this.state;
