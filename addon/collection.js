@@ -4,6 +4,7 @@ import Error from './util/error';
 import { getInternalModel } from './internal-model';
 
 const {
+  get,
   computed,
   computed: { oneWay }
 } = Ember;
@@ -18,11 +19,11 @@ const Transform = createTransform({
 });
 
 const models = () => {
-  return computed('_internal.internalModels.[]', 'normalizedModelName', function() {
-    let modelName = this.get('normalizedModelName');
+  return computed('_internal.internalModels.[]', 'modelClass', function() {
+    let modelClass = this.get('modelClass');
     let models = Ember.A(this._internal.internalModels);
-    if(modelName) {
-      models = Ember.A(models.filter(internal => internal.modelName === modelName));
+    if(modelClass) {
+      models = Ember.A(models.filter(internal => internal.definition.is(modelClass)));
     }
     return Ember.A(models.map(internal => internal.getModel()));
   }).readOnly();
@@ -34,9 +35,19 @@ const matchToInternalModels = () => {
   }).readOnly();
 };
 
-const normalizedModelName = () => {
+const modelClass = () => {
   return computed('modelName', function() {
-    return this._internal.normalizeModelName(this.get('modelName'));
+    return this._internal.modelClassForName(this.get('modelName'));
+  }).readOnly();
+};
+
+const normalizedModelName = () => {
+  return computed('modelClass', function() {
+    let modelClass = this.get('modelClass');
+    if(!modelClass) {
+      return;
+    }
+    return get(modelClass, 'modelName');
   }).readOnly();
 };
 
@@ -54,6 +65,7 @@ const Collection = Ember.ArrayProxy.extend(Transform, {
   models: models(),
 
   modelName: null,
+  modelClass: modelClass(),
   normalizedModelName: normalizedModelName(),
 
   match: oneWay('models').readOnly(),
