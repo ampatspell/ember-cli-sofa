@@ -342,8 +342,8 @@ export default Ember.Mixin.create({
 
   _expectedModelClassFromOpts(opts) {
     let model = opts.model;
+    delete opts.model;
     if(model) {
-      delete opts.model;
       return this.modelClassForName(model);
     }
   },

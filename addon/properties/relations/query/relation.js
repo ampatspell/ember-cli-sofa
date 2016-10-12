@@ -2,7 +2,6 @@ import Ember from 'ember';
 
 const {
   computed,
-  assert,
   observer,
   run: { next, cancel }
 } = Ember;
@@ -27,21 +26,11 @@ export default Ember.Mixin.create({
   store: relation('store'),
   database: relation('database'),
 
-  _invokeFind(database, opts) {
-    assert(`override _invokeFind and don't call super ${this} ${database} ${opts}`, false);
-  },
-
   _find() {
     let relation = this._relation;
     let database = relation.relationshipDatabase;
     let model = relation.relationshipModelName;
-
-    let opts = this.get('find');
-    assert(`Query._find should not be called when find returns ${opts}`, !!opts);
-
-    opts.model = model;
-
-    return this._invokeFind(database, opts);
+    return this.__find(database, model);
   },
 
   _isLoadable: computed('find', 'model.isNew', function() {

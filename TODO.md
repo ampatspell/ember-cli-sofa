@@ -2,7 +2,8 @@
 
 ### sofa
 
-* `collection.query`
+* collection query autoload
+* collection query needsReload
 * `model.save()`, `model.delete()`, ... second call while 1st is pending should return the same promise
 * `hasMany('duck', { collection: 'barn-ducks' })` and `Collection.extend()` with `query: 'barn-ducks'` so there is a place for `paginated: ...`
 * detached attachment models, `model.get('attachments').pushObject(attachment)`
