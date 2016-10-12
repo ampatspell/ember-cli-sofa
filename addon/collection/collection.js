@@ -1,7 +1,7 @@
 import Ember from 'ember';
-import createTransform from './util/array-transform-mixin';
-import Error from './util/error';
-import { getInternalModel } from './internal-model';
+import createTransform from '../util/array-transform-mixin';
+import Error from '../util/error';
+import { getInternalModel } from '../internal-model';
 
 const {
   get,

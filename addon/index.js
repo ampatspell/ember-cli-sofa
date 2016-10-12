@@ -3,7 +3,7 @@ import Database from './database';
 import Session from './session';
 import Model from './model';
 import Query from './query';
-import Collection from './collection';
+import Collection from './collection/collection';
 
 import {
   id,

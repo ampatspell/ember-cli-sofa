@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import { getInternalModel } from './internal-model';
+import { getInternalModel } from '../internal-model';
 
 const {
   merge

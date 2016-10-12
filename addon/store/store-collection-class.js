@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import SofaCollection from '../collection';
+import SofaCollection from '../collection/collection';
 import { assert } from '../util/assert';
 
 import {

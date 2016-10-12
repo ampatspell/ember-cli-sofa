@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import InternalCollection from '../internal-collection';
+import InternalCollection from '../collection/internal-collection';
 
 export default Ember.Mixin.create({
 
