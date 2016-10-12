@@ -16,7 +16,7 @@ export default {
     app.inject('component', 'router', 'service:router');
 
     let store = app.lookup('service:store');
-    store.set('_applicationName', 'dummy');
+    store.set('_applicationModulePrefix', 'dummy');
 
     let main = store.get('db.main');
     // throttle(main);

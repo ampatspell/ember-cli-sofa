@@ -8,13 +8,13 @@ const {
 
 export default Ember.Mixin.create({
 
-  _applicationName: computed(function() {
-    return getOwner(this).application.name;
+  _applicationModulePrefix: computed(function() {
+    return getOwner(this).application.modulePrefix;
   }),
 
   modelNames: computed(function() {
     /* global require */
-    let name = this.get('_applicationName');
+    let name = this.get('_applicationModulePrefix');
     let prefix = `${name}/models/`;
     let entries = require.entries;
     return Ember.A(Object.keys(entries)).filter(key => {
