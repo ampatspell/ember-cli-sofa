@@ -10,7 +10,8 @@
   "scripts": {
     "build": "ember build",
     "start": "ember server",
-    "test": "ember try:each"
+    "test": "ember try:each",
+    "bump": "npm version prerelease; hg ci -m \"bump `node -e \"console.log(require('./package.json').version)\"`\""
   },
   "engines": {
     "node": ">= 0.12.0"
