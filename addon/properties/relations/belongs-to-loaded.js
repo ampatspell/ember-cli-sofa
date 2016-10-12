@@ -1,4 +1,5 @@
 import BelongsToProxiedRelation from './belongs-to-proxied';
+import QueryFindMixin from '../../util/query-find-mixin';
 import RelationQueryMixin from './query/relation';
 import RelationFirstQueryMixin from './query/relation-first';
 import RelationLoader from './util/relation-loader';
@@ -21,7 +22,7 @@ export default class BelongsToLoadedRelation extends BelongsToProxiedRelation {
 
   createQuery() {
     return this.relationship.createQuery(this, 'relation-first', Query => {
-      return Query.extend(RelationQueryMixin, RelationFirstQueryMixin);
+      return Query.extend(QueryFindMixin, RelationQueryMixin, RelationFirstQueryMixin);
     });
   }
 

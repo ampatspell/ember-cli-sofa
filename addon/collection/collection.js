@@ -1,11 +1,13 @@
 import Ember from 'ember';
 import Transform from './collection-transform';
 import CollectionMatch from './collection-match';
+import CollectionLoad from './collection-load';
 import Error from '../util/error';
 
 const Collection = Ember.ArrayProxy.extend(
   Transform,
-  CollectionMatch, {
+  CollectionMatch,
+  CollectionLoad, {
 
   _internal: null
 
@@ -14,6 +16,7 @@ const Collection = Ember.ArrayProxy.extend(
 Collection.reopenClass({
 
   modelName: null,
+  queryName: null,
 
   _create: Collection.create,
 

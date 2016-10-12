@@ -1,5 +1,8 @@
 import Ember from 'ember';
 import { getInternalModel } from '../internal-model';
+import CollectionLoader from './collection-loader';
+import QueryFindMixin from '../util/query-find-mixin';
+import CollectionQueryMixin from './collection-query';
 
 const {
   merge
@@ -14,6 +17,7 @@ export default class InternalCollection {
     this.collectionModel = null;
     this.content = Ember.A();
     this.internalModels = database._modelIdentity.all;
+    this.loader = new CollectionLoader(this);
   }
 
   modelClassForName(modelName) {
@@ -34,6 +38,32 @@ export default class InternalCollection {
       this.collectionModel = model;
     }
     return model;
+  }
+
+  //
+
+  createQuery() {
+    let collection = this.getCollectionModel();
+    let queryModelName = collection.get('queryName');
+    if(!queryModelName) {
+      return;
+    }
+    let Query = this.database.get('store')._queryClassForName(queryModelName, 'collection-find', Query => {
+      return Query.extend(QueryFindMixin, CollectionQueryMixin);
+    });
+    return Query._create({ _internalCollection: this });
+  }
+
+  getQuery() {
+    let query = this.query;
+    if(!query) {
+      query = this.createQuery();
+      this.query = query;
+    }
+    return query;
+  }
+
+  collectionLoaderDidLoad() {
   }
 
   //
