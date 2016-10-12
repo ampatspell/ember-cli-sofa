@@ -346,7 +346,6 @@ export default Ember.Mixin.create({
     if(model) {
       return this.modelClassForName(model);
     }
-    return model;
   },
 
   _optionalFromOpts(opts) {
@@ -379,7 +378,7 @@ export default Ember.Mixin.create({
     let expectedModelClass = this._expectedModelClassFromOpts(opts);
     let optional = this._optionalFromOpts(opts);
 
-    if(expectedModelClass && expectedModelClass !== null) {
+    if(expectedModelClass) {
       let definition = this._definitionForModelClass(expectedModelClass);
       let type = definition.type;
       if(!opts.selector[type.key]) {
