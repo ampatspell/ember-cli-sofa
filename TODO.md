@@ -2,6 +2,7 @@
 
 ### sofa
 
+* replace `internal.isReady` with `next().then(() => { if(stillNeedsLoad) })` in internal model
 * collection query autoload
 * collection query needsReload
 * `model.save()`, `model.delete()`, ... second call while 1st is pending should return the same promise
