@@ -81,3 +81,11 @@ test('collection model is base class', assert => {
   assert.ok(sections.get('length') === 1);
   assert.ok(sections.get('lastObject') === placeholder);
 });
+
+test('collection has initial content', assert => {
+  let placeholder = db.model('placeholder', { id: 'one' });
+  db.model('duck');
+  let sections = db.collection('sections');
+  assert.ok(sections.get('length') === 1);
+  assert.ok(sections.get('lastObject') === placeholder);
+});

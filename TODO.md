@@ -2,7 +2,6 @@
 
 ### sofa
 
-* collection initial content
 * createdAt defaults to created_at key
 * `collection.query`
 * `model.save()`, `model.delete()`, ... second call while 1st is pending should return the same promise
