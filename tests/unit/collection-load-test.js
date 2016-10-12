@@ -65,7 +65,7 @@ module('collection-load', () => {
   });
 });
 
-test('load by getting promise', assert => {
+test.only('load by getting promise', assert => {
   let collection;
   return all([
     db.model('placeholder', { id: 'one' }).save(),
@@ -78,5 +78,11 @@ test('load by getting promise', assert => {
     assert.ok(arg === collection);
     assert.ok(collection.get('length') === 1);
     assert.ok(collection.get('firstObject.modelName') === 'placeholder');
+    assert.deepEqual(collection.get('state'), {
+      "error": false,
+      "isError": false,
+      "isLoaded": true,
+      "isLoading": false
+    });
   });
 });
