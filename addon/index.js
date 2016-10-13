@@ -1,3 +1,4 @@
+import Error from './util/error';
 import Store from './store';
 import Database from './database';
 import Session from './session';
@@ -19,6 +20,8 @@ import {
 const hasOne = belongsTo;
 
 export {
+  Error,
+
   Database,
   Session,
   Store,
