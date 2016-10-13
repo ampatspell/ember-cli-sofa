@@ -2,6 +2,8 @@
 
 ### sofa
 
+* `hasMany.setValue(array)` allow reordering models
+* `db.model('..', { attachments: [ { name, data: file } ] })` yields error loading
 * replace `internal.isReady` with `next().then(() => { if(stillNeedsLoad) })` in internal model
 * collection query autoload
 * collection query needsReload
