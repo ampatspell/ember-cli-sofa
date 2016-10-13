@@ -2,7 +2,7 @@
 
 ### sofa
 
-* `hasMany.setValue(array)` allow reordering models
+* `hasMany.setValue(array)` allow reordering models. or maybe `Relationship.extend({ sortable: sortable('position') })` which would support that
 * `db.model('..', { attachments: [ { name, data: file } ] })` yields error loading
 * replace `internal.isReady` with `next().then(() => { if(stillNeedsLoad) })` in internal model
 * collection query autoload
