@@ -11,7 +11,9 @@
     "build": "ember build",
     "start": "ember server",
     "test": "ember try:each",
-    "bump": "npm version prerelease; hg ci -m \"bump `node -e \"console.log(require('./package.json').version)\"`\""
+    "bump": "npm version prerelease; hg ci -m \"bump `node -e \"console.log(require('./package.json').version)\"`\"",
+    "push": "hg push",
+    "release": "npm run bump; npm run push; npm publish; gulp doc:deploy"
   },
   "engines": {
     "node": ">= 0.12.0"
