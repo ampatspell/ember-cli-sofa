@@ -4,6 +4,11 @@
 Version: {{version}}
 ```
 
+### 2.0.0-pre.17
+
+* [new] export `Error` in `sofa/index.js`
+* [fix] got rid of `isReady`. postpone load until next runloop and make sure load is still needed
+
 ### 2.0.0-pre.16
 
 * [fix] do not attempt to load model before it is finished deserializing (`internal.isReady`)
