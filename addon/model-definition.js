@@ -101,7 +101,6 @@ export default class Definition {
       }
     });
     internal.raw = raw;
-    internal.isReady = true;
   }
 
   deserializeProperty(internal, name, value, changed) {

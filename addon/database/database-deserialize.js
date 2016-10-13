@@ -8,8 +8,8 @@ const {
 
 export default Ember.Mixin.create({
 
-  _createExistingInternalModel(modelClass, modelId, isReady=true) {
-    let internal = this.get('store')._createExistingInternalModel(modelClass, this, modelId, isReady);
+  _createExistingInternalModel(modelClass, modelId) {
+    let internal = this.get('store')._createExistingInternalModel(modelClass, this, modelId);
     this._storeCreatedInternalModel(internal);
     return internal;
   },

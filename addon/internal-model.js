@@ -2,6 +2,7 @@ import Ember from 'ember';
 import EmptyObject from './util/empty-object';
 import { assert } from './util/assert';
 import Error from './util/error';
+import { next } from './util/run';
 import { getDefinition } from './model';
 import Relationship from './properties/relationship';
 import globalOptions from './util/global-options';
@@ -49,7 +50,6 @@ export default class InternalModel {
     this.loadPromise = null;
     this.boundNotifyPropertyChange = this.notifyPropertyChange.bind(this);
     this.observers = Ember.A();
-    this.isReady = true;
     this.state = {
       isNew: true,
       isLoading: false,
@@ -324,9 +324,6 @@ export default class InternalModel {
     if(checkForExistingLoad && this.loadPromise) {
       return;
     }
-    if(!this.isReady) {
-      return;
-    }
     let state = this.state;
     return !state.isNew && !state.isLoaded && !state.isLoading && !state.isDeleted && !state.isSaving;
   }
@@ -344,7 +341,9 @@ export default class InternalModel {
 
   createLazyLoadPromise() {
     let model = this.model;
-    return model.load().catch(err => {
+    return next().then(() => {
+      return model.load();
+    }).catch(err => {
       this.reportLazyLoadError(`{ model: '${model.get('modelName')}', _id: '${model.get('docId')}' }`, err);
     });
   }
