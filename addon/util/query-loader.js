@@ -46,6 +46,7 @@ export default class QueryLoader {
     {
       proxy.notifyPropertyChange('promise');
       proxy.notifyPropertyChange('content');
+      proxy.notifyPropertyChange('state');
     }
     proxy.endPropertyChanges();
   }
