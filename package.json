@@ -12,7 +12,7 @@
     "start": "ember server",
     "test": "ember try:each",
     "bump": "npm version prerelease",
-    "release": "npm run bump; npm run push; npm publish; gulp doc:deploy"
+    "release": "npm run bump; npm publish; gulp doc:deploy"
   },
   "engines": {
     "node": ">= 0.12.0"
