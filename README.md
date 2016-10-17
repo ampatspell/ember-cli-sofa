@@ -7,7 +7,7 @@
 ## Install
 
 ```bash
-ember install @ampatspell/ember-cli-sofa
+ember install ember-cli-sofa
 ```
 
 ## Setup
