@@ -2,7 +2,7 @@
 
 > This documentation is also available at http://sofa.amateurinmotion.com
 
-`Sofa` is full featured and easy to use CouchDB persistence addon for Ember.js.
+`Sofa` is full featured and easy to use CouchDB persistence library for Ember.js.
 
 ## Install
 
@@ -43,4 +43,8 @@ using `identifier`. To map identifiers to CouchDB database urls, override `datab
 and return `{ url, name }` object.
 
 For example, if app queries `http://127.0.0.1:5984` `/awesome-app` and `/_users` CouchDB databases,
-you can configure `Store` by using example above to refer to those using `main` and `users` identifiers.
+you can configure `Store` by using example above to refer to those databases by using `main` and `users` identifiers.
+
+## Usage
+
+..rest is coming
