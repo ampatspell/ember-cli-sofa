@@ -11,7 +11,7 @@
     "build": "ember build",
     "start": "ember server",
     "test": "ember try:each",
-    "bump": "npm version prerelease",
+    "bump": "npm version prerelease; git push",
     "release": "npm run bump; npm publish; gulp doc:deploy"
   },
   "engines": {
