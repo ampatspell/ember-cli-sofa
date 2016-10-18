@@ -2,6 +2,7 @@
 
 ### sofa
 
+* attachment `data` as a Promise which must resolve to `Blob` or `String` (add scaled image)
 * `hasMany.setValue(array)` allow reordering models. or maybe `Relationship.extend({ sortable: sortable('position') })` which would support that
 * `db.model('..', { attachments: [ { name, data: file } ] })` yields error loading
 * replace `internal.isReady` with `next().then(() => { if(stillNeedsLoad) })` in internal model
