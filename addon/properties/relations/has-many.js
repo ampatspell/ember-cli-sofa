@@ -150,7 +150,6 @@ export default class HasManyRelation extends Relation {
         this.didAddContentObject(internal, true);
       });
     });
-    return this.getValue();
   }
 
   valueWillChange(proxy, removing) {

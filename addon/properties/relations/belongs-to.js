@@ -139,7 +139,6 @@ export default class BelongsToRelation extends Relation {
   setValue(value, changed) {
     let internal = this.toInternalModel(value);
     this.setContent(internal, changed, true);
-    return this.getValue();
   }
 
 }

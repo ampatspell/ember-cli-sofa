@@ -81,7 +81,7 @@ export default class Property {
       value = this.initialValue();
     }
     let transformed = this.transformValueToInternalModel(internal, value);
-    this.setValue(internal, transformed, changed);
+    this.setInitialValue(internal, transformed, changed);
     return name;
   }
 
@@ -147,6 +147,10 @@ export default class Property {
       return this._setValue(internal, transformed, changed);
     }
     return current;
+  }
+
+  setInitialValue() {
+    return this.setValue(...arguments);
   }
 
   //

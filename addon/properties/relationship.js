@@ -59,7 +59,13 @@ export default class Relationship extends Property {
 
   _setValue(internal, value, changed) {
     let relation = this.getRelation(internal);
-    return relation.setValue(value, changed);
+    relation.setValue(value, changed);
+    return relation.getValue();
+  }
+
+  setInitialValue(internal, value, changed) {
+    let relation = this.getRelation(internal);
+    relation.setValue(value, changed);
   }
 
   _serialize(internal, doc, preview) {
