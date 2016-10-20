@@ -28,4 +28,25 @@ While Sofa has already most of commonly required features implemented, there is 
 ember install ember-cli-sofa
 ```
 
+## Quickstart
+
+```
+> remove ember data
+> add service
+> configure databases
+> add playing.js instance initializer
+> play with database
+> create database
+> add Message model with text attr
+> create message, save it
+> load message by id
+> create mango index
+> query using mango
+> create ddoc
+> query using view
+> delete message
+> add author
+> add user model
+> login and create author-user relationship
+> add sofa validator
 ```
