@@ -28,6 +28,28 @@ While Sofa has already most of commonly required features implemented, there is 
 ember install ember-cli-sofa
 ```
 
+## Model
+
+### id
+### rev
+### type
+### attachments
+### save()
+### load()
+### reload()
+### delete()
+### willCreate()
+### willSave()
+### willDelete()
+
+## Collection
+
+...
+
+## Query
+
+...
+
 ## Store
 
 ### database(identifier) → Store.Database
@@ -41,7 +63,7 @@ ember install ember-cli-sofa
 ### identifier → String
 ### store → Store
 ### couch → Couch
-### documents → Couch.Database
+### documents → JSON.Database
 ### collection(name, opts) → Collection
 ### modelClassForName(modelName) → Model class
 ### model(modelName, props) → Model
@@ -53,7 +75,7 @@ ember install ember-cli-sofa
 ### find(opts) → Promise - [ Model, ... ]
 ### first(opts) → Promise - [ Model, ... ]
 ### push(doc, opts) → Model, status or undefined
-### security → Security
+### security → Store.Database.Security
 ### db → Store.Databases
 
 ``` javascript
@@ -62,14 +84,14 @@ let main = store.get('db.main');
 
 ## Store.Couch
 
-### documents → Couch
+### documents → JSON.Couch
 ### url → String
 ### session → Store.Couch.Session
 
 ## Store.Database.Security
 
-### database →
-### documents →
+### database → Store.Database
+### documents → JSON.Database.Security
 ### admins → Security.Pair
 ### members → Security.Pair
 ### load() →
@@ -94,7 +116,7 @@ let main = store.get('db.main');
 ## Store.Couch.Session
 
 ### couch → Store.Couch
-### documents → Couch.Session
+### documents → JSON.Couch.Session
 ### isAuthenticated → boolean
 ### name → String
 ### password → String
@@ -112,4 +134,71 @@ let main = store.get('db.main');
 * isError
 * error
 
-## Couch (JSON)
+## JSON.Couch
+
+### url
+### normalizedUrl
+### session
+### request(opts)
+### info()
+### uuids(count)
+### database(name)
+
+## JSON.Couch.Session
+
+### couch
+### request(opts)
+### load()
+### save(name, password)
+### delete()
+
+## JSON.Database
+
+### couch
+### name
+### security
+### design
+### database
+### mango
+### url
+### request(opts)
+### info()
+### load(id, opts)
+### save(doc, opts)
+### delete(id, rev, opts)
+### view(ddoc, name, opts)
+### all(opts)
+
+## JSON.Database.Design
+
+### database
+### id(name)
+### load(name, opts)
+### save(name, object)
+### delete(name, opts)
+
+## JSON.Database.Security
+
+### database
+### request(opts)
+### load()
+### save(object)
+
+## JSON.Database.Database
+
+### database
+### request(opts)
+### info()
+### create(opts)
+### delete(opts)
+### recreate(opts)
+
+## JSON.Database.Mango
+
+### database
+### request(opts)
+### find(opts)
+### explain(opts)
+### save(ddoc, name, index)
+### delete(ddoc, name)
+### all()
