@@ -42,6 +42,17 @@ ember install ember-cli-sofa
 ### willSave()
 ### willDelete()
 
+## Model Properties
+
+### id
+### prefix
+### rev
+### type
+### attachments
+### attr
+### belongsTo / hasOne
+### hasMany
+
 ## Collection
 
 ...
