@@ -44,13 +44,19 @@ ember install ember-cli-sofa
 
 ## Model Properties
 
+### attributes
+
 ### id
 ### prefix
 ### rev
 ### type
-### attachments
 ### attr
-### belongsTo / hasOne
+
+### attachments
+
+### relationships
+
+### belongsTo & hasOne
 ### hasMany
 
 ## Collection
