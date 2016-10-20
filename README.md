@@ -28,6 +28,107 @@ While Sofa has already most of commonly required features implemented, there is 
 ember install ember-cli-sofa
 ```
 
+## Quickstart
+
+### Service
+
+> Be sure to remove `ember-data` addon from your `package.json` as Ember Data also registers `store` service and those two will clash. Or just name your sofa service differently.
+
+Easiest way to start using sofa is to create a `store` service by extending `Store`:
+
+``` javascript
+// services/store.js
+import { Store } from 'sofa';
+
+export default Store.extend({
+
+  databaseOptionsForIdentifier(identifier) {
+    let url = 'http://127.0.0.1:5984';
+    if(identifier === 'main') {
+      return { url, name: 'great-app' };
+    }
+  }
+
+});
+```
+
+The only required override is `databaseOptionsForIdentifier` which is used to determine CouchDB `url` and database `name` for given database `identifier`. This is done because this way actual database `url` and `name` is detached from database `identifier` which is used throughout the application and can be easily changed based on environment and deployment configuration.
+
+Now we have a service, let's declare a global `store` variable and try it out in the console:
+
+``` javascript
+// instance-initializers/sofa-develop.js
+export default {
+  name: 'sofa:develop',
+  initialize(app) {
+    window.store = app.lookup('service:store');
+    window.log = console.log.bind(console);
+    window.err = err => console.error(err.toJSON ? err.toJSON() : err.stack);
+  }
+};
+```
+
+### Console
+
+Let's start by logging in as an CouchDB `_admin`. This might come in handy if database does not exist. Open your browser's console and type this thing in:
+
+``` javascript
+store.get('db.crap.couch.documents.session').save('<admin>', '<password>').then(log, err)
+// → {ok: true, name: ...}
+```
+
+Now let's make sure that `main` database exists:
+
+``` javascript
+store.get('db.main.documents.database').info().then(log, err)
+// depending if database actually exists:
+//  → {db_name: "great-app", ... }
+//  → {error: "not_found", reason: "Database does not exist.", status: 404}
+```
+
+So, if database doesn't exist, we can easily create it by calling `create()`:
+
+``` javascript
+store.get('db.main.documents.database').create().then(log, err)
+// → {ok: true}
+```
+
+Good, now that we have created the database and it's time to start filling it up with some random documents.
+
+For now reason, let's save a doc:
+
+``` javascript
+store.get('db.crap.documents').save({
+  _id: 'first',
+  message: 'To whom it may concern: It is springtime. It is late afternoon.',
+  author: 'Kurt Vonnegut'
+}).then(log, err)
+// → {ok: true, id: "first", rev: "1-8ed895a12ea8c1389116bcbaff0b7262"}
+```
+
+Load the same doc:
+
+``` javascript
+store.get('db.crap.documents').load('first').then(log, err)
+// → {
+//     _id: "first",
+//     _rev: "1-8ed895a12ea8c1389116bcbaff0b7262",
+//     message: "To whom it may concern: It is springtime. It is late afternoon.",
+//     author: "Kurt Vonnegut"
+//   }
+```
+
+And delete it:
+
+``` javascript
+store.get('db.crap.documents').delete('first', '1-8ed895a12ea8c1389116bcbaff0b7262').then(log, err)
+// → {ok: true, id: "first", rev: "2-39d1e13f087a31499c222f8c4657fdb1"}
+```
+
+Easy enough, right? See JSON.* sections below for overview about raw CouchDB JSON API wrappers.
+
+But now it's time to create a model class and let sofa manage all the document saving, loading, querying details.
+
 ## Model
 
 ### id
