@@ -20,7 +20,7 @@ While Sofa has already most of commonly required features implemented, there is 
 
 ## Example applications
 
-* [https://github.com/ampatspell/portfolio](https://github.com/ampatspell/portfolio) – Photography portfolio app which showcases model inheritance, attachments, relationships, queries, collections.
+* [Portfolio](https://github.com/ampatspell/portfolio) – Photography portfolio app (which showcases model inheritance, attachments, relationships, queries, collections)
 
 ## Install
 
@@ -28,25 +28,88 @@ While Sofa has already most of commonly required features implemented, there is 
 ember install ember-cli-sofa
 ```
 
-## Quickstart
+## Store
 
+### database(identifier) → Store.Database
+### databaseOptionsForIdentifier(identifier)
+### modelClassForName(modelName) → Model class
+### modelNames → [ String, ... ]
+### model(modelName, props) → Model
+
+## Store.Database
+
+### identifier → String
+### store → Store
+### couch → Couch
+### documents → Couch.Database
+### collection(name, opts) → Collection
+### modelClassForName(modelName) → Model class
+### model(modelName, props) → Model
+### existing(modelName, id, opts) → Model
+### load(modelName, id, opts) → Promise - Model
+### view(opts) → Promise - [ Model, ... ]
+### mango(opts) → Promise - [ Model, ... ]
+### all(opts) → Promise - [ Model, ... ]
+### find(opts) → Promise - [ Model, ... ]
+### first(opts) → Promise - [ Model, ... ]
+### push(doc, opts) → Model, status or undefined
+### security → Security
+### db → Store.Databases
+
+``` javascript
+let main = store.get('db.main');
 ```
-> remove ember data
-> add service
-> configure databases
-> add playing.js instance initializer
-> play with database
-> create database
-> add Message model with text attr
-> create message, save it
-> load message by id
-> create mango index
-> query using mango
-> create ddoc
-> query using view
-> delete message
-> add author
-> add user model
-> login and create author-user relationship
-> add sofa validator
-```
+
+## Store.Couch
+
+### documents → Couch
+### url → String
+### session → Store.Couch.Session
+
+## Store.Database.Security
+
+### database →
+### documents →
+### admins → Security.Pair
+### members → Security.Pair
+### load() →
+### save() →
+### clear()
+### state → Object
+
+* isLoading
+* isLoaded
+* isDirty
+* isSaving
+* isError
+* error
+
+## Security.Pair
+
+### security →
+### key → String
+### names → [ String, ... ]
+### roles → [ String, ... ]
+
+## Store.Couch.Session
+
+### couch → Store.Couch
+### documents → Couch.Session
+### isAuthenticated → boolean
+### name → String
+### password → String
+### roles → [ String, ... ]
+### restore() → Promise
+### load() → Promise
+### save() → Proise
+### delete() → Promise
+### state → Object
+
+* isLoading
+* isLoaded
+* isDirty
+* isSaving
+* isError
+* error
+
+## Couch (JSON)
