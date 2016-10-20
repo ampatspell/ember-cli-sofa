@@ -18,6 +18,9 @@ export default Store.extend({
     if(identifier === 'main') {
       return { url, name: 'thing' };
     }
+    if(identifier === 'crap') {
+      return { url, name: 'crap' };
+    }
     if(identifier === 'index65') {
       return { url, name: 'index65_prev' };
     }
