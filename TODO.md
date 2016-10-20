@@ -2,15 +2,13 @@
 
 ### sofa
 
+* detached attachment models, `model.get('attachments').pushObject(attachment)`
+* `store.attachment({ name, data });`
 * attachment `data` as a Promise which must resolve to `Blob` or `String` (add scaled image)
-* `hasMany.setValue(array)` allow reordering models. or maybe `Relationship.extend({ sortable: sortable('position') })` which would support that
-* `db.model('..', { attachments: [ { name, data: file } ] })` yields error loading
-* replace `internal.isReady` with `next().then(() => { if(stillNeedsLoad) })` in internal model
-* collection query autoload
-* collection query needsReload
+* `Relationship` and `hasMany({ relationship: 'foobar' })`
+* sortable relationship helper `Relationship.extend({ sortable: sortable('position') })`
 * `model.save()`, `model.delete()`, ... second call while 1st is pending should return the same promise
 * `hasMany('duck', { collection: 'barn-ducks' })` and `Collection.extend()` with `query: 'barn-ducks'` so there is a place for `paginated: ...`
-* detached attachment models, `model.get('attachments').pushObject(attachment)`
 * option to delete documents by saving with `_deleted:true`
 * delete models with `type` property
 * per-database models (each database is initialized with model folder name which is returned by `store.databaseOptionsForIdentifier`)
