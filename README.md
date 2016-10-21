@@ -30,6 +30,10 @@ ember install ember-cli-sofa
 
 ## Quickstart
 
+This section will guide you through sofa configuration and most common features.
+
+Let's start with setting it up.
+
 ### Service
 
 > Be sure to remove `ember-data` addon from your `package.json` as Ember Data also registers `store` service and those two will clash. Or just name your sofa service differently.
