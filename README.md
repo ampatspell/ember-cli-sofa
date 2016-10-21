@@ -2,15 +2,25 @@
 
 > This documentation is also available at http://sofa.amateurinmotion.com
 
-`Sofa` is full featured and easy to use CouchDB persistence library for Ember.js.
+`Sofa` is full featured and easy to use CouchDB model persistence library for Ember.js.
 
-While quite a lot of planned features are not yet implemented (`hasMany` relationship search, pagination, PouchDB,
-changes listener, …), the basic stuff works.
+It makes it easy to map CouchDB documents to application models, query and persist them, manage queriable to-one, to-many relationships and relationship inverses, create and load document attachments. Also create, drop databases, authenticate users by using CouchDB sessions, create and update design documents (javascript and mango views).
 
-And documentation, it's coming. Right now you can take a look at photography portfolio site written using
-ember-cli-sofa:
+This is is one of the easiest ways to start coding your Ember.js app which persists data in the cloud. All you need is CouchDB running somewhere. You can also deploy Ember.js app itself as an CouchApp in the same CouchDB database and, with simple CouchDB and optionally nginx configuration, serve it to your users.
 
-**[https://github.com/ampatspell/portfolio](https://github.com/ampatspell/portfolio)**
+Both CouchDB 1.6 and 2.0 are supported.
+
+While Sofa has already most of commonly required features implemented, there is quite a few things in the roadmap like:
+
+* FastBoot support
+* collection and relationship pagination, search, filtering support
+* local PouchDB support
+* document changes listener for local PouchDB and remote CouchDB instances
+* per-database model name to document type mapping, embedded models and so on
+
+## Example applications
+
+* [Portfolio](https://github.com/ampatspell/portfolio) – Photography portfolio app (which showcases model inheritance, attachments, relationships, queries, collections)
 
 ## Install
 
@@ -18,171 +28,141 @@ ember-cli-sofa:
 ember install ember-cli-sofa
 ```
 
-## Setup
+## Quickstart
 
-Easiest way to start using `sofa`, is by extending `Store` service:
+This section will guide you through sofa configuration and most common features.
+
+Let's start with setting it up.
+
+### Service
+
+> Be sure to remove `ember-data` addon from your `package.json` as Ember Data also registers `store` service and those two will clash. Or just name your sofa service differently.
+
+Easiest way to start using sofa is to create a `store` service by extending `Store`:
 
 ``` javascript
 // services/store.js
 import { Store } from 'sofa';
 
-const url = 'http://127.0.0.1:5984';
-
-const mapping = {
-  main: 'awesome-app',
-  users: '_users'
-};
-
 export default Store.extend({
 
   databaseOptionsForIdentifier(identifier) {
-    let name = mapping[identifier];
-    if(!name) {
-      return;
+    let url = 'http://127.0.0.1:5984';
+    if(identifier === 'main') {
+      return { url, name: 'great-app' };
     }
-    return { url, name };
   }
 
 });
 ```
 
-`sofa` supports multiple CouchDB hosts and databases (soon also PouchDB). Each database in application is accessed by
-using `identifier`. To map identifiers to CouchDB database urls, override `databaseOptionsForIdentifier(identifier)`
-and return `{ url, name }` object.
+The only required override is `databaseOptionsForIdentifier` which is used to determine CouchDB `url` and database `name` for given database `identifier`. This is done because this way actual database `url` and `name` is detached from database `identifier` which is used throughout the application and can be easily changed based on environment and deployment configuration.
 
-For example, if app queries `http://127.0.0.1:5984` `/awesome-app` and `/_users` CouchDB databases,
-you can configure `Store` by using example above to refer to those databases by using `main` and `users` identifiers.
-
-## Models
+Now we have a service, let's declare a global `store` variable and try it out in the console:
 
 ``` javascript
-// models/section.js
-import Ember from 'ember';
-import { Model, prefix, attr, belongsTo } from 'sofa';
-import makeid from '../util/make-id';
+// instance-initializers/sofa-develop.js
+export default {
+  name: 'sofa:develop',
+  initialize(app) {
+    window.store = app.lookup('service:store');
+    window.log = console.log.bind(console);
+    window.err = err => console.error(err.toJSON ? err.toJSON() : err.stack);
+  }
+};
+```
+
+### Console
+
+Let's start by logging in as an CouchDB `_admin`. This might come in handy if database does not exist. Open your browser's console and type this thing in:
+
+``` javascript
+store.get('db.main.couch.documents.session').save('<admin>', '<password>').then(log, err)
+// → {ok: true, name: ...}
+```
+
+Now let's make sure that `main` database exists:
+
+``` javascript
+store.get('db.main.documents.database').info().then(log, err)
+// depending if database actually exists:
+//  → {db_name: "great-app", ... }
+//  → {error: "not_found", reason: "Database does not exist.", status: 404}
+```
+
+So, if database doesn't exist, we can easily create it by calling `create()`:
+
+``` javascript
+store.get('db.main.documents.database').create().then(log, err)
+// → {ok: true}
+```
+
+Good, now that we have created the database and it's time to start filling it up with some random documents.
+
+For now reason, let's save a doc:
+
+``` javascript
+store.get('db.main.documents').save({
+  _id: 'first',
+  message: 'To whom it may concern: It is springtime. It is late afternoon.',
+  author: 'Kurt Vonnegut'
+}).then(log, err)
+// → {ok: true, id: "first", rev: "1-8ed895a12ea8c1389116bcbaff0b7262"}
+```
+
+Load the same doc:
+
+``` javascript
+store.get('db.main.documents').load('first').then(log, err)
+// → {
+//     _id: "first",
+//     _rev: "1-8ed895a12ea8c1389116bcbaff0b7262",
+//     message: "To whom it may concern: It is springtime. It is late afternoon.",
+//     author: "Kurt Vonnegut"
+//   }
+```
+
+And delete it:
+
+``` javascript
+store.get('db.main.documents').delete('first', '1-8ed895a12ea8c1389116bcbaff0b7262').then(log, err)
+// → {ok: true, id: "first", rev: "2-39d1e13f087a31499c222f8c4657fdb1"}
+```
+
+Easy enough, right? See JSON.* sections below for overview about raw CouchDB JSON API wrappers.
+
+But now it's time to create a model class and let sofa manage all the document saving, loading, querying details.
+
+### Models
+
+In previous section we where playing with a document which had `message` and `author`, let's reimplement the same by using two models: `Message` and `Author`.
+
+``` javascript
+// models/message.js
+import { Model, attr, belongsTo } from 'sofa';
 
 export default Model.extend({
 
-  id: prefix(),
-
-  position: attr('integer'),
-  slug: attr('string'),
-  visible: attr('boolean'),
-  title: attr('string'),
-
-  category: belongsTo('category', { inverse: 'sections' }),
-
-  willCreate() {
-    this.set('id', makeId(12));
-    let now = new Date();
-    this.setProperties({
-      createdAt: now,
-      updatedAt: now,
-      slug: this.get('slugifiedTitle')
-    });
-  },
-
-  willSave() {
-    let now = new Date();
-    this.setProperties({
-      updatedAt: now,
-      slug: this.get('slugifiedTitle')
-    });
-  }
+  text: attr('string'),
+  author: belongsTo('author', { inverse: 'messages' }),
 
 });
 ```
 
 ``` javascript
-// models/gallery.js
-import Ember from 'ember';
-import { prefix, type, attr, hasMany } from 'sofa';
-import Section from './section';
-
-export default Section.extend({
-
-  id: prefix('section:'),
-  type: type('section:gallery'),
-
-  description: attr('string'),
-
-  images: hasMany('gallery-image', { inverse: 'gallery', query: 'gallery-images' }),
-
-});
-
-```
-
-* `prefix('section:')` -- saves gallery with `{ _id: "section:..." }`. Makes it easy to query all sections.
-
-``` javascript
-// models/gallery-image.js
-import { Model, prefix, attr, belongsTo } from 'sofa';
-import makeid from '../util/make-id';
+// models/author.js
+import { Model, attr, hasMany } from 'sofa';
 
 export default Model.extend({
 
-  id: prefix(),
-  position: attr('integer'),
-  filename: attr('string'),
-  description: attr('string'),
-
-  gallery: belongsTo('gallery', { inverse: 'images' }),
-
-  willCreate() {
-    let gallery = this.get('gallery.id');
-    let id = makeid(12);
-    this.set('id', `${gallery}:${id}`);
-  }
+  fullName: attr('string'),
+  messages: hasMany('message', { inverse: 'author', query: 'author-messages' }),
 
 });
-
 ```
-
-* `prefix()` -- prefix document `_id` with model name (or `prefix('somethingElse')`)
-* `type()` -- document `type` property which is used to determine `modelName` from document
-* `attr()` -- basic attributes (string, date, integer, float, json, …)
-* `belongsTo()` -- by default is persisted as a inverse `_id`, or can be queried if `query` is provided
-* `hasMany()` -- by default is persisted as a `_id` array, or can be queried if `query` is provided
-
-> Note: relationship inverses should be explictly defined if you want them to update
 
 ``` javascript
-let db = store.get('db.main');
-let gallery = db.model('gallery', { title: 'hello' });
-return gallery.save().then(() => {
-  let original = { name: 'original', data: fileOrBlobOrString };
-  let image = db.model('gallery-image', { filename: 'foo', attachments: [ original ] });
-  gallery.get('images').pushObject(image);
-  image.get('gallery') // => gallery
-  return image.save();
-});
-```
-
-```javascript
-let db = store.get('db.main');
-db.first({ model: 'gallery', id: 'foof' }).then(gallery => {
-  gallery.set('title', 'something');
-  return gallery.save();
-}).then(() => {
-  return gallery.delete();
-});
-```
-
-* db.model(modelName, props)
-* db.existing(modelName, id, opts)
-* db.load(modelName, id, opts)
-* db.view(opts)
-* db.mango(opts)
-* db.all(opts)
-* db.find(queryHash)
-* db.first(queryHash)
-* db.push(doc, opts)
-
-## Queries
-
-``` javascript
-// queries/gallery-images.js
-// It is used by models/gallery images hasMany relationship
+// queries/author-messages.js
 import Ember from 'ember';
 import { Query } from 'sofa';
 
@@ -193,92 +173,333 @@ const {
 export default Query.extend({
 
   find: computed('model.docId', function() {
-    let key = this.get('model.docId');
-    return { ddoc: 'gallery-image', view: 'by-gallery', key };
-  })
+    let author = this.get('model.docId');
+
+    // mango
+    // return { selector: { author } } };
+
+    // ddoc
+    return { ddoc: 'message', view: 'by-author', key: author };
+  }),
 
 });
 ```
 
 ``` javascript
-// queries/sections.js
-// used by collections/sections
+// sofa/databases/main.js
+/* global emit */
 import Ember from 'ember';
-import { Query } from 'sofa';
+import { Database } from 'sofa';
 
 const {
-  computed
+  RSVP: { all, resolve }
 } = Ember;
 
-export default Query.extend({
+const message = {
+  views: {
+    'by-author': {
+      map(doc) {
+        if(doc.type !== 'message') {
+          return;
+        }
+        emit(doc.author, null);
+      }
+    }
+  }
+};
 
-  find: computed(function() {
-    return { ddoc: 'section', view: 'all' };
-  })
+export default Database.extend({
+
+  loginIfNeeded(name, password) {
+    if(!name) {
+      return resolve();
+    }
+    let session = this.get('couch.session');
+    session.setProperties({ name, password });
+    return session.save();
+  },
+
+  // provide `_admin` name and password if needed
+  insertDesignDocuments(name, password) {
+    return this.loginIfNeeded(name, password).then(() => {
+      let design = this.get('documents.design');
+      return all([
+        design.save('message', message)
+      ]);
+    });
+  }
 
 });
 ```
-
-> CouchDB Mango queries are also supported
-
-## Collections
-
-Collections are per-database live model arrays which can also be queried
 
 ``` javascript
-// collections/sections.js
-import Ember from 'ember';
-import { Collection } from 'sofa';
-
-export default Collection.extend({
-
-  modelName: 'section',
-  queryName: 'sections'
-
-});
+store.get('db.main').insertDesignDocuments('duck', 'secret duck').then(log, err);
+// → [ {ok: true, id: "_design/message", rev: "1-58d85750a59785112252278496836757", saved: true} ]
 ```
+
+> Note: we will be saving documents with CouchDB auto-generated _id which may differ
 
 ``` javascript
-let db = this.get('store.db.main');
-let sections = db.collection('sections');
-sections.get('promise').then(() => {
-  // loads collection query
-});
+db = store.get('db.main');
+
+author = db.model('author', { fullName: 'Kurt Vonnegut' });
+
+author.getProperties('id', 'isNew', 'isDirty')
+// → {id: undefined, isNew: true, isDirty: true}
+
+author.save();
+
+author.getProperties('id', 'isNew', 'isDirty')
+// → {id: "930c5583a5c3693a71cd3d6aba1b32c7", isNew: false, isDirty: false}
+
+message = db.model('message', { author, text: 'To whom it may concern: It is springtime. It is late afternoon.' });
+
+author.get('messages.firstObject') === message;
+// → true
+
+message.save();
+message.getProperties('id', 'isNew', 'isDirty')
+// → {id: "930c5583a5c3693a71cd3d6aba1b34a4", isNew: false, isDirty: false}
 ```
 
-## Session
+And reload the browser so there is no cached models in sofa store
 
 ``` javascript
-let session = store.get('db.main.couch.session');
+db = store.get('db.main');
 
-session.restore().then(() => {
-  session.get('isAuthenticated'); // false
-  session.setProperties({
-    name: 'duck',
-    password: 'yellow'
-  });
-  return session.save();
-}).then(() => {
-  session.get('isAuthenticated'); // true
-  return session.delete();
-}).then(() => {
-  session.get('isAuthenticated'); // false
-});
+db.load('author', '930c5583a5c3693a71cd3d6aba1b32c7').then(author => window.author = author)
+author.get('messages.isLoaded') // this kicks off the query load
+// → false
+// XHR finished loading: GET "http://127.0.0.1:5984/great-app/_design/message/_view/by-author?key=%22930c5…
+author.get('messages.isLoaded')
+// → true
+
+message = author.get('messages.firstObject')
+message.get('text')
+// → "To whom it may concern: It is springtime. It is late afternoon."
+message.get('author') === author
+// → true
 ```
 
-> sofa supports multiple CouchDB instances, each has it's own `couch` with `session`
 
-## Raw documents
+## Model
+
+### id
+### rev
+### type
+### attachments
+### docId
+### modelName
+### database
+### serialize()
+### save()
+### load()
+### reload()
+### delete()
+### willCreate()
+### willSave()
+### willDelete()
+
+## Model Properties
+
+### attributes
+
+### id
+### prefix
+### rev
+### type
+### attr
+
+### attachments
+
+### relationships
+
+### belongsTo & hasOne
+
+### hasMany
+
+## BelongsTo Loaded Proxy
+
+### state
+### isLoading
+### isLoaded
+### isError
+### error
+### promise
+
+## HasMany Loaded Proxy
+
+### state
+### isLoading
+### isLoaded
+### isError
+### error
+### promise
+
+## HasMany Persisted Proxy
+
+### state
+### isLoading
+### isError
+### error
+
+## Collection
+
+...
+
+## Query
+
+...
+
+## Store
+
+### database(identifier) → Store.Database
+### databaseOptionsForIdentifier(identifier)
+### modelClassForName(modelName) → Model class
+### modelNames → [ String, ... ]
+### model(modelName, props) → Model
+
+## Store.Database
+
+### identifier → String
+### store → Store
+### couch → Couch
+### documents → JSON.Database
+### collection(name, opts) → Collection
+### modelClassForName(modelName) → Model class
+### model(modelName, props) → Model
+### existing(modelName, id, opts) → Model
+### load(modelName, id, opts) → Promise - Model
+### view(opts) → Promise - [ Model, ... ]
+### mango(opts) → Promise - [ Model, ... ]
+### all(opts) → Promise - [ Model, ... ]
+### find(opts) → Promise - [ Model, ... ]
+### first(opts) → Promise - [ Model, ... ]
+### push(doc, opts) → Model, status or undefined
+### security → Store.Database.Security
+### db → Store.Databases
 
 ``` javascript
-let docs = store.get('db.main.documents');
-docs.info().then(json => {
-  // { db_name: ... }
-});
-docs.save({ _id: '...' });
+let main = store.get('db.main');
 ```
 
-* couch.documents.{info, uuids}
-* db.documents.{load, save, delete, view, mango...}
-* db.documents.database.{info, create, recreate, }
-* db.documents.design.{load, save}
+## Store.Couch
+
+### documents → JSON.Couch
+### url → String
+### session → Store.Couch.Session
+
+## Store.Database.Security
+
+### database → Store.Database
+### documents → JSON.Database.Security
+### admins → Security.Pair
+### members → Security.Pair
+### load() →
+### save() →
+### clear()
+### state → Object
+
+* isLoading
+* isLoaded
+* isDirty
+* isSaving
+* isError
+* error
+
+## Security.Pair
+
+### security →
+### key → String
+### names → [ String, ... ]
+### roles → [ String, ... ]
+
+## Store.Couch.Session
+
+### couch → Store.Couch
+### documents → JSON.Couch.Session
+### isAuthenticated → boolean
+### name → String
+### password → String
+### roles → [ String, ... ]
+### restore() → Promise
+### load() → Promise
+### save() → Proise
+### delete() → Promise
+### state → Object
+
+* isLoading
+* isLoaded
+* isDirty
+* isSaving
+* isError
+* error
+
+## JSON.Couch
+
+### url
+### normalizedUrl
+### session
+### request(opts)
+### info()
+### uuids(count)
+### database(name)
+
+## JSON.Couch.Session
+
+### couch
+### request(opts)
+### load()
+### save(name, password)
+### delete()
+
+## JSON.Database
+
+### couch
+### name
+### security
+### design
+### database
+### mango
+### url
+### request(opts)
+### info()
+### load(id, opts)
+### save(doc, opts)
+### delete(id, rev, opts)
+### view(ddoc, name, opts)
+### all(opts)
+
+## JSON.Database.Design
+
+### database
+### id(name)
+### load(name, opts)
+### save(name, object)
+### delete(name, opts)
+
+## JSON.Database.Security
+
+### database
+### request(opts)
+### load()
+### save(object)
+
+## JSON.Database.Database
+
+### database
+### request(opts)
+### info()
+### create(opts)
+### delete(opts)
+### recreate(opts)
+
+## JSON.Database.Mango
+
+### database
+### request(opts)
+### find(opts)
+### explain(opts)
+### save(ddoc, name, index)
+### delete(ddoc, name)
+### all()

@@ -24,6 +24,7 @@ export default {
     window.store = store;
     window.db = main;
     window.log = console.log.bind(console);
+    window.err = err => console.error(err.toJSON ? err.toJSON() : err.stack);
 
     window.set = (key) => {
       return function(arg) {
