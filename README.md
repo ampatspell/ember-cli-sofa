@@ -77,7 +77,7 @@ export default {
 Let's start by logging in as an CouchDB `_admin`. This might come in handy if database does not exist. Open your browser's console and type this thing in:
 
 ``` javascript
-store.get('db.crap.couch.documents.session').save('<admin>', '<password>').then(log, err)
+store.get('db.main.couch.documents.session').save('<admin>', '<password>').then(log, err)
 // → {ok: true, name: ...}
 ```
 
@@ -102,7 +102,7 @@ Good, now that we have created the database and it's time to start filling it up
 For now reason, let's save a doc:
 
 ``` javascript
-store.get('db.crap.documents').save({
+store.get('db.main.documents').save({
   _id: 'first',
   message: 'To whom it may concern: It is springtime. It is late afternoon.',
   author: 'Kurt Vonnegut'
@@ -113,7 +113,7 @@ store.get('db.crap.documents').save({
 Load the same doc:
 
 ``` javascript
-store.get('db.crap.documents').load('first').then(log, err)
+store.get('db.main.documents').load('first').then(log, err)
 // → {
 //     _id: "first",
 //     _rev: "1-8ed895a12ea8c1389116bcbaff0b7262",
@@ -125,7 +125,7 @@ store.get('db.crap.documents').load('first').then(log, err)
 And delete it:
 
 ``` javascript
-store.get('db.crap.documents').delete('first', '1-8ed895a12ea8c1389116bcbaff0b7262').then(log, err)
+store.get('db.main.documents').delete('first', '1-8ed895a12ea8c1389116bcbaff0b7262').then(log, err)
 // → {ok: true, id: "first", rev: "2-39d1e13f087a31499c222f8c4657fdb1"}
 ```
 
