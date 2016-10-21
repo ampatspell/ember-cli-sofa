@@ -291,6 +291,17 @@ message.get('author') === author
 ### docId
 ### modelName
 ### database
+### state
+
+* isNew
+* isLoading
+* isLoaded
+* isDirty
+* isSaving
+* isDeleted
+* isError
+* error
+
 ### serialize()
 ### save()
 ### load()
