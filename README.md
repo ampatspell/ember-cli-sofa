@@ -176,7 +176,7 @@ export default Query.extend({
     let author = this.get('model.docId');
 
     // mango
-    return { selector: { author } } };
+    // return { selector: { author } } };
 
     // ddoc
     return { ddoc: 'message', view: 'by-author', key: author };
@@ -185,12 +185,113 @@ export default Query.extend({
 });
 ```
 
+``` javascript
+// sofa/databases/main.js
+/* global emit */
+import Ember from 'ember';
+import { Database } from 'sofa';
+
+const {
+  RSVP: { all, resolve }
+} = Ember;
+
+const message = {
+  views: {
+    'by-author': {
+      map(doc) {
+        if(doc.type !== 'message') {
+          return;
+        }
+        emit(doc.author, null);
+      }
+    }
+  }
+};
+
+export default Database.extend({
+
+  loginIfNeeded(name, password) {
+    if(!name) {
+      return resolve();
+    }
+    let session = this.get('couch.session');
+    session.setProperties({ name, password });
+    return session.save();
+  },
+
+  // provide `_admin` name and password if needed
+  insertDesignDocuments(name, password) {
+    return this.loginIfNeeded(name, password).then(() => {
+      let design = this.get('documents.design');
+      return all([
+        design.save('message', message)
+      ]);
+    });
+  }
+
+});
+```
+
+``` javascript
+store.get('db.main').insertDesignDocuments('duck', 'secret duck').then(log, err);
+// → [ {ok: true, id: "_design/message", rev: "1-58d85750a59785112252278496836757", saved: true} ]
+```
+
+> Note: we will be saving documents with CouchDB auto-generated _id which may differ
+
+``` javascript
+db = store.get('db.main');
+
+author = db.model('author', { fullName: 'Kurt Vonnegut' });
+
+author.getProperties('id', 'isNew', 'isDirty')
+// → {id: undefined, isNew: true, isDirty: true}
+
+author.save();
+
+author.getProperties('id', 'isNew', 'isDirty')
+// → {id: "930c5583a5c3693a71cd3d6aba1b32c7", isNew: false, isDirty: false}
+
+message = db.model('message', { author, text: 'To whom it may concern: It is springtime. It is late afternoon.' });
+
+author.get('messages.firstObject') === message;
+// → true
+
+message.save();
+message.getProperties('id', 'isNew', 'isDirty')
+// → {id: "930c5583a5c3693a71cd3d6aba1b34a4", isNew: false, isDirty: false}
+```
+
+And reload the browser so there is no cached models in sofa store
+
+``` javascript
+db = store.get('db.main');
+
+db.load('author', '930c5583a5c3693a71cd3d6aba1b32c7').then(author => window.author = author)
+author.get('messages.isLoaded') // this kicks off the query load
+// → false
+// XHR finished loading: GET "http://127.0.0.1:5984/great-app/_design/message/_view/by-author?key=%22930c5…
+author.get('messages.isLoaded')
+// → true
+
+message = author.get('messages.firstObject')
+message.get('text')
+// → "To whom it may concern: It is springtime. It is late afternoon."
+message.get('author') === author
+// → true
+```
+
+
 ## Model
 
 ### id
 ### rev
 ### type
 ### attachments
+### docId
+### modelName
+### database
+### serialize()
 ### save()
 ### load()
 ### reload()
@@ -214,7 +315,33 @@ export default Query.extend({
 ### relationships
 
 ### belongsTo & hasOne
+
 ### hasMany
+
+## BelongsTo Loaded Proxy
+
+### state
+### isLoading
+### isLoaded
+### isError
+### error
+### promise
+
+## HasMany Loaded Proxy
+
+### state
+### isLoading
+### isLoaded
+### isError
+### error
+### promise
+
+## HasMany Persisted Proxy
+
+### state
+### isLoading
+### isError
+### error
 
 ## Collection
 
