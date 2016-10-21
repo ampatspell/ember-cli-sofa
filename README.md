@@ -133,6 +133,58 @@ Easy enough, right? See JSON.* sections below for overview about raw CouchDB JSO
 
 But now it's time to create a model class and let sofa manage all the document saving, loading, querying details.
 
+### Models
+
+In previous section we where playing with a document which had `message` and `author`, let's reimplement the same by using two models: `Message` and `Author`.
+
+``` javascript
+// models/message.js
+import { Model, attr, belongsTo } from 'sofa';
+
+export default Model.extend({
+
+  text: attr('string'),
+  author: belongsTo('author', { inverse: 'messages' }),
+
+});
+```
+
+``` javascript
+// models/author.js
+import { Model, attr, hasMany } from 'sofa';
+
+export default Model.extend({
+
+  fullName: attr('string'),
+  messages: hasMany('message', { inverse: 'author', query: 'author-messages' }),
+
+});
+```
+
+``` javascript
+// queries/author-messages.js
+import Ember from 'ember';
+import { Query } from 'sofa';
+
+const {
+  computed
+} = Ember;
+
+export default Query.extend({
+
+  find: computed('model.docId', function() {
+    let author = this.get('model.docId');
+
+    // mango
+    return { selector: { author } } };
+
+    // ddoc
+    return { ddoc: 'message', view: 'by-author', key: author };
+  }),
+
+});
+```
+
 ## Model
 
 ### id
