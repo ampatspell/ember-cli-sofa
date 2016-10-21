@@ -4,6 +4,8 @@
 
 * detached attachment models, `model.get('attachments').pushObject(attachment)`
 * `store.attachment({ name, data });`
+* `hasMany.length` should start loading
+* is it possible to provide `promise` prop for `PassiveRelationLoaderStateMixin`?
 * attachment `data` as a Promise which must resolve to `Blob` or `String` (add scaled image)
 * `Relationship` and `hasMany({ relationship: 'foobar' })`
 * sortable relationship helper `Relationship.extend({ sortable: sortable('position') })`
