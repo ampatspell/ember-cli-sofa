@@ -13,7 +13,7 @@ export default class Relationship extends Property {
       opts.persist = false;
     }
     delete opts.initial;
-    super(merge({ relationshipModelName }, opts));
+    super(merge({ polymorphic: false, relationshipModelName }, opts));
   }
 
   get relationshipModelName() {
