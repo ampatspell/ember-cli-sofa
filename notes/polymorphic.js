@@ -6,7 +6,7 @@ sections: hasMany('section', { polymorphic: true });
 {
   _id: 'section:one',
   category: {
-    _id: 'section:other',
+    id: 'section:other',
     type: 'gallery'
   }
 }
