@@ -2,7 +2,6 @@
 
 ### sofa
 
-* `section: belongsTo('section')` where `section` has few implementations (document 'section:jxphpdcdt1xc' is expected to be 'section' not 'category'). `{ polymorphic: true}`
 * detached attachment models, `model.get('attachments').pushObject(attachment)`
 * `store.attachment({ name, data });`
 * `hasMany.length` should start loading
