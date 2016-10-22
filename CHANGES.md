@@ -4,6 +4,10 @@
 Version: {{version}}
 ```
 
+### 2.0.0-pre.26
+
+* [new] `{ polymorphic: true }` option for relationships which saves-loads relationships as a `{ id: docId, type: modelName }` objects
+
 ### 2.0.0-pre.17
 
 * [new] export `Error` in `sofa/index.js`
