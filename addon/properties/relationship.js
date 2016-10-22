@@ -16,6 +16,10 @@ export default class Relationship extends Property {
     super(merge({ polymorphic: false, relationshipModelName }, opts));
   }
 
+  modelClassForName(modelName) {
+    return this.store.modelClassForName(modelName);
+  }
+
   get relationshipModelName() {
     return this.opts.relationshipModelName;
   }
@@ -23,7 +27,7 @@ export default class Relationship extends Property {
   get relationshipModelClass() {
     let modelClass = this.opts.relationshipModelClass;
     if(!modelClass) {
-      modelClass = this.store.modelClassForName(this.opts.relationshipModelName);
+      modelClass = this.modelClassForName(this.opts.relationshipModelName);
       this.opts.relationshipModelClass = modelClass;
     }
     return modelClass;
