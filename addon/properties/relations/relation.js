@@ -2,9 +2,10 @@ import Ember from 'ember';
 import InternalModel, { getInternalModel } from '../../internal-model';
 import Model from '../../model';
 import Error from '../../util/error';
+import { assert } from '../../util/assert';
 
 const {
-  assert
+  get
 } = Ember;
 
 export default class Relation {
@@ -83,8 +84,23 @@ export default class Relation {
     });
   }
 
-  deserializeDocIdToInternalModel(docId) {
-    let internal = this.relationshipDatabase._deserializeDocIdToInternalModel(this.relationshipModelClass, docId);
+  deserializeDocIdToInternalModel(obj) {
+    let relationshipModelClass = this.relationshipModelClass;
+    let modelClass;
+    let docId;
+    if(this.relationship.opts.polymorphic) {
+      docId = obj.id;
+      modelClass = this.relationship.modelClassForName(obj.type);
+      let definition = this.relationship.store._definitionForModelClass(modelClass);
+      assert({
+        error: 'invalid_document',
+        reason: `document '${docId} is expected to be ${get(relationshipModelClass, 'modelName')} not ${definition.modelName}`
+      }, definition.is(modelClass));
+    } else {
+      docId = obj;
+      modelClass = relationshipModelClass;
+    }
+    let internal = this.relationshipDatabase._deserializeDocIdToInternalModel(modelClass, docId);
     if(internal.state.isDeleted) {
       return null;
     }
@@ -102,7 +118,16 @@ export default class Relation {
       return null;
     }
     let docId = internal.docId;
-    return docId || null;
+    if(!docId) {
+      return null;
+    }
+    if(this.relationship.opts.polymorphic) {
+      return {
+        id: docId,
+        type: internal.modelName
+      };
+    }
+    return docId;
   }
 
   toInternalModel(object) {
@@ -112,7 +137,7 @@ export default class Relation {
     if(Ember.ObjectProxy.detectInstance(object)) {
       object = object.get('content');
     }
-    assert(`ObjectProxy.content is ObjectProxy`, !Ember.ObjectProxy.detectInstance(object));
+    Ember.assert(`ObjectProxy.content is ObjectProxy`, !Ember.ObjectProxy.detectInstance(object));
     if(Model.detectInstance(object)) {
       return getInternalModel(object);
     }
