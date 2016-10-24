@@ -13,7 +13,7 @@
   "scripts": {
     "build": "ember build",
     "start": "ember server",
-    "test": "ember try:each",
+    "test": "ember test",
     "bump": "npm version prerelease; git push --follow-tags",
     "release": "npm run bump; npm publish; gulp doc:deploy"
   },
