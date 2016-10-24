@@ -98,7 +98,8 @@ export function wait(arg, delay) {
   });
 }
 
-export const baseURL = 'http://127.0.0.1:5984';
+// export const baseURL = 'http://127.0.0.1:5984';
+export const baseURL = '/api';
 
 export function createStore() {
   let Store = container.lookup('sofa:store').extend({
