@@ -9,7 +9,8 @@ import globalOptions from './util/global-options';
 
 const {
   Logger: { error, warn },
-  copy
+  copy,
+  RSVP: { resolve, reject }
 } = Ember;
 
 export const internalPropertyName = '_internal';
@@ -332,11 +333,13 @@ export default class InternalModel {
     if(this.loadPromise) {
       return;
     }
-    this.loadPromise = promise.finally(() => {
+    const done = (arg) => {
       if(this.loadPromise === promise) {
         this.loadPromise = null;
       }
-    });
+      return arg;
+    };
+    this.loadPromise = promise.then(arg => done(resolve(arg)), err => done(reject(err)));
   }
 
   createLazyLoadPromise() {
