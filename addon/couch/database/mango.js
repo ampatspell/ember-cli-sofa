@@ -20,10 +20,10 @@ export default Ember.Object.extend({
   _query(url, opts) {
     opts = merge({}, opts);
     return this.request({
-      type: 'post',
+      method: 'post',
       url: url,
       json: true,
-      data: {
+      body: {
         selector:  opts.selector,
         limit:     opts.limit,
         skip:      opts.skip,
@@ -54,7 +54,7 @@ export default Ember.Object.extend({
       method: 'post',
       url: '_index',
       json: true,
-      data: {
+      body: {
         ddoc,
         name,
         index
@@ -74,7 +74,7 @@ export default Ember.Object.extend({
     return this.request({
       method: 'delete',
       url: `_index/${ddoc}/json/${name}`,
-      json: true,
+      json: true
     });
   }
 

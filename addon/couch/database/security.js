@@ -11,16 +11,16 @@ export default Ember.Object.extend({
 
   load() {
     return this.request({
-      type: 'get',
+      method: 'get',
       json: true
     });
   },
 
-  save(data) {
+  save(body) {
     return this.request({
-      type: 'put',
+      method: 'put',
       json: true,
-      data
+      body
     });
   }
 

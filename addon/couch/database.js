@@ -77,7 +77,7 @@ export default Ember.Object.extend({
     opts = merge({}, opts);
 
     return this.request({
-      type: 'get',
+      method: 'get',
       url: this._encodedIdUrl(id, opts),
       qs: {
         rev: opts.rev,
@@ -129,22 +129,22 @@ export default Ember.Object.extend({
       return this._loadAttachments(doc).then(has => { scope.attachments = has; });
     }).then(() => {
       let url;
-      let type;
+      let method;
 
       if(doc._id) {
-        type = 'put';
+        method = 'put';
         url = encodedId;
       } else {
-        type = 'post';
+        method = 'post';
       }
 
       return this.request({
-        type: type,
+        method: method,
         url: url,
         json: true,
-        data: doc
+        body: doc
       });
-    }).then((data) => {
+    }).then(data => {
       if(scope.attachments) {
         data.reload = true;
       }
@@ -157,7 +157,7 @@ export default Ember.Object.extend({
     assert(`rev must be string not ${rev}`, typeOf(rev) === 'string');
 
     return this.request({
-      type: 'delete',
+      method: 'delete',
       url: this._encodedIdUrl(id, opts),
       qs: {
         rev: rev
@@ -169,7 +169,7 @@ export default Ember.Object.extend({
   _view(url, opts) {
     opts = merge({}, opts);
     return this.request({
-      type: 'get',
+      method: 'get',
       url: url,
       json: true,
       qs: {

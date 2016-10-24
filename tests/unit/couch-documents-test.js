@@ -1,6 +1,6 @@
 /* global emit */
 import Ember from 'ember';
-import { module, test, createStore, cleanup, admin } from '../helpers/setup';
+import { module, test, createStore, cleanup, admin, baseURL } from '../helpers/setup';
 
 const {
   RSVP: { all }
@@ -135,5 +135,5 @@ test('view with key', assert => {
 });
 
 test('url', assert => {
-  assert.equal(db.get('url'), '/api/ember-cli-sofa-test-main');
+  assert.equal(db.get('url'), `${baseURL}/ember-cli-sofa-test-main`);
 });

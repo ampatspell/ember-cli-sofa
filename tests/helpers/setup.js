@@ -60,7 +60,7 @@ function q(fn, name, cb) {
     }, function(err) {
       error(err);
       error(err.stack);
-      assert.deepEqual("--see-the-error--", err);
+      assert.ok(false, err.stack);
       done();
     });
   });
@@ -98,10 +98,12 @@ export function wait(arg, delay) {
   });
 }
 
+export const baseURL = 'http://127.0.0.1:5984';
+
 export function createStore() {
   let Store = container.lookup('sofa:store').extend({
     databaseOptionsForIdentifier(identifier) {
-      let url = '/api';
+      let url = baseURL; // '/api';
       if(identifier === 'main') {
         return { url, name: 'ember-cli-sofa-test-main' };
       } else if(identifier === 'second') {
@@ -185,8 +187,8 @@ function cleanupRequest(opts) {
       delete opts.qs;
     }
   }
-  if(opts.data) {
-    opts.data = withoutUndefined(opts.data);
+  if(opts.body) {
+    opts.body = withoutUndefined(opts.body);
   }
   return opts;
 }
