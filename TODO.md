@@ -2,6 +2,7 @@
 
 ### sofa
 
+* fastboot -- mark model proxy relationships as loaded, mark collections as loaded
 * detached attachment models, `model.get('attachments').pushObject(attachment)`
 * `store.attachment({ name, data });`
 * `hasMany.length` should start loading
@@ -18,7 +19,6 @@
 * abstract Couch, have also PouchDB
 * couch changes listener
 * database changes -> push
-* FastBoot support
 
 ### related
 
