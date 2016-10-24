@@ -333,13 +333,15 @@ export default class InternalModel {
     if(this.loadPromise) {
       return;
     }
-    const done = (arg) => {
-      if(this.loadPromise === promise) {
+    let next;
+    const done = arg => {
+      if(this.loadPromise === next) {
         this.loadPromise = null;
       }
       return arg;
     };
-    this.loadPromise = promise.then(arg => done(resolve(arg)), err => done(reject(err)));
+    next = promise.then(arg => done(resolve(arg)), err => done(reject(err)));
+    this.loadPromise = next;
   }
 
   createLazyLoadPromise() {
