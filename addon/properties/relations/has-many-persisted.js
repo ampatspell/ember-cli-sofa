@@ -2,6 +2,10 @@ import Ember from 'ember';
 import HasManyRelation from './has-many';
 import HasManyContentLoader from './util/has-many-content-loader';
 
+const {
+  A
+} = Ember;
+
 export default class HasManyPersistedRelation extends HasManyRelation {
 
   constructor() {
@@ -28,13 +32,13 @@ export default class HasManyPersistedRelation extends HasManyRelation {
 
   serialize(preview) {
     let content = this.getContent();
-    return Ember.A(content.map(internal => {
+    return A(content.map(internal => {
       return this.serializeInternalModelToDocId(internal, preview);
     })).compact();
   }
 
   deserialize(value, changed) {
-    let internals = Ember.A(Ember.A(value).map(docId => this.deserializeDocIdToInternalModel(docId))).compact();
+    let internals = A(A(value).map(docId => this.deserializeDocIdToInternalModel(docId))).compact();
     this.setValue(internals, changed);
   }
 

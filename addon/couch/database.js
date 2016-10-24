@@ -8,7 +8,8 @@ const {
   assert,
   merge,
   typeOf,
-  RSVP: { resolve, all }
+  RSVP: { resolve, all },
+  A
 } = Ember;
 
 const stringifyUnlessEmpty = value => {
@@ -113,7 +114,7 @@ export default Ember.Object.extend({
       promises.push(this._loadAttachment(attachment));
     }
     return all(promises).then((results) => {
-      return Ember.A(results).find((result) => {
+      return A(results).find((result) => {
         return result === true;
       });
     });

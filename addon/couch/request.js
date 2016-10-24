@@ -6,7 +6,8 @@ import fetch from "ember-network/fetch";
 const {
   isNone,
   RSVP: { reject },
-  merge
+  merge,
+  A
 } = Ember;
 
 function raw(opts) {
@@ -41,7 +42,7 @@ function objectToQueryString(obj) {
   if(!obj) {
     return;
   }
-  let pairs = Ember.A();
+  let pairs = A();
   for(let key in obj) {
     let value = obj[key];
     if(!isNone(value)) {

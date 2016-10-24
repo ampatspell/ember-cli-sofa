@@ -2,6 +2,10 @@ import Ember from 'ember';
 import { module, test } from '../helpers/setup';
 import transform from 'sofa/util/array-transform-mixin';
 
+const {
+  A
+} = Ember;
+
 let Transform = transform({
   public(hash) {
     return hash.value;
@@ -15,7 +19,7 @@ let TransformingArray = Ember.ArrayProxy.extend(Transform);
 let array;
 
 module('array-transform', () => {
-  array = TransformingArray.create({ content: Ember.A() });
+  array = TransformingArray.create({ content: A() });
 });
 
 test('foof', assert => {

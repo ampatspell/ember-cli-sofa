@@ -5,7 +5,8 @@ import { isClass_ } from './util/assert';
 const {
   computed,
   copy,
-  get
+  get,
+  A
 } = Ember;
 
 export function create() {
@@ -17,7 +18,7 @@ export function create() {
 const sofaKey = '__sofa';
 
 function lookupProperties(modelClass) {
-  let all = Ember.A();
+  let all = A();
   let byName = new EmptyObject();
 
   let store = get(modelClass, 'store');

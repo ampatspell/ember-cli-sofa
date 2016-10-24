@@ -3,7 +3,8 @@ import { assert, isObject } from '../util/assert';
 
 const {
   get,
-  merge
+  merge,
+  A
 } = Ember;
 
 export default Ember.Mixin.create({
@@ -108,7 +109,7 @@ export default Ember.Mixin.create({
   },
 
   _deserializeDocuments(docs, expectedModelClass, optional) {
-    return Ember.A(Ember.A(docs.map(doc => {
+    return A(A(A(docs).map(doc => {
       if(!doc) {
         // on high load it is possible that view returns row with already deleted document's key, value but w/o doc
         // see: https://issues.apache.org/jira/browse/COUCHDB-1797

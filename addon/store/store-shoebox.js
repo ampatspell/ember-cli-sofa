@@ -1,5 +1,9 @@
 import Ember from 'ember';
 
+const {
+  A
+} = Ember;
+
 export default Ember.Mixin.create({
 
   _createShoebox() {
@@ -16,7 +20,7 @@ export default Ember.Mixin.create({
     if(!shoebox) {
       return;
     }
-    return Ember.A(shoebox).map(({ identifier, docs }) => {
+    return A(shoebox).map(({ identifier, docs }) => {
       let database = this.database(identifier);
       return {
         identifier,

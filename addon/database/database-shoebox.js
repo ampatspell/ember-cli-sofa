@@ -1,10 +1,14 @@
 import Ember from 'ember';
 
+const {
+  A
+} = Ember;
+
 export default Ember.Mixin.create({
 
   _createShoebox() {
     let all = this._modelIdentity.all;
-    return Ember.A(all.map(internal => {
+    return A(all.map(internal => {
       if(internal.isNew) {
         return;
       }
@@ -14,7 +18,7 @@ export default Ember.Mixin.create({
   },
 
   _pushShoebox(docs) {
-    return Ember.A(docs).map(doc => {
+    return A(docs).map(doc => {
       return this.push(doc, { instantiate: false, optional: true });
     });
   }

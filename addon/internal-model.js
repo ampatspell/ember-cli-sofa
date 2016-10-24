@@ -8,6 +8,7 @@ import Relationship from './properties/relationship';
 import globalOptions from './util/global-options';
 
 const {
+  A,
   Logger: { error, warn },
   copy,
   RSVP: { resolve, reject }
@@ -50,7 +51,7 @@ export default class InternalModel {
     this.model = null;
     this.loadPromise = null;
     this.boundNotifyPropertyChange = this.notifyPropertyChange.bind(this);
-    this.observers = Ember.A();
+    this.observers = A();
     this.state = {
       isNew: true,
       isLoading: false,
@@ -137,7 +138,7 @@ export default class InternalModel {
       model.beginPropertyChanges();
     }
 
-    let props = Ember.A();
+    let props = A();
 
     let changed = key => {
       Ember.assert(`call changed(key) with key`, (typeof key === 'string'));
