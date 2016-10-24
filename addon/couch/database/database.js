@@ -17,7 +17,7 @@ export default Ember.Object.extend({
 
   info() {
     return this.request({
-      type: 'get',
+      method: 'get',
       json: true,
     });
   },
@@ -25,7 +25,7 @@ export default Ember.Object.extend({
   create(opts) {
     opts = merge({ optional: false }, opts);
     return this.request({
-      type: 'put',
+      method: 'put',
       json: true,
     }).then(null, (err) => {
       if(err.error === 'file_exists' && opts.optional) {
@@ -41,7 +41,7 @@ export default Ember.Object.extend({
   delete(opts) {
     opts = merge({ optional: false }, opts);
     return this.request({
-      type: 'delete',
+      method: 'delete',
       json: true,
     }).then(null, (err) => {
       if(err.error === 'not_found' && opts.optional) {
@@ -60,7 +60,7 @@ export default Ember.Object.extend({
       let documents = this.get('database');
       return this.create({ optional: true }).then(() => {
         return documents.all({ include_docs: false });
-      }).then((data) => {
+      }).then(data => {
         return map(data.rows, (row) => {
           if(!opts.design && row.id.indexOf('_design') === 0) {
             return;

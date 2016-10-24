@@ -1,7 +1,8 @@
 import Ember from 'ember';
 
 const {
-  merge
+  merge,
+  A
 } = Ember;
 
 function message(opts) {
@@ -53,7 +54,7 @@ Errors.prototype = Object.create(Ember.Error.prototype);
 Errors.prototype.toJSON = function() {
   let { message, errors } = this;
 
-  errors = Ember.A(errors).map(error => error.toJSON ? error.toJSON() : error);
+  errors = A(errors).map(error => error.toJSON ? error.toJSON() : error);
 
   return {
     message,

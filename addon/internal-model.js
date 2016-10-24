@@ -8,8 +8,10 @@ import Relationship from './properties/relationship';
 import globalOptions from './util/global-options';
 
 const {
+  A,
   Logger: { error, warn },
-  copy
+  copy,
+  RSVP: { resolve, reject }
 } = Ember;
 
 export const internalPropertyName = '_internal';
@@ -49,7 +51,7 @@ export default class InternalModel {
     this.model = null;
     this.loadPromise = null;
     this.boundNotifyPropertyChange = this.notifyPropertyChange.bind(this);
-    this.observers = Ember.A();
+    this.observers = A();
     this.state = {
       isNew: true,
       isLoading: false,
@@ -136,7 +138,7 @@ export default class InternalModel {
       model.beginPropertyChanges();
     }
 
-    let props = Ember.A();
+    let props = A();
 
     let changed = key => {
       Ember.assert(`call changed(key) with key`, (typeof key === 'string'));
@@ -332,11 +334,15 @@ export default class InternalModel {
     if(this.loadPromise) {
       return;
     }
-    this.loadPromise = promise.finally(() => {
-      if(this.loadPromise === promise) {
+    let next;
+    const done = arg => {
+      if(this.loadPromise === next) {
         this.loadPromise = null;
       }
-    });
+      return arg;
+    };
+    next = promise.then(arg => done(resolve(arg)), err => done(reject(err)));
+    this.loadPromise = next;
   }
 
   createLazyLoadPromise() {

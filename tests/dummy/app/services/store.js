@@ -14,7 +14,7 @@ const coll = (name) => {
 export default Store.extend({
 
   databaseOptionsForIdentifier(identifier) {
-    let url = '/api';
+    let url = 'http://127.0.0.1:5984'; // '/api';
     if(identifier === 'main') {
       return { url, name: 'thing' };
     }

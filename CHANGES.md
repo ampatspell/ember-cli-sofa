@@ -4,6 +4,10 @@
 Version: {{version}}
 ```
 
+### 2.0.0-pre.27
+
+* [new] Basic FastBoot support including shoebox (Note: proxies are still reloaded in client)
+
 ### 2.0.0-pre.26
 
 * [new] `{ polymorphic: true }` option for relationships which saves-loads relationships as a `{ id: docId, type: modelName }` objects

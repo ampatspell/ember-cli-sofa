@@ -100,9 +100,11 @@ export default class QueryLoader {
         return resolve(this.getProxy());
       }
       this.needed = false;
-      promise = this.createPromise(notify).finally(() => {
+      const done = arg => {
         this.promise = null;
-      });
+        return arg;
+      };
+      promise = this.createPromise(notify).then(arg => done(resolve(arg)), err => done(reject(err)));
       this.promise = promise;
     }
     return promise;

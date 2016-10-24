@@ -1,14 +1,15 @@
 import Ember from 'ember';
 
 const {
-  merge
+  merge,
+  A
 } = Ember;
 
 export default Ember.Mixin.create({
 
   _internalArrayToModelsArray(array) {
     // TODO: ArrayProxy which lazy-creates models
-    return Ember.A(array.map(internal => {
+    return A(array.map(internal => {
       return internal.getModel();
     }));
   },

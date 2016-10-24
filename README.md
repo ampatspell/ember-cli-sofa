@@ -12,7 +12,6 @@ Both CouchDB 1.6 and 2.0 are supported.
 
 While Sofa has already most of commonly required features implemented, there is quite a few things in the roadmap like:
 
-* FastBoot support
 * collection and relationship pagination, search, filtering support
 * local PouchDB support
 * document changes listener for local PouchDB and remote CouchDB instances

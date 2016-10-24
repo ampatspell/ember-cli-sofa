@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import { module, test, createStore, registerModels, cleanup } from '../helpers/setup';
+import { module, test, createStore, registerModels, cleanup, baseURL } from '../helpers/setup';
 import { Model, prefix } from 'sofa';
 import createBlob from 'sofa/util/create-blob';
 
@@ -258,7 +258,7 @@ test('file url is autoloaded', assert => {
 test('stub has url', assert => {
   let model = db.model('duck', { id: 'yellow', attachments: [ { name: 'note', data: 'hey' } ] });
   return model.save().then(() => {
-    assert.equal(model.get('attachments.note.url'), '/api/ember-cli-sofa-test-main/duck%3Ayellow/note?_r=1');
+    assert.equal(model.get('attachments.note.url'), `${baseURL}/ember-cli-sofa-test-main/duck%3Ayellow/note?_r=1`);
   });
 });
 

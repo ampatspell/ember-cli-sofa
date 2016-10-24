@@ -4,7 +4,8 @@ import globalOptions from '../../../util/global-options';
 
 const {
   RSVP: { resolve, allSettled },
-  Logger: { error }
+  Logger: { error },
+  A
 } = Ember;
 
 export default class HasManyContentLoader {
@@ -33,8 +34,8 @@ export default class HasManyContentLoader {
   }
 
   collectErrors(results) {
-    let failed = Ember.A(results).filter(result => !result.value.ok);
-    let errors = Ember.A(failed).map(result => result.value.reason.errors || result.value.reason);
+    let failed = A(results).filter(result => !result.value.ok);
+    let errors = A(failed).map(result => result.value.reason.errors || result.value.reason);
     if(errors.length === 0) {
       return;
     }

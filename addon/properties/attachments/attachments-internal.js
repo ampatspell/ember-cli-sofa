@@ -8,7 +8,8 @@ import {
 
 const {
   getOwner,
-  copy
+  copy,
+  A
 } = Ember;
 
 export default class AttachmentsInternal {
@@ -18,7 +19,7 @@ export default class AttachmentsInternal {
     this.internalModel.addObserver(this);
     this.attachmentsModel = null;
     this.property = property;
-    this.content = Ember.A();
+    this.content = A();
   }
 
   dirty() {
@@ -91,7 +92,7 @@ export default class AttachmentsInternal {
   }
 
   addAttachmentHashes(hashes) {
-    let attachments = Ember.A(hashes).map(hash => this.createAttachmentInternalFromHash(hash));
+    let attachments = A(hashes).map(hash => this.createAttachmentInternalFromHash(hash));
     return this.addAttachments(attachments);
   }
 
@@ -132,8 +133,8 @@ export default class AttachmentsInternal {
   deserialize(hash={}) {
     let content = this.content;
 
-    let add = Ember.A();
-    let remove = Ember.A(copy(content));
+    let add = A();
+    let remove = A(copy(content));
 
     const named = (name) => (attachment) => attachment.name === name;
 

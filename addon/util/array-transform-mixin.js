@@ -1,19 +1,20 @@
 import Ember from 'ember';
 
 const {
-  get
+  get,
+  A
 } = Ember;
 
 export default function(hash) {
   return Ember.Mixin.create({
 
     objectAtContent(idx) {
-      let object = Ember.A(get(this, 'arrangedContent')).objectAt(idx);
+      let object = A(get(this, 'arrangedContent')).objectAt(idx);
       return hash.public.call(this, object);
     },
 
     replaceContent(idx, amt, objects) {
-      objects = Ember.A(objects).map(object => {
+      objects = A(objects).map(object => {
         return hash.internal.call(this, object);
       });
       this._super(idx, amt, objects);

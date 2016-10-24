@@ -3,12 +3,13 @@ import { isObject, isFunction_ } from './assert';
 
 const {
   computed,
-  getOwner
+  getOwner,
+  A
 } = Ember;
 
 export function array() {
   return computed(function() {
-    return Ember.A();
+    return A();
   });
 }
 

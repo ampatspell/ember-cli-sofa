@@ -3,7 +3,8 @@ import Model from '../model';
 
 const {
   computed,
-  getOwner
+  getOwner,
+  A
 } = Ember;
 
 export default Ember.Mixin.create({
@@ -17,7 +18,7 @@ export default Ember.Mixin.create({
     let name = this.get('_applicationModulePrefix');
     let prefix = `${name}/models/`;
     let entries = require.entries;
-    return Ember.A(Object.keys(entries)).filter(key => {
+    return A(Object.keys(entries)).filter(key => {
       if(key.indexOf(prefix) !== 0) {
         return;
       }

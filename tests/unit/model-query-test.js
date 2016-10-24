@@ -167,12 +167,12 @@ test('find', assert => {
     assert.deepEqual(requests, [
       {
         "json": true,
-        "type": "get",
+        "method": "get",
         "url": "duck%3Ayellow"
       },
       {
         "json": true,
-        "type": "get",
+        "method": "get",
         "url": "duck%3Ayellow"
       },
       {
@@ -181,7 +181,7 @@ test('find', assert => {
           "include_docs": true,
           "key": "\"duck:yellow\""
         },
-        "type": "get",
+        "method": "get",
         "url": "_all_docs"
       },
       {
@@ -190,18 +190,18 @@ test('find', assert => {
           "include_docs": true,
           "key": "\"yellow\""
         },
-        "type": "get",
+        "method": "get",
         "url": "_design/duck/_view/by-name"
       },
       {
-        "data": {
+        "body": {
           "selector": {
             "name": "yellow",
             "type": "duck"
           },
         },
         "json": true,
-        "type": "post",
+        "method": "post",
         "url": "_find"
       }
     ]);
@@ -234,12 +234,12 @@ test('first', assert => {
     assert.deepEqual(requests, [
       {
         "json": true,
-        "type": "get",
+        "method": "get",
         "url": "duck%3Ayellow"
       },
       {
         "json": true,
-        "type": "get",
+        "method": "get",
         "url": "duck%3Ayellow"
       },
       {
@@ -249,7 +249,7 @@ test('first', assert => {
           "key": "\"duck:yellow\"",
           "limit": 1
         },
-        "type": "get",
+        "method": "get",
         "url": "_all_docs"
       },
       {
@@ -259,11 +259,11 @@ test('first', assert => {
           "key": "\"yellow\"",
           "limit": 1
         },
-        "type": "get",
+        "method": "get",
         "url": "_design/duck/_view/by-name"
       },
       {
-        "data": {
+        "body": {
           "limit": 1,
           "selector": {
             "name": "yellow",
@@ -271,7 +271,7 @@ test('first', assert => {
           }
         },
         "json": true,
-        "type": "post",
+        "method": "post",
         "url": "_find"
       }
     ]);

@@ -1,7 +1,8 @@
 import Ember from 'ember';
 
 const {
-  isEmpty
+  isEmpty,
+  A
 } = Ember;
 
 let _raw = {
@@ -25,7 +26,7 @@ function mapping() {
     _mapping = {};
     for(let key in _raw) {
       let value = _raw[key];
-      let keys = Ember.A(key.split(' '));
+      let keys = A(key.split(' '));
       for(let i = 0; i < keys.length; i++) {
         let key = keys[i];
         _mapping[key] = value;

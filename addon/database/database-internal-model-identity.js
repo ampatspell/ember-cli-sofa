@@ -3,15 +3,16 @@ import EmptyObject from '../util/empty-object';
 import { isString, assert } from '../util/assert';
 
 const {
-  on
+  on,
+  A
 } = Ember;
 
 export default Ember.Mixin.create({
 
   _createModelIdentity: on('init', function() {
     let identity = new EmptyObject();
-    identity.all = Ember.A([]);           // all new and saved models
-    identity.new = Ember.A([]);           // new models
+    identity.all = A([]);           // all new and saved models
+    identity.new = A([]);           // new models
     identity.saved = new EmptyObject();   // all saved
     identity.deleted = new EmptyObject(); // all deleted
     identity.type = new EmptyObject();    // saved by type
@@ -54,7 +55,7 @@ export default Ember.Mixin.create({
     let name = internal.modelName;
     let array = storage.type[name];
     if(!array) {
-      array = Ember.A([]);
+      array = A([]);
       storage.type[name] = array;
     }
     array.addObject(internal);

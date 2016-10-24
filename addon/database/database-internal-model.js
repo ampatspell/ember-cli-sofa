@@ -4,14 +4,15 @@ import Error, { Errors } from '../util/error';
 const {
   merge,
   RSVP: { resolve, reject, allSettled },
-  assert
+  assert,
+  A
 } = Ember;
 
 const chunkArray = (array, size) => {
   assert(`size must be more than zero`, size > 0);
-  let result = Ember.A();
+  let result = A();
   for(let i = 0; i < array.length; i += size) {
-    result.push(Ember.A(array.slice(i, i + size)));
+    result.push(A(array.slice(i, i + size)));
   }
   return result;
 };
@@ -206,7 +207,7 @@ export default Ember.Mixin.create({
 
   _reloadInternalModels(array) {
     let documents = this.get('documents');
-    let ids = Ember.A(array.map(internal => internal.docId));
+    let ids = A(array.map(internal => internal.docId));
 
     // ids.removeObject('blog:two');
     // ids.pushObject('asd');
@@ -368,7 +369,7 @@ export default Ember.Mixin.create({
 
     let documents = this.get('documents');
     return documents.view(ddoc, view, opts).then(json => {
-      return this._deserializeDocuments(Ember.A(json.rows).map(row => row.doc), expectedModelClass, optional);
+      return this._deserializeDocuments(A(json.rows).map(row => row.doc), expectedModelClass, optional);
     });
   },
 
@@ -400,7 +401,7 @@ export default Ember.Mixin.create({
 
     let documents = this.get('documents');
     return documents.all(opts).then(json => {
-      return this._deserializeDocuments(Ember.A(json.rows).map(row => row.doc), expectedModelClass, optional);
+      return this._deserializeDocuments(A(json.rows).map(row => row.doc), expectedModelClass, optional);
     });
   },
 

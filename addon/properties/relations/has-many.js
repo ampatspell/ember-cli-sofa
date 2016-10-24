@@ -9,7 +9,8 @@ import {
 
 const {
   getOwner,
-  copy
+  copy,
+  A
 } = Ember;
 
 const getDiff = (curr, next) => {
@@ -55,7 +56,7 @@ export default class HasManyRelation extends Relation {
   getContent() {
     let content = this.content;
     if(!content) {
-      content = Ember.A();
+      content = A();
       this.content = content;
     }
     return content;
@@ -135,7 +136,7 @@ export default class HasManyRelation extends Relation {
   setValue(value) {
     this.ignoreValueChanges.with(() => {
       let curr = this.getContent();
-      let next = Ember.A(value).map(model => getInternalModel(model));
+      let next = A(value).map(model => getInternalModel(model));
 
       let { remove, add } = getDiff(curr, next);
 

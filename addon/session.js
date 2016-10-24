@@ -5,7 +5,8 @@ import { array } from './util/computed';
 const {
   on,
   computed: { oneWay },
-  RSVP: { reject }
+  RSVP: { reject },
+  A
 } = Ember;
 
 const State = createStateMixin({
@@ -101,7 +102,7 @@ export default Ember.Object.extend(State, Ember.Evented, {
     this.setProperties({
       name: null,
       password: null,
-      roles: Ember.A(),
+      roles: A(),
       isAuthenticated: false,
     });
     this._super();
@@ -112,7 +113,7 @@ export default Ember.Object.extend(State, Ember.Evented, {
     this.setProperties({
       name: ctx.name || this.get('name'),
       password: null,
-      roles: Ember.A(ctx.roles || []),
+      roles: A(ctx.roles || []),
       isAuthenticated: !!ctx.name
     });
     this._super();

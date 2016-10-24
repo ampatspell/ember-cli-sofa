@@ -15,16 +15,16 @@ export default Ember.Object.extend(Ember.Evented, {
 
   load() {
     return this.request({
-      type: 'get',
+      method: 'get',
       json: true
     });
   },
 
   save(name, password) {
     return this.request({
-      type: 'post',
+      method: 'post',
       json: true,
-      data: {
+      body: {
         name: name || "",
         password: password || ""
       }
@@ -39,7 +39,7 @@ export default Ember.Object.extend(Ember.Evented, {
 
   delete() {
     return this.request({
-      type: 'delete',
+      method: 'delete',
       json: true,
     }).then(result => {
       this.trigger('logout');

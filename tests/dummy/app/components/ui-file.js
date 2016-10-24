@@ -1,5 +1,9 @@
 import Ember from 'ember';
 
+const {
+  A
+} = Ember;
+
 export default Ember.Component.extend({
   classNameBindings: [':ui-file'],
 
@@ -12,7 +16,7 @@ export default Ember.Component.extend({
     var el = this.get('element');
     var files = el.files;
     if(files.length > 0 && this.attrs.action) {
-      var array = Ember.A();
+      var array = A();
       for(var i = 0, len = files.length; i < len; i++) {
         array.push(files[i]);
       }
