@@ -2,6 +2,7 @@
 
 ### sofa
 
+* allow to override attachment url resolve (per-database)
 * `serialize` & deserialize instead of `preview` use `type` (`preview`, `document`, `shoebox|serialized`)
 * fastboot -- mark model proxy relationships as loaded, mark collections as loaded
 * detached attachment models, `model.get('attachments').pushObject(attachment)`
