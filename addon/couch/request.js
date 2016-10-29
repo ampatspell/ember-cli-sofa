@@ -28,9 +28,14 @@ function rejectError(err) {
 }
 
 function ajax(opts) {
+  let json = opts.json;
+  delete opts.json;
   return raw(opts).then(resp => {
     if(resp.status >= 400) {
       return rejectResponse(resp);
+    }
+    if(!json) {
+      return resp;
     }
     return resp.json();
   }, err => {
@@ -73,7 +78,6 @@ export function request(opts) {
     opts.body = JSON.stringify(opts.body);
   }
 
-  delete opts.json;
   delete opts.qs;
 
   opts.mode = 'cors';
