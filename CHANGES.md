@@ -4,6 +4,10 @@
 Version: {{version}}
 ```
 
+### 2.0.0-pre.28
+
+* [fix] couch request `{ json: false }` support
+
 ### 2.0.0-pre.27
 
 * [new] Basic FastBoot support including shoebox (Note: proxies are still reloaded in client)
