@@ -1,7 +1,11 @@
 export default {
   name: 'sofa-browser-shoebox',
   initialize(app) {
-    let shoebox = app.lookup('service:fastboot').get('shoebox');
+    let fastboot = app.lookup('service:fastboot');
+    if(!fastboot) {
+      return;
+    }
+    let shoebox = shoebox.get('shoebox');
     if(!shoebox) {
       return;
     }
