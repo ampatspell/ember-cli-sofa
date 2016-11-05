@@ -91,14 +91,15 @@ function defaultDelay(delay) {
 
 export function wait(arg, delay) {
   delay = defaultDelay(delay);
-  return new Promise(function(resolve) {
-    run.later(function() {
+  return new Promise(resolve => {
+    run.later(() => {
       resolve(arg);
     }, delay);
   });
 }
 
 // export const baseURL = 'http://127.0.0.1:5984';
+// export const baseURL = 'http://127.0.0.1:3984'; // 1.6
 export const baseURL = '/api';
 
 export function createStore() {
