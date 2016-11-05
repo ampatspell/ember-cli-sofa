@@ -1,12 +1,5 @@
-import Ember from 'ember';
-import { module, test, createStore, registerModels, registerQueries, cleanup, wait } from '../helpers/setup';
-import { Query, Model, prefix, belongsTo, hasMany } from 'sofa';
+import { module, test, createStore, cleanup, wait } from '../helpers/setup';
 import Listener from 'sofa/couch/changes/event-source';
-
-const {
-  computed,
-  RSVP: { all }
-} = Ember;
 
 let store;
 let db;
