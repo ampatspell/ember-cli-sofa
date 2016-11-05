@@ -17,6 +17,7 @@ export default class EventSourceListener {
     if(this.started) {
       return;
     }
+    /* global EventSource */
     let source = new EventSource(this.url, { withCredentials: true });
     for(let key in this.bound) {
       source.addEventListener(key, this.bound[key], false);
