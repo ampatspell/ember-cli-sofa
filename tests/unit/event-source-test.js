@@ -21,7 +21,7 @@ module('event-source', () => {
   return cleanup(store, [ 'main' ]);
 });
 
-test('listen', assert => {
+test.skip('listen', assert => {
   let docs = db.get('documents');
   let listener = new Listener(`${docs.get('url')}/_changes?feed=eventsource&include_docs=true&since=now`);
   listener.start();
