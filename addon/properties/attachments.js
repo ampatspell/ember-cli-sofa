@@ -5,8 +5,9 @@ import AttachmentsInternal from './attachments/attachments-internal';
 const {
   merge,
   Logger: { error },
-  K
 } = Ember;
+
+const K = () => undefined;
 
 export default class Attachments extends Property {
 
