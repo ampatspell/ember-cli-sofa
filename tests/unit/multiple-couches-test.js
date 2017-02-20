@@ -1,9 +1,9 @@
 import { configurations } from '../helpers/setup';
 
-let store;
-let db;
-
 configurations(({ module, test, createStore, config }) => {
+
+  let store;
+  let db;
 
   module('multiple-couches', () => {
     store = createStore();
