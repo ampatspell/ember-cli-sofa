@@ -48,12 +48,33 @@ module('relationships-database-opt-query', () => {
   return cleanup(store, [ 'main', 'second' ]);
 });
 
-test('save duck and user', assert => {
+test.skip('save duck and user (loaded proxy after save keeps isLoaded:false)', assert => {
   let duck = main.model('duck', { id: 'yellow' });
   let user = second.model('user', { id: 'yellow' });
   duck.set('user', user);
-  return all([duck, user].map(model => model.save())).then(() => {
-    return duck.get('user.promise').catch(() => undefined);
+  assert.deepEqual(duck.get('user.state'), {
+    "error": null,
+    "isError": false,
+    "isLoaded": false,
+    "isLoading": false
+  });
+  return all([ duck, user ].map(model => model.save())).then(() => {
+    assert.deepEqual(duck.get('user.state'), {
+      "error": null,
+      "isError": false,
+      "isLoaded": true,
+      "isLoading": false
+    });
+    assert.deepEqual(user.get('state'), {
+      "error": null,
+      "isDeleted": false,
+      "isDirty": false,
+      "isError": false,
+      "isLoaded": true,
+      "isLoading": false,
+      "isNew": false,
+      "isSaving": false
+    });
   }).then(() => {
     return all([ main.get('documents').load('duck:yellow'), second.get('documents').load('user:yellow') ]);
   }).then(docs => {

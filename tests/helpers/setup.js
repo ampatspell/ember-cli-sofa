@@ -12,8 +12,18 @@ const {
   Logger: { error },
   run,
   String: { dasherize },
-  copy
+  copy,
+  merge
 } = Ember;
+
+const configs = {
+  '1.6': {
+    url: '/api/1.6'
+  },
+  '2.0': {
+    url: '/api/2.0'
+  }
+};
 
 let app;
 let container;
@@ -98,13 +108,11 @@ export function wait(arg, delay) {
   });
 }
 
-// export const baseURL = 'http://127.0.0.1:5984';
-export const baseURL = '/api';
+export const baseURL = configs['2.0'].url;
 
-export function createStore() {
+export function createStore(url = baseURL) {
   let Store = container.lookup('sofa:store').extend({
     databaseOptionsForIdentifier(identifier) {
-      let url = baseURL; // '/api';
       if(identifier === 'main') {
         return { url, name: 'ember-cli-sofa-test-main' };
       } else if(identifier === 'second') {
@@ -203,4 +211,41 @@ export function intercept(db) {
     return request.call(docs, opts);
   };
   return requests;
+}
+
+
+export function configurations(opts, fn) {
+  if(typeof opts === 'function') {
+    fn = opts;
+    opts = {};
+  }
+
+  let invoke = (couch, url, config) => {
+    fn({
+      module(name, cb) {
+        name = `${name} [${couch}]`;
+        return module(name, cb);
+      },
+      test,
+      createStore() {
+        return createStore(url);
+      },
+      config
+    });
+  };
+
+  let only = opts.only;
+  if(!only) {
+    only = [];
+  } else if(typeof only === 'string') {
+    only = [ only ];
+  }
+
+  for(let key in configs) {
+    if(only.length > 0 && only.indexOf(key) === -1) {
+      continue;
+    }
+    let value = configs[key];
+    invoke(key, value.url, merge({ name: key }, value));
+  }
 }
