@@ -234,7 +234,17 @@ export function configurations(opts, fn) {
     });
   };
 
+  let only = opts.only;
+  if(!only) {
+    only = [];
+  } else if(typeof only !== 'array') {
+    only = [ only ];
+  }
+
   for(let key in configs) {
+    if(only.length > 0 && only.indexOf(key) === -1) {
+      continue;
+    }
     let value = configs[key];
     invoke(key, value.url, merge({ name: key }, value));
   }
