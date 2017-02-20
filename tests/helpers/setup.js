@@ -237,7 +237,7 @@ export function configurations(opts, fn) {
   let only = opts.only;
   if(!only) {
     only = [];
-  } else if(typeof only !== 'array') {
+  } else if(typeof only === 'string') {
     only = [ only ];
   }
 
