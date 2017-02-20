@@ -1,6 +1,6 @@
 import { configurations, cleanup } from '../helpers/setup';
 
-configurations({ only: '2.0' }, ({ module, test, createStore, config }) => {
+configurations({ only: '2.0' }, ({ module, test, createStore }) => {
 
   let store;
   let db;
