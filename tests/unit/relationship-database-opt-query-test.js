@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import { module, test, createStore, registerModels, registerQueries, cleanup, wait } from '../helpers/setup';
+import { module, test, createStore, registerModels, registerQueries, cleanup, wait, next } from '../helpers/setup';
 import { Query, Model, prefix, belongsTo } from 'sofa';
 
 const {
@@ -48,33 +48,17 @@ module('relationships-database-opt-query', () => {
   return cleanup(store, [ 'main', 'second' ]);
 });
 
-test.skip('save duck and user (loaded proxy after save keeps isLoaded:false)', assert => {
+test('save duck and user', assert => {
   let duck = main.model('duck', { id: 'yellow' });
   let user = second.model('user', { id: 'yellow' });
   duck.set('user', user);
-  assert.deepEqual(duck.get('user.state'), {
-    "error": null,
-    "isError": false,
-    "isLoaded": false,
-    "isLoading": false
-  });
   return all([ duck, user ].map(model => model.save())).then(() => {
-    assert.deepEqual(duck.get('user.state'), {
-      "error": null,
-      "isError": false,
-      "isLoaded": true,
-      "isLoading": false
-    });
-    assert.deepEqual(user.get('state'), {
-      "error": null,
-      "isDeleted": false,
-      "isDirty": false,
-      "isError": false,
-      "isLoaded": true,
-      "isLoading": false,
-      "isNew": false,
-      "isSaving": false
-    });
+    return next();
+  }).then(() => {
+    let promise = duck.get('user.promise');
+    assert.ok(promise);
+    assert.ok(promise === duck.get('user.promise'));
+    return promise;
   }).then(() => {
     return all([ main.get('documents').load('duck:yellow'), second.get('documents').load('user:yellow') ]);
   }).then(docs => {
