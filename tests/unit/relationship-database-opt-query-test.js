@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import { module, test, createStore, registerModels, registerQueries, cleanup, wait } from '../helpers/setup';
+import { module, test, createStore, registerModels, registerQueries, cleanup, wait, next } from '../helpers/setup';
 import { Query, Model, prefix, belongsTo } from 'sofa';
 
 const {
@@ -52,8 +52,13 @@ test('save duck and user', assert => {
   let duck = main.model('duck', { id: 'yellow' });
   let user = second.model('user', { id: 'yellow' });
   duck.set('user', user);
-  return all([duck, user].map(model => model.save())).then(() => {
-    return duck.get('user.promise').catch(() => undefined);
+  return all([ duck, user ].map(model => model.save())).then(() => {
+    return next();
+  }).then(() => {
+    let promise = duck.get('user.promise');
+    assert.ok(promise);
+    assert.ok(promise === duck.get('user.promise'));
+    return promise;
   }).then(() => {
     return all([ main.get('documents').load('duck:yellow'), second.get('documents').load('user:yellow') ]);
   }).then(docs => {
@@ -77,7 +82,7 @@ test('load duck', assert => {
   let duck = main.model('duck', { id: 'yellow' });
   let user = second.model('user', { id: 'yellow' });
   duck.set('user', user);
-  return all([duck, user].map(model => model.save())).then(() => {
+  return all([ duck, user ].map(model => model.save())).then(() => {
     flush();
     return wait(1000).then(() => main.load('duck', 'yellow')); // sleep for mango
   }).then(duck => {

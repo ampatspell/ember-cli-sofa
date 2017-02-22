@@ -3,8 +3,9 @@ import Property from './property';
 
 const {
   merge,
-  K
 } = Ember;
+
+const K = () => undefined;
 
 export default class Relationship extends Property {
 

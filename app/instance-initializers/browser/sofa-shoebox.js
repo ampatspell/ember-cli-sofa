@@ -5,7 +5,7 @@ export default {
     if(!fastboot) {
       return;
     }
-    let shoebox = shoebox.get('shoebox');
+    let shoebox = fastboot.get('shoebox');
     if(!shoebox) {
       return;
     }
