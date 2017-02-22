@@ -1,3 +1,19 @@
+/*
+
+  let listener = new Listener(`${docs.get('url')}/_changes?feed=eventsource&include_docs=true&since=now`);
+  listener.delegate = {
+    onData(listener, data) {
+      ...
+    }
+  }
+
+  listener.start()
+
+  ...
+
+  listener.stop();
+
+*/
 export default class EventSourceListener {
 
   constructor(url) {
@@ -5,12 +21,25 @@ export default class EventSourceListener {
     this.started = false;
     this.open = false;
     this.source = null;
+    this.delegate = null;
     this.bound = {
       open: this.onOpen.bind(this),
       error: this.onError.bind(this),
       message: this.onMessage.bind(this),
       heartbeat: this.onHeartbeat.bind(this)
     };
+  }
+
+  notify(name, ...args) {
+    let delegate = this.delegate;
+    if(!delegate) {
+      return;
+    }
+    let fn = delegate[name];
+    if(!fn) {
+      return;
+    }
+    fn.call(delegate, this, ...args);
   }
 
   start() {
@@ -53,11 +82,16 @@ export default class EventSourceListener {
   }
 
   onHeartbeat() {
-    console.log('heartbeat');
+  }
+
+  onData(json) {
+    this.notify('onData', json);
   }
 
   onMessage(message) {
-    console.log('*', message);
+    let data = message.data;
+    let json = JSON.parse(data);
+    this.onData(json);
   }
 
 }
