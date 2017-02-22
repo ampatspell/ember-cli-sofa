@@ -6,7 +6,7 @@ const {
   copy
 } = Ember;
 
-configurations(({ module, test, createStore, info }) => {
+configurations(({ module, test, createStore }) => {
 
   let store;
   let db;
