@@ -108,16 +108,7 @@ export function wait(arg, delay) {
   });
 }
 
-<<<<<<< HEAD
-// export const baseURL = 'http://127.0.0.1:5984';
-// export const baseURL = 'http://127.0.0.1:3984'; // 1.6
-export const baseURL = '/api';
-||||||| merged common ancestors
-// export const baseURL = 'http://127.0.0.1:5984';
-export const baseURL = '/api';
-=======
 export const baseURL = configs['2.0'].url;
->>>>>>> master
 
 export function createStore(url = baseURL) {
   let Store = container.lookup('sofa:store').extend({
