@@ -20,7 +20,7 @@ export default class Attachment {
 
   createAttachmentModel() {
     let _internal = this;
-    return getOwner(this.attachments.internalModel.store).lookup('sofa:attachment').create({ _internal });
+    return getOwner(this.attachments.internalModel.store).factoryFor('sofa:attachment').create({ _internal });
   }
 
   getAttachmentModel() {

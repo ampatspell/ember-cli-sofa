@@ -16,7 +16,7 @@ export default class AttachmentContent {
     let name = this.contentModelName;
     let owner = this.attachment.attachments.internalModel.store;
     let _internal = this;
-    return getOwner(owner).lookup(`sofa:attachment-content/${name}`).create({ _internal });
+    return getOwner(owner).factoryFor(`sofa:attachment-content/${name}`).create({ _internal });
   }
 
   getContentModel() {

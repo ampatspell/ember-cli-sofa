@@ -23,7 +23,7 @@ const normalizedUrl = () => {
 
 const session = () => {
   return computed(function() {
-    return getOwner(this).lookup('couch:session').create({ couch: this });
+    return getOwner(this).factoryFor('couch:session').create({ couch: this });
   }).readOnly();
 };
 
@@ -37,7 +37,7 @@ export default Ember.Object.extend({
   session: session(),
 
   _request: computed(function() {
-    return getOwner(this).lookup('couch:request').create();
+    return getOwner(this).factoryFor('couch:request').create();
   }).readOnly(),
 
   request(opts) {
@@ -68,7 +68,7 @@ export default Ember.Object.extend({
 
   createDatabase(name) {
     let couch = this;
-    return getOwner(this).lookup('couch:database').create({ couch, name });
+    return getOwner(this).factoryFor('couch:database').create({ couch, name });
   },
 
   database(name) {
@@ -83,7 +83,7 @@ export default Ember.Object.extend({
 
   db: computed(function() {
     let couch = this;
-    return getOwner(this).lookup('couch:databases').create({ couch });
+    return getOwner(this).factoryFor('couch:databases').create({ couch });
   }).readOnly(),
 
 });

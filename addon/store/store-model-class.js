@@ -10,6 +10,9 @@ import {
 export default Ember.Mixin.create({
 
   _isModelClass(Model) {
+    if(Model.class) {
+      Model = Model.class;
+    }
     let curr = Model;
     while(curr) {
       if(curr === SofaModel) {

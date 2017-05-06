@@ -10,6 +10,9 @@ import {
 export default Ember.Mixin.create({
 
   _isQueryClass(Query) {
+    if(Query.class) {
+      Query = Query.class;
+    }
     let curr = Query;
     while(curr) {
       if(curr === SofaQuery) {

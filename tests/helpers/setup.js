@@ -13,7 +13,8 @@ const {
   run,
   String: { dasherize },
   copy,
-  merge
+  merge,
+  setOwner
 } = Ember;
 
 const configs = {
@@ -111,7 +112,7 @@ export function wait(arg, delay) {
 export const baseURL = configs['2.0'].url;
 
 export function createStore(url = baseURL) {
-  let Store = container.lookup('sofa:store').extend({
+  let Store = container.factoryFor('sofa:store').class.extend({
     databaseOptionsForIdentifier(identifier) {
       if(identifier === 'main') {
         return { url, name: 'ember-cli-sofa-test-main' };
@@ -121,6 +122,7 @@ export function createStore(url = baseURL) {
     }
   });
   let store = Store.create();
+  setOwner(store, container);
   stores.push(store);
   return store;
 }
