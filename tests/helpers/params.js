@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 // https://gist.github.com/kares/956897
 
 const re = /([^&=]+)=?([^&]*)/g;
@@ -26,3 +28,5 @@ const search = window.location.search.split('?')[1];
 const params = parseParams(search);
 
 export default params;
+
+/* eslint-enable */
