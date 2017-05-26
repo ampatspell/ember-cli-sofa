@@ -4,12 +4,22 @@ import CollectionMatch from './collection-match';
 import CollectionLoad from './collection-load';
 import Error from '../util/error';
 
+const {
+  guidFor,
+  get
+} = Ember;
+
 const Collection = Ember.ArrayProxy.extend(
   Transform,
   CollectionMatch,
   CollectionLoad, {
 
-  _internal: null
+  _internal: null,
+
+  toString() {
+    let id = this.get('id');
+    return `<sofa@collection:${get(this.constructor, 'modelName')}::${guidFor(this)}>`;
+  }
 
 });
 
