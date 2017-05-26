@@ -97,4 +97,21 @@ configurations(({ module, test, createStore }) => {
     });
   });
 
+  test('length starts load', assert => {
+    let house = db.model('house', { id: 'big' });
+    let ducks = [ 'yellow', 'green', 'red' ].map(id => db.model('duck', { id, house }));
+    return all([ house.save(), all(ducks.map(duck => duck.save())) ]).then(() => {
+      flush();
+      return db.load('house', 'big');
+    }).then(house => {
+      assert.equal(house.get('ducks._relation').loader.state.isLoading, false);
+      assert.equal(house.get('ducks.length'), 0);
+      assert.equal(house.get('ducks._relation').loader.state.isLoading, true);
+      assert.equal(house.get('ducks.isLoading'), true);
+      return house.get('ducks.promise').then(() => house);
+    }).then(() => {
+      assert.equal(house.get('ducks.length'), 3);
+    });
+  });
+
 });

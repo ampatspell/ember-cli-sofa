@@ -17,10 +17,17 @@ const state = () => {
   }).readOnly();
 };
 
-const stateProperty = (name) => {
+const stateProperty = name => {
   return computed('state', function() {
     return this.get('state')[name];
   }).readOnly();
+};
+
+const length = () => {
+  return computed(function() {
+    this._relation.loader.load(true);
+    return this._super();
+  });
 };
 
 const passive = {
@@ -37,7 +44,9 @@ const loadable = merge({
 
   promise:   promise(),
 
-  isLoaded:  stateProperty('isLoaded')
+  isLoaded:  stateProperty('isLoaded'),
+
+  length:    length(),
 
 }, passive);
 
