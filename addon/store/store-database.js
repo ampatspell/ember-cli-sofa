@@ -63,6 +63,14 @@ export default Ember.Mixin.create({
     return db;
   },
 
-  db: lookupWithStore('sofa:databases')
+  db: lookupWithStore('sofa:databases'),
+
+  _destroyDatabases() {
+    let dbs = this.get('_databases');
+    for(let key in dbs) {
+      dbs[key].destroy();
+      delete dbs[key];
+    }
+  },
 
 });

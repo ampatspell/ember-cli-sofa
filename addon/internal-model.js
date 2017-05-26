@@ -375,4 +375,12 @@ export default class InternalModel {
     this.model = null;
   }
 
+  destroyModel() {
+    let model = this.model;
+    if(!model) {
+      return;
+    }
+    model.destroy();
+  }
+
 }

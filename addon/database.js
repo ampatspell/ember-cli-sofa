@@ -10,6 +10,7 @@ import DatabaseInternalModel from './database/database-internal-model';
 import DatabaseCollection from './database/database-collection';
 import DatabaseSecurity from './database/database-security';
 import DatabaseShoebox from './database/database-shoebox';
+import DatabaseDestroy from './database/database-destroy';
 
 export default Ember.Object.extend(
   DatabaseModelClass,
@@ -21,7 +22,8 @@ export default Ember.Object.extend(
   DatabaseInternalModel,
   DatabaseCollection,
   DatabaseSecurity,
-  DatabaseShoebox, {
+  DatabaseShoebox,
+  DatabaseDestroy, {
 
   identifier: null,
 

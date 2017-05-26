@@ -114,6 +114,17 @@ export default Ember.Mixin.create({
     } else {
       this._unstoreNewInternalModel(internal);
     }
+  },
+
+  _destroyInternalModelIdentity() {
+    let identity = this._modelIdentity;
+
+    identity.all.map(internal => internal.destroyModel());
+
+    let deleted = identity.deleted;
+    for(let key in deleted) {
+      deleted[key].destroyModel();
+    }
   }
 
 });
