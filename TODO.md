@@ -1,12 +1,20 @@
 # TODO
 
-### sofa
+## sofa
+
+### fastboot
 
 * `serialize` & deserialize instead of `preview` use `type` (`preview`, `document`, `shoebox|serialized`)
 * fastboot -- mark model proxy relationships as loaded, mark collections as loaded
+
+### attachments
+
 * allow to override attachment url resolve (per-database)
 * detached attachment models, `model.get('attachments').pushObject(attachment)`
 * `store.attachment({ name, data });`
+
+### other
+
 * is it possible to provide `promise` prop for `PassiveRelationLoaderStateMixin`?
 * attachment `data` as a Promise which must resolve to `Blob` or `String` (add scaled image)
 * `Relationship` and `hasMany({ relationship: 'foobar' })`
@@ -21,7 +29,7 @@
 * couch changes listener
 * database changes -> push
 
-### related
+## related
 
 * `validate_doc_updates` validator from previous sofa implementation
 * basic CouchDB document api for node.js environment. also extract from previous implementation.
