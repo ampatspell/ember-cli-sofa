@@ -17,7 +17,7 @@ const Collection = Ember.ArrayProxy.extend(
   _internal: null,
 
   toString() {
-    return `<sofa@collection:${get(this.constructor, 'modelName')}::${guidFor(this)}>`;
+    return `<collection@:${get(this.constructor, 'modelName')}::${guidFor(this)}>`;
   }
 
 });

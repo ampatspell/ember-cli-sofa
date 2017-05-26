@@ -99,7 +99,7 @@ const Model = Ember.Object.extend(ModelStateMixin, {
 
   toString() {
     let id = this.get('id');
-    return `<sofa@model:${this.get('modelName')}::${guidFor(this)}${id ? `:${id}` : ''}>`;
+    return `<model@${this.get('modelName')}::${guidFor(this)}${id ? `:${id}` : ''}>`;
   }
 
 });
