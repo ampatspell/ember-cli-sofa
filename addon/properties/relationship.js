@@ -73,9 +73,9 @@ export default class Relationship extends Property {
     relation.setValue(value, changed);
   }
 
-  _serialize(internal, doc, preview) {
+  _serialize(internal, doc, type) {
     let relation = this.getRelation(internal);
-    let value = relation.serialize(preview);
+    let value = relation.serialize(type);
     if(value !== undefined) {
       this.setDocValue(doc, value);
     }

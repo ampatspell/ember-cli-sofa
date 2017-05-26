@@ -37,9 +37,9 @@ export default class PrefixedIdentifier extends Identifier {
     return docId.substr(prefix.length);
   }
 
-  serialize(internal, doc, preview) {
+  serialize(internal, doc, type) {
     let modelId = this.getInternalValue(internal);
-    if(this.validateId(modelId, preview)) {
+    if(this.validateId(modelId, type)) {
       let docId = this.docId(internal.modelClass, modelId);
       this.setDocValue(doc, docId);
     }

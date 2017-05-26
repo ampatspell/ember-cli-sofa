@@ -121,10 +121,10 @@ export default class AttachmentsInternal {
 
   //
 
-  serialize(preview) {
+  serialize(type) {
     let hash = {};
     this.content.forEach(attachment => {
-      let { name, value } = attachment.serialize(preview);
+      let { name, value } = attachment.serialize(type);
       hash[name] = value;
     });
     return hash;

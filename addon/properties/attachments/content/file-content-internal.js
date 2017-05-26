@@ -97,18 +97,18 @@ export default class AttachmentFileContent extends AttachmentContent {
 
   //
 
-  serialize(preview) {
-    if(preview) {
+  serialize(type) {
+    if(type === 'document') {
+      return {
+        data: this.file
+      };
+    } else {
       return {
         content_type: this.contentType,
         info: {
           source: 'file',
           filename: this.file.name
         }
-      };
-    } else {
-      return {
-        data: this.file
       };
     }
   }

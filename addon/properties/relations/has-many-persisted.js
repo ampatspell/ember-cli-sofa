@@ -30,10 +30,10 @@ export default class HasManyPersistedRelation extends HasManyRelation {
     return super.modelFromInternalModel(internal);
   }
 
-  serialize(preview) {
+  serialize(type) {
     let content = this.getContent();
     return A(content.map(internal => {
-      return this.serializeInternalModelToDocId(internal, preview);
+      return this.serializeInternalModelToDocId(internal, type);
     })).compact();
   }
 

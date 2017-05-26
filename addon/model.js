@@ -36,10 +36,10 @@ const internal = name => {
 };
 
 const serialize = () => {
-  return function(preview=false) {
+  return function(type) {
     let definition = getDefinition(this.constructor);
     let internal = getInternalModel(this);
-    return definition.serialize(internal, preview);
+    return definition.serialize(internal, type);
   };
 };
 

@@ -44,9 +44,9 @@ export default class Attachment {
     return this.content.getContentModel();
   }
 
-  serialize(preview) {
+  serialize(type) {
     let name = this.name;
-    let value = this.content.serialize(preview);
+    let value = this.content.serialize(type);
     return {
       name,
       value

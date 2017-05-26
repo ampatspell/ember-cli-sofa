@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import EmptyObject from './util/empty-object';
-import { isClass_ } from './util/assert';
+import { isClass_, isOneOf } from './util/assert';
 
 const {
   computed,
@@ -85,10 +85,11 @@ export default class Definition {
     return this.property('type').matchesDocument(this.modelClass, doc);
   }
 
-  serialize(internal, preview=false) {
+  serialize(internal, type='document') {
+    isOneOf('type', type, [ 'preview', 'document' ]);
     let doc = copy(internal.raw || {});
     this.eachProperty(property => {
-      property.serialize(internal, doc, preview);
+      property.serialize(internal, doc, type);
     });
     return doc;
   }

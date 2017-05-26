@@ -184,11 +184,11 @@ export default class Property {
     this.setDocValue(doc, transformed);
   }
 
-  serialize(internal, doc, preview) {
+  serialize(internal, doc, type) {
     if(!this.opts.serialize) {
       return;
     }
-    return this._serialize(internal, doc, preview);
+    return this._serialize(internal, doc, type);
   }
 
   _deserialize(internal, doc, changed) {

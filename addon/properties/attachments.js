@@ -56,16 +56,16 @@ export default class Attachments extends Property {
     return this.getAttachmentsInternal(internal).getAttachmentsModel();
   }
 
-  _serialize(internal, doc, preview) {
+  _serialize(internal, doc, type) {
     let attachments = this.getAttachmentsInternal(internal, false);
 
     let value = {};
 
     if(attachments) {
-      value = attachments.serialize(preview);
+      value = attachments.serialize(type);
     }
 
-    if(preview && Object.keys(value) === 0) {
+    if(type === 'preview' && Object.keys(value) === 0) {
       value = undefined;
     }
 

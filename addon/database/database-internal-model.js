@@ -113,7 +113,7 @@ export default Ember.Mixin.create({
     return resolve().then(() => {
       return this._onInternalModelWillSave(internal);
     }).then(() => {
-      let doc = this._serializeInternalModelToDocument(internal, false);
+      let doc = this._serializeInternalModelToDocument(internal, 'document');
       this._onInternalModelSaving(internal);
       resume = this._suspendChanges();
       return documents.save(doc);

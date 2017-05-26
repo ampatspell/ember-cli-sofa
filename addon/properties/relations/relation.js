@@ -107,11 +107,11 @@ export default class Relation {
     return internal;
   }
 
-  serializeInternalModelToDocId(internal, preview) {
+  serializeInternalModelToDocId(internal, type) {
     if(!internal) {
       return null;
     }
-    if(!preview) {
+    if(type === 'document') {
       this.assertModelMatchesRelationshipDatabase(internal);
     }
     if(internal.state.isDeleted) {

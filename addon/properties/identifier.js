@@ -46,18 +46,20 @@ export default class Identifier extends Attribute {
     return super.setValue(internal, value, changed);
   }
 
-  validateId(id, preview=false) {
+  validateId(id, type) {
     let test;
 
     test = typeOf(id) === 'string' && id.length > 0;
-    if(!preview) {
+
+    if(type === 'document') {
       assert({ error: 'invalid_id', reason: 'id cannot be empty' }, test);
     } else if(!test) {
       return false;
     }
 
     test = id.trim().length === id.length;
-    if(!preview) {
+
+    if(type === 'document') {
       assert({ error: 'invalid_id', reason: 'id cannot have extra whitespace' }, test);
     } else if(!test) {
       return false;
@@ -66,12 +68,12 @@ export default class Identifier extends Attribute {
     return true;
   }
 
-  serialize(internal, doc, preview=false) {
+  serialize(internal, doc, type) {
     let docId = this.getInternalValue(internal);
     if(typeOf(docId) !== 'undefined') {
-      this.validateId(docId, preview);
+      this.validateId(docId, type);
     }
-    super.serialize(internal, doc, preview);
+    super.serialize(internal, doc, type);
   }
 
 }
