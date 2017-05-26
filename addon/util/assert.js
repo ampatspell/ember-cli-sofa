@@ -57,4 +57,8 @@ export function isFunction(key, value) {
   isFunction_(`${key} must be function`, value);
 }
 
+export function isOneOf(key, value, values) {
+  assert(`${key} must be one of [${values.join(', ')}]`, values.indexOf(value) !== -1);
+}
+
 export default assert;
