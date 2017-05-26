@@ -65,6 +65,7 @@ configurations(({ module, test, createStore }) => {
     let ducks = house.get('ducks');
     assert.ok(ducks);
     assert.ok(ducks.get('promise'));
+    assert.ok(ducks.get('promise') === ducks.get('promise'));
     return ducks.get('promise').then(proxy => {
       assert.ok(ducks === proxy);
     });
