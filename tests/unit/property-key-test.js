@@ -19,7 +19,7 @@ module('property-key', () => {
 test('key is underscored by default', assert => {
   let date = new Date();
   let model = db.model('duck', { createdAt: date });
-  assert.deepEqual(model.serialize(true), {
+  assert.deepEqual(model.serialize('preview'), {
     "_attachments": {},
     "created_at": date.toJSON(),
     "type": "duck"
