@@ -1,4 +1,9 @@
+import Ember from 'ember';
 import { later } from 'sofa/util/run';
+
+const {
+  Logger: { info, error }
+} = Ember;
 
 export function throttle(db) {
   let documents = db.get('documents');
@@ -23,13 +28,13 @@ export default {
 
     window.store = store;
     window.db = main;
-    window.log = console.log.bind(console);
-    window.err = err => console.error(err.toJSON ? err.toJSON() : err.stack);
+    window.log = info;
+    window.err = err => error(err.toJSON ? err.toJSON() : err.stack);
 
     window.set = (key) => {
       return function(arg) {
         window[key] = arg;
-        console.log(key, '=', arg+'');
+        info(key, '=', arg+'');
       };
     };
 

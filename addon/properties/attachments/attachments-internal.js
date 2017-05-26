@@ -32,7 +32,7 @@ export default class AttachmentsInternal {
   createAttachmentsModel() {
     let _internal = this;
     let content = this.content;
-    return getOwner(this.property.store).lookup('sofa:attachments').create({ _internal, content });
+    return getOwner(this.property.store).factoryFor('sofa:attachments').create({ _internal, content });
   }
 
   get attachmentsModelObserverOptions() {

@@ -138,8 +138,8 @@ export default class Definition {
 
   is(parent) {
     isClass_(`parent must be class not ${parent}`, parent);
-    let arg = parent.superclass.superclass;
-    let self = this.modelClass.superclass.superclass;
+    let arg = parent.superclass;
+    let self = this.modelClass.superclass;
     while(self) {
       if(arg === self) {
         return true;

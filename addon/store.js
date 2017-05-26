@@ -5,6 +5,7 @@ import StoreModelClass from './store/store-model-class';
 import StoreQueryClass from './store/store-query-class';
 import StoreInternalModel from './store/store-internal-model';
 import StoreModel from './store/store-model';
+import StoreCollection from './store/store-collection';
 import StoreTransform from './store/store-transform';
 import StoreDestroy from './store/store-destroy';
 import StoreModelNames from './store/store-model-names';
@@ -22,6 +23,7 @@ export default Ember.Service.extend(
   StoreQueryClass,
   StoreInternalModel,
   StoreModel,
+  StoreCollection,
   StoreTransform,
   StoreModelNames,
   StoreDestroy,

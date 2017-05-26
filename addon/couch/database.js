@@ -22,7 +22,7 @@ const stringifyUnlessEmpty = value => {
 
 const lookup = name => {
   return computed(function() {
-    return getOwner(this).lookup(name).create({ database: this });
+    return getOwner(this).factoryFor(name).create({ database: this });
   }).readOnly();
 };
 

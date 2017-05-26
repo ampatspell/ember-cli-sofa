@@ -9,7 +9,7 @@ const {
 const session = function() {
   return computed(function() {
     let owner = getOwner(this);
-    let Session = owner.lookup('sofa/session:main') || owner.lookup('sofa:session');
+    let Session = owner.factoryFor('sofa/session:main') || owner.factoryFor('sofa:session');
     return Session.create({ couch: this });
   }).readOnly();
 };

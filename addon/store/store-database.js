@@ -8,7 +8,7 @@ const {
   Logger: { warn }
 } = Ember;
 
-const lookupWithStore = (name) => {
+const lookupWithStore = name => {
   return lookup(name, function() {
     return { store: this };
   });
@@ -41,7 +41,7 @@ export default Ember.Mixin.create({
 
   _lookupDatabaseClass(identifier) {
     let owner = getOwner(this);
-    return owner.lookup(`sofa/database:${identifier}`) || owner.lookup('sofa:database');
+    return owner.factoryFor(`sofa/database:${identifier}`) || owner.factoryFor('sofa:database');
   },
 
   _createDatabase(identifier) {

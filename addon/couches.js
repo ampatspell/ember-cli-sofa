@@ -16,7 +16,7 @@ export default Ember.Object.extend({
 
   createCouch(url) {
     let documents = this.get('_couches').couch(url);
-    return getOwner(this).lookup('sofa:couch').create({ documents });
+    return getOwner(this).factoryFor('sofa:couch').create({ documents });
   },
 
   couch(url) {

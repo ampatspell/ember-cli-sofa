@@ -11,6 +11,10 @@ export default Ember.Mixin.create({
     return new InternalCollection(this, collectionClass, opts);
   },
 
+  _createCollectionForInternalCollection(internal) {
+    return this.get('store')._createCollectionForInternalCollection(internal);
+  },
+
   collection(name, opts) {
     let collectionClass = this._collectionClassForName(name);
     let internal = this._createInternalCollection(collectionClass, opts);

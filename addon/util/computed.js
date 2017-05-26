@@ -22,7 +22,8 @@ export function object() {
 export function lookup(name, fn) {
   return computed(function() {
     let props = fn ? fn.call(this, name) : {};
-    return getOwner(this).lookup(name).create(props);
+    let owner = getOwner(this);
+    return owner.factoryFor(name).create(props);
   }).readOnly();
 }
 

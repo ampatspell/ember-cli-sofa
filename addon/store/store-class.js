@@ -1,9 +1,10 @@
 import Ember from 'ember';
 import { object } from '../util/computed';
-import { notBlank, isClass_ } from '../util/assert';
+import { assert, notBlank } from '../util/assert';
 
 const {
   getOwner,
+  setOwner,
   String: { dasherize },
   set
 } = Ember;
@@ -25,11 +26,13 @@ export default Ember.Mixin.create({
     let baseKey = `${fullName}:-base`;
     let Base = cache[baseKey];
     if(!Base) {
-      Base = getOwner(this).lookup(fullName);
-      isClass_(`class for name ${fullName} is not registered`, Base);
+      Base = getOwner(this).factoryFor(fullName);
+      assert(`class for name ${fullName} is not registered`, !!Base);
+      Base = Base.class;
       if(prepareBaseFn) {
         Base = prepareBaseFn(Base, normalizedModelName);
       }
+      setOwner(Base, getOwner(this));
       set(Base, 'modelName', normalizedModelName);
       cache[baseKey] = Base;
     }

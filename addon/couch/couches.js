@@ -10,7 +10,7 @@ export default Ember.Object.extend({
   openCouches: object().readOnly(),
 
   createCouch(url) {
-    return getOwner(this).lookup('couch:main').create({ url });
+    return getOwner(this).factoryFor('couch:main').create({ url });
   },
 
   couch({ url }) {
