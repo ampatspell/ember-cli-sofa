@@ -2,9 +2,9 @@
 
 ### sofa
 
-* allow to override attachment url resolve (per-database)
 * `serialize` & deserialize instead of `preview` use `type` (`preview`, `document`, `shoebox|serialized`)
 * fastboot -- mark model proxy relationships as loaded, mark collections as loaded
+* allow to override attachment url resolve (per-database)
 * detached attachment models, `model.get('attachments').pushObject(attachment)`
 * `store.attachment({ name, data });`
 * is it possible to provide `promise` prop for `PassiveRelationLoaderStateMixin`?
