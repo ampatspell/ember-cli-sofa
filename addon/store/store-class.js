@@ -4,6 +4,7 @@ import { assert, notBlank } from '../util/assert';
 
 const {
   getOwner,
+  setOwner,
   String: { dasherize },
   set
 } = Ember;
@@ -31,6 +32,7 @@ export default Ember.Mixin.create({
       if(prepareBaseFn) {
         Base = prepareBaseFn(Base, normalizedModelName);
       }
+      setOwner(Base, getOwner(this));
       set(Base, 'modelName', normalizedModelName);
       cache[baseKey] = Base;
     }
