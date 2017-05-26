@@ -5,7 +5,6 @@ import QueryFindMixin from '../util/query-find-mixin';
 import CollectionQueryMixin from './collection-query';
 
 const {
-  merge,
   A
 } = Ember;
 
@@ -29,7 +28,7 @@ export default class InternalCollection {
   }
 
   createCollectionModel() {
-    return this.collectionClass._create(merge({ _internal: this, content: this.content }, this.opts));
+    return this.database._createCollectionForInternalCollection(this);
   }
 
   getCollectionModel() {
