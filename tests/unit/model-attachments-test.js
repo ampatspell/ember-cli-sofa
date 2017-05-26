@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import { configurations, registerModels, cleanup } from '../helpers/setup';
+import { configurations, registerModels, cleanup, wait } from '../helpers/setup';
 import { Model, prefix } from 'sofa';
 import createBlob from 'sofa/util/create-blob';
 

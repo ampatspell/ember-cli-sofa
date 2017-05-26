@@ -1,7 +1,8 @@
 import Ember from 'ember';
 
 const {
-  RSVP: { all }
+  RSVP: { all },
+  Logger: { error }
 } = Ember;
 
 export default Ember.Component.extend({
@@ -12,7 +13,7 @@ export default Ember.Component.extend({
       all(this.get('store.dirtyModels').map(model => model.save())).then(() => {
         this.get('router').transitionTo('authors.author', author);
       }, err => {
-        console.error(err);
+        error(err);
       });
     }
   }

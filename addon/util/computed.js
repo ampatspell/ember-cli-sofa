@@ -23,9 +23,6 @@ export function lookup(name, fn) {
   return computed(function() {
     let props = fn ? fn.call(this, name) : {};
     let owner = getOwner(this);
-    if(!owner) {
-      debugger;
-    }
     return owner.factoryFor(name).create(props);
   }).readOnly();
 }
