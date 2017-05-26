@@ -10,7 +10,11 @@ const {
 export default Ember.Mixin.create({
 
   _applicationModulePrefix: computed(function() {
-    return getOwner(this).application.modulePrefix;
+    let owner = getOwner(this);
+    if(owner.owner) {
+      owner = owner.owner;
+    }
+    return owner.application.modulePrefix;
   }),
 
   modelNames: computed(function() {
