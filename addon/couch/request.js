@@ -91,7 +91,12 @@ export default Ember.Object.extend({
 
   send(opts) {
     return request(opts).then(result => {
-      return next().then(() => result);
+      return next().then(() => {
+        if(this.isDestroying) {
+          return reject(new SofaError({ error: 'request', reason: 'destroyed' }));
+        }
+        return result;
+      });
     });
   }
 

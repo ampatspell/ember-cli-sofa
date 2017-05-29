@@ -27,6 +27,21 @@ export default Ember.Object.extend({
       cache[url] = couch;
     }
     return couch;
+  },
+
+  _destroyOpenCouches() {
+    let couches = this.get('openCouches');
+    for(let key in couches) {
+      let couch = couches[key];
+      delete couches[key];
+      couch.destroy();
+    }
+  },
+
+  willDestroy() {
+    this.get('_couches').destroy();
+    this._destroyOpenCouches();
+    this._super();
   }
 
 });

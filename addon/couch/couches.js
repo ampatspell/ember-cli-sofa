@@ -21,6 +21,20 @@ export default Ember.Object.extend({
       open[url] = couch;
     }
     return couch;
+  },
+
+  _destroyOpenCouches() {
+    let object = this.get('openCouches');
+    for(let key in object) {
+      let value = object[key];
+      delete object[key];
+      value.destroy();
+    }
+  },
+
+  willDestroy() {
+    this._destroyOpenCouches();
+    this._super();
   }
 
 });

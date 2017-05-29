@@ -86,4 +86,9 @@ export default Ember.Object.extend({
     return getOwner(this).factoryFor('couch:databases').create({ couch });
   }).readOnly(),
 
+  willDestroy() {
+    this.get('_request').destroy();
+    this._super();
+  }
+
 });

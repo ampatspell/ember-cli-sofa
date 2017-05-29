@@ -73,4 +73,8 @@ export default Ember.Mixin.create({
     }
   },
 
+  _destroyCouches() {
+    this.get('_couches').destroy();
+  }
+
 });
