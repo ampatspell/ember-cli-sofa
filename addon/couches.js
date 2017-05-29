@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import { lookup, object } from './util/computed';
+import { destroyObject } from './util/destroy';
 
 const {
   getOwner
@@ -30,12 +31,7 @@ export default Ember.Object.extend({
   },
 
   _destroyOpenCouches() {
-    let couches = this.get('openCouches');
-    for(let key in couches) {
-      let couch = couches[key];
-      delete couches[key];
-      couch.destroy();
-    }
+    destroyObject(this.get('openCouches'));
   },
 
   willDestroy() {

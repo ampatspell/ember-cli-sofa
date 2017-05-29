@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import { object } from '../util/computed';
+import { destroyObject } from '../util/destroy';
 
 const {
   computed,
@@ -86,8 +87,22 @@ export default Ember.Object.extend({
     return getOwner(this).factoryFor('couch:databases').create({ couch });
   }).readOnly(),
 
-  willDestroy() {
+  _destroyRequest() {
     this.get('_request').destroy();
+  },
+
+  _destroyOpenDatabases() {
+    destroyObject(this.get('openDatabases'));
+  },
+
+  _destroySession() {
+    this.get('session').destroy();
+  },
+
+  willDestroy() {
+    this._destroyRequest();
+    this._destroyOpenDatabases();
+    this._destroySession();
     this._super();
   }
 

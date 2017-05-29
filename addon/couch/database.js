@@ -205,6 +205,14 @@ export default Ember.Object.extend({
 
   all(opts) {
     return this._view('_all_docs', opts).then(null, null, 'sofa:database all');
+  },
+
+  willDestroy() {
+    this.get('security').destroy();
+    this.get('design').destroy();
+    this.get('database').destroy();
+    this.get('mango').destroy();
+    this._super();
   }
 
 });
