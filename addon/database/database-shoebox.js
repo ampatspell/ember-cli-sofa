@@ -13,13 +13,17 @@ export default Ember.Mixin.create({
         return;
       }
       let definition = internal.definition;
-      return definition.serialize(internal, false);
+      return definition.serialize(internal, 'document');
     })).compact();
+  },
+
+  _pushShoeboxDocument(doc) {
+    return this.push(doc, { instantiate: false, optional: true });
   },
 
   _pushShoebox(docs) {
     return A(docs).map(doc => {
-      return this.push(doc, { instantiate: false, optional: true });
+      return this._pushShoeboxDocument(doc);
     });
   }
 
