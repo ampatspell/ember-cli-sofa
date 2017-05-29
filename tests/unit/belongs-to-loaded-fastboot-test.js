@@ -39,7 +39,7 @@ configurations(({ module, test, createStore }) => {
     db.set('modelNames', [ 'duck', 'house' ]);
   }
 
-  module('fastboot-belongs-to-loaded', () => {
+  module('belongs-to-loaded-fastboot', () => {
     registerModels({ Duck, House });
     registerQueries({ Big });
     flush();
