@@ -11,4 +11,8 @@ export default Ember.Mixin.create({
 
   security: security(),
 
+  _destroySecurity() {
+    this.get('security').destroy();
+  }
+
 });

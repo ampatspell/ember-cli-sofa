@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import { lookup, object } from './util/computed';
+import { destroyObject } from './util/destroy';
 
 const {
   getOwner
@@ -27,6 +28,16 @@ export default Ember.Object.extend({
       cache[url] = couch;
     }
     return couch;
+  },
+
+  _destroyOpenCouches() {
+    destroyObject(this.get('openCouches'));
+  },
+
+  willDestroy() {
+    this.get('_couches').destroy();
+    this._destroyOpenCouches();
+    this._super();
   }
 
 });

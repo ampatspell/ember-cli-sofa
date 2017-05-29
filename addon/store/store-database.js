@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import { lookup, object } from '../util/computed';
 import { assert } from '../util/assert';
+import { destroyObject } from '../util/destroy';
 
 const {
   typeOf,
@@ -66,11 +67,11 @@ export default Ember.Mixin.create({
   db: lookupWithStore('sofa:databases'),
 
   _destroyDatabases() {
-    let dbs = this.get('_databases');
-    for(let key in dbs) {
-      dbs[key].destroy();
-      delete dbs[key];
-    }
+    destroyObject(this.get('_databases'));
   },
+
+  _destroyCouches() {
+    this.get('_couches').destroy();
+  }
 
 });
