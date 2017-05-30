@@ -51,6 +51,11 @@ export default class QueryLoader {
     proxy.endPropertyChanges();
   }
 
+  setLoaded(notify) {
+    this.setState({ isLoaded: true }, notify);
+    this.needed = false;
+  }
+
   createPromise(notify=true) {
     let query = this.getQuery();
 
