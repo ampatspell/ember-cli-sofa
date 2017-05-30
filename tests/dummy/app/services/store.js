@@ -33,5 +33,6 @@ export default Store.extend({
   dirtyModels: coll('dirty'),
 
   authors: coll('authors'),
+  images: coll('images'),
 
 });
