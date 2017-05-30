@@ -4,8 +4,8 @@
 
 ### fastboot
 
-* `serialize` & deserialize instead of `preview` use `type` (`preview`, `document`, `shoebox|serialized`)
-* fastboot -- mark model proxy relationships as loaded, mark collections as loaded
+* fastboot -- mark collections as loaded
+* fastboot -- session
 
 ### attachments
 

@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import createFileLoader from '../util/file-loader/create';
 import toBase64 from '../util/base64';
+import { debugDestroy, destroyed } from '../util/global-options';
 
 const {
   getOwner,
@@ -54,6 +55,9 @@ export default Ember.Object.extend({
   }).readOnly(),
 
   request(opts) {
+    if(this.isDestroying) {
+      destroyed(debugDestroy(opts));
+    }
     opts = opts || {};
     let name = this.get('name');
     opts.url = opts.url ? `${encodeURIComponent(name)}/${opts.url}` : name;

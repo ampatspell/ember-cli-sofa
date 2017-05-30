@@ -9,7 +9,7 @@ import globalOptions from 'sofa/util/global-options';
 
 const {
   RSVP: { Promise, resolve, all },
-  Logger: { error },
+  Logger: { info, error },
   run,
   String: { dasherize },
   copy,
@@ -33,11 +33,14 @@ let stores = [];
 function setupGlobalOptions() {
   globalOptions.autoload.internalModel = false;
   globalOptions.autoload.persistedArray = false;
+  globalOptions.destroy.debug = true;
 }
 
 export function module(name, cb) {
   qmodule(name, {
     beforeEach: function(assert) {
+      window.currentTestName = `${name}: ${assert.test.testName}`;
+      info(`→ ${window.currentTestName}`);
       setupGlobalOptions();
       let done = assert.async();
       app = startApp();
@@ -48,13 +51,17 @@ export function module(name, cb) {
         done();
       });
     },
-    afterEach: function() {
+    afterEach: function(assert) {
+      let done = assert.async();
       run(() => {
         stores.forEach(store => {
           store.destroy();
         });
         stores = [];
         app.destroy();
+        run.next(() => {
+          done();
+        });
       });
     },
   });

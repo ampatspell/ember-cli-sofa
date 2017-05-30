@@ -1,10 +1,8 @@
 import Ember from 'ember';
 import { configurations, registerModels, registerQueries, cleanup } from '../helpers/setup';
 import { Query, Model, prefix, belongsTo } from 'sofa';
-import { next } from 'sofa/util/run';
 
 const {
-  RSVP: { all },
   computed
 } = Ember;
 
@@ -39,7 +37,7 @@ configurations(({ module, test, createStore }) => {
     db.set('modelNames', [ 'duck', 'house' ]);
   }
 
-  module('fastboot-belongs-to-loaded', () => {
+  module('belongs-to-loaded-fastboot', () => {
     registerModels({ Duck, House });
     registerQueries({ Big });
     flush();

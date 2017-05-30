@@ -46,16 +46,16 @@ export default Ember.Mixin.create({
     }, definition.matchesDocument(doc));
   },
 
-  _deserializeDocument(internal, doc) {
+  _deserializeDocument(internal, doc, type=null) {
     let definition = internal.definition;
     this._assertDefinitionMatchesDocument(definition, doc);
     internal.withPropertyChanges(changed => {
-      definition.onLoaded(internal, doc, changed);
+      definition.onLoaded(internal, doc, changed, type);
       this._storeLoadedInternalModel(internal);
     }, true);
   },
 
-  _deserializeSavedDocumentToInternalModel(doc, expectedModelClass, optional=true) {
+  _deserializeSavedDocumentToInternalModel(doc, expectedModelClass, optional=true, type=null) {
     let docId = doc._id;
 
     let modelClass = this._modelClassForDocument(doc);
@@ -83,7 +83,7 @@ export default Ember.Mixin.create({
       internal = this._createExistingInternalModel(modelClass, modelId, false);
     }
 
-    this._deserializeDocument(internal, doc);
+    this._deserializeDocument(internal, doc, type);
 
     if(expectedModelClass && !definition.is(expectedModelClass)) {
       if(optional) {
@@ -99,12 +99,12 @@ export default Ember.Mixin.create({
     return internal;
   },
 
-  _deserializeDocumentToInternalModel(doc, expectedModelClass, optional=true) {
+  _deserializeDocumentToInternalModel(doc, expectedModelClass, optional=true, type=null) {
     isObject('document', doc);
     if(doc._deleted) {
       return this._deserializeDeletedDocumentToInternalModel(doc);
     } else {
-      return this._deserializeSavedDocumentToInternalModel(doc, expectedModelClass, optional);
+      return this._deserializeSavedDocumentToInternalModel(doc, expectedModelClass, optional, type);
     }
   },
 

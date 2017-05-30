@@ -6,6 +6,9 @@ class SofaGlobalOptions {
       internalModel: true,
       persistedArray: true
     };
+    this.destroy = {
+      debug: false
+    };
   }
 }
 

@@ -4,6 +4,8 @@ const {
   A
 } = Ember;
 
+const shoebox = 'shoebox';
+
 export default Ember.Mixin.create({
 
   _createShoebox() {
@@ -13,12 +15,12 @@ export default Ember.Mixin.create({
         return;
       }
       let definition = internal.definition;
-      return definition.serialize(internal, 'document');
+      return definition.serialize(internal, shoebox);
     })).compact();
   },
 
   _pushShoeboxDocument(doc) {
-    return this.push(doc, { instantiate: false, optional: true });
+    return this.push(doc, { instantiate: false, optional: true, type: shoebox });
   },
 
   _pushShoebox(docs) {

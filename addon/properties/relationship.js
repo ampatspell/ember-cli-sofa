@@ -81,10 +81,10 @@ export default class Relationship extends Property {
     }
   }
 
-  _deserialize(internal, doc, changed) {
+  _deserialize(internal, doc, changed, type) {
     let value = this.getDocValue(doc);
     let relation = this.getRelation(internal);
-    relation.deserialize(value, changed);
+    relation.deserialize(value, changed, type);
     return this.opts.key;
   }
 

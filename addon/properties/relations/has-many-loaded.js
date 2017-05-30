@@ -26,4 +26,18 @@ export default class HasManyLoadedRelation extends HasManyRelation {
     this.setValue(array);
   }
 
+  serialize(type) {
+    let isLoaded = this.loader.state.isLoaded;
+    let content = this.serializeInternalModelsToDocIds(this.getContent(), type);
+    return { isLoaded, content };
+  }
+
+  deserialize(value, changed) {
+    let internals = this.deserializeDocIdsToModels(value.content);
+    this.setValue(internals, changed);
+    if(value.isLoaded) {
+      this.loader.setLoaded();
+    }
+  }
+
 }

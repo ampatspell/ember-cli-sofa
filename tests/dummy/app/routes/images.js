@@ -3,7 +3,7 @@ import Ember from 'ember';
 export default Ember.Route.extend({
 
   model() {
-    return this.get('store.db.main').find({ model: 'image', selector: {} });
+    return this.get('store.images.promise');
   }
 
 });
