@@ -37,6 +37,14 @@ export default class Property {
     return true;
   }
 
+  get serializeShoebox() {
+    return false;
+  }
+
+  get deserializeShoebox() {
+    return false;
+  }
+
   validatePropertyName(name) {
     let required = this.requiredPropertyName;
     if(required) {
@@ -184,8 +192,28 @@ export default class Property {
     this.setDocValue(doc, transformed);
   }
 
+  shouldSerializeShoebox(type) {
+    if(type !== 'shoebox') {
+      return;
+    }
+    if(!this.serializeShoebox) {
+      return;
+    }
+    return true;
+  }
+
+  shouldDeserializeShoebox(type) {
+    if(type !== 'shoebox') {
+      return;
+    }
+    if(!this.deserializeShoebox) {
+      return;
+    }
+    return true;
+  }
+
   serialize(internal, doc, type) {
-    if(!this.opts.serialize) {
+    if(!this.opts.serialize && !this.shouldSerializeShoebox(type)) {
       return;
     }
     return this._serialize(internal, doc, type);
@@ -197,11 +225,11 @@ export default class Property {
     return this.opts.key;
   }
 
-  deserialize(internal, doc, changed) {
-    if(!this.opts.deserialize) {
+  deserialize(internal, doc, changed, type) {
+    if(!this.opts.deserialize && !this.shouldDeserializeShoebox(type)) {
       return;
     }
-    return this._deserialize(internal, doc, changed);
+    return this._deserialize(internal, doc, changed, type);
   }
 
   //

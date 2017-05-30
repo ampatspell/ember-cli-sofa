@@ -86,7 +86,7 @@ export default class Definition {
   }
 
   serialize(internal, type='document') {
-    isOneOf('type', type, [ 'preview', 'document' ]);
+    isOneOf('type', type, [ 'preview', 'document', 'shoebox' ]);
     let doc = copy(internal.raw || {});
     this.eachProperty(property => {
       property.serialize(internal, doc, type);
@@ -94,10 +94,10 @@ export default class Definition {
     return doc;
   }
 
-  deserialize(internal, doc, changed) {
+  deserialize(internal, doc, changed, type=null) {
     let raw = copy(doc);
     this.eachProperty(property => {
-      let key = property.deserialize(internal, doc, changed);
+      let key = property.deserialize(internal, doc, changed, type);
       if(key) {
         delete raw[key];
       }
@@ -153,8 +153,8 @@ export default class Definition {
     return false;
   }
 
-  onLoaded(internal, doc, changed) {
-    this.deserialize(internal, doc, changed);
+  onLoaded(internal, doc, changed, type=null) {
+    this.deserialize(internal, doc, changed, type);
     internal.onLoaded(changed);
   }
 

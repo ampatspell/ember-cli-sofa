@@ -247,6 +247,18 @@ export default class HasManyRelation extends Relation {
 
   //
 
+  serializeInternalModelsToDocIds(content, type) {
+    return A(content.map(internal => {
+      return this.serializeInternalModelToDocId(internal, type);
+    })).compact();
+  }
+
+  deserializeDocIdsToModels(value) {
+    return A(A(value).map(docId => this.deserializeDocIdToInternalModel(docId))).compact();
+  }
+
+  //
+
   valueWillDestroy() {
     this.value = null;
     this.withPropertyChanges(changed => {

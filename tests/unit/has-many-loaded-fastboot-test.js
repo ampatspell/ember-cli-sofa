@@ -4,7 +4,8 @@ import { configurations, registerModels, registerQueries, cleanup } from '../hel
 import { Query, Model, prefix, belongsTo, hasMany } from 'sofa';
 
 const {
-  computed
+  computed,
+  RSVP: { all }
 } = Ember;
 
 const ddoc = {
@@ -59,9 +60,57 @@ configurations(({ module, test, createStore }) => {
     });
   });
 
+  test('hasMany serialized for shoebox', assert => {
+    let yellow = db.model('duck', { id: 'yellow' });
+    let green = db.model('duck', { id: 'green' });
+    let red = db.model('duck', { id: 'red' });
+    let house = db.model('house', { id: 'big', ducks: [ yellow, green, red ] });
+    return all([ house.save(), yellow.save(), green.save(), red.save() ]).then(() => {
+      return house.get('ducks.promise');
+    }).then(() => {
+      assert.deepEqual_(db._createShoebox(), [
+        {
+          "_attachments": {},
+          "_id": "duck:yellow",
+          "_rev": "ignored",
+          "house": "house:big",
+          "type": "duck"
+        },
+        {
+          "_attachments": {},
+          "_id": "duck:green",
+          "_rev": "ignored",
+          "house": "house:big",
+          "type": "duck"
+        },
+        {
+          "_attachments": {},
+          "_id": "duck:red",
+          "_rev": "ignored",
+          "house": "house:big",
+          "type": "duck"
+        },
+        {
+          "_attachments": {},
+          "_id": "house:big",
+          "_rev": "ignored",
+          "type": "house",
+          "ducks": {
+            "content": [
+              "duck:yellow",
+              "duck:green",
+              "duck:red"
+            ],
+            "isLoaded": true
+          }
+        }
+      ]);
+    });
+  });
+
   test('hasMany with models are loaded', assert => {
     db._pushShoebox([
-      { _id: 'house:big', type: 'house' },
+      { _id: 'house:big', type: 'house', ducks: { content: [ 'duck:yellow', 'duck:green', 'duck:red' ], isLoaded: true } },
       { _id: 'duck:yellow', type: 'duck', house: 'house:big' },
       { _id: 'duck:green', type: 'duck', house: 'house:big' },
       { _id: 'duck:red', type: 'duck', house: 'house:big' },
