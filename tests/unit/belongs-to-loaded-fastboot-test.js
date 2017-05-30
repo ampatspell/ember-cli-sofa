@@ -1,10 +1,8 @@
 import Ember from 'ember';
 import { configurations, registerModels, registerQueries, cleanup } from '../helpers/setup';
 import { Query, Model, prefix, belongsTo } from 'sofa';
-import { next } from 'sofa/util/run';
 
 const {
-  RSVP: { all },
   computed
 } = Ember;
 

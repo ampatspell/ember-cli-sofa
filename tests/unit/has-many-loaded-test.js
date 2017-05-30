@@ -110,8 +110,9 @@ configurations(({ module, test, createStore }) => {
       assert.equal(house.get('ducks._relation').loader.state.isLoading, true);
       assert.equal(house.get('ducks.isLoading'), true);
       return house.get('ducks.promise').then(() => house);
-    }).then(() => {
+    }).then(house => {
       assert.equal(house.get('ducks.length'), 3);
+      assert.ok(house.get('ducks.isLoaded'));
     });
   });
 

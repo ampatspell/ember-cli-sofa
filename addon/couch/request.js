@@ -2,6 +2,7 @@ import Ember from 'ember';
 import SofaError from '../util/error';
 import { next } from '../util/run';
 import fetch from "ember-network/fetch";
+import { debugDestroy, destroyed } from '../util/debug';
 
 const {
   isNone,
@@ -89,21 +90,23 @@ export function request(opts) {
 
 export default Ember.Object.extend({
 
-  _rejectDestroyed() {
+  _rejectDestroyed(info) {
     if(!this.isDestroying) {
       return;
     }
+    destroyed(info);
     return reject(new SofaError({ error: 'request', reason: 'destroyed' }));
   },
 
   send(opts) {
-    let rejection = this._rejectDestroyed();
+    let info = debugDestroy(opts);
+    let rejection = this._rejectDestroyed(info);
     if(rejection) {
       return rejection;
     }
     return request(opts).then(result => {
       return next().then(() => {
-        let rejection = this._rejectDestroyed();
+        let rejection = this._rejectDestroyed(info);
         if(rejection) {
           return rejection;
         }

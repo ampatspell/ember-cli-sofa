@@ -4,8 +4,7 @@ import { configurations, registerModels, registerQueries, cleanup } from '../hel
 import { Query, Model, prefix, belongsTo, hasMany } from 'sofa';
 
 const {
-  computed,
-  RSVP: { all }
+  computed
 } = Ember;
 
 const ddoc = {
@@ -69,6 +68,7 @@ configurations(({ module, test, createStore }) => {
     ]);
     let house = db.existing('house', 'big');
     assert.ok(house.get('ducks.isLoaded'));
+    return house.get('ducks.promise');
   });
 
 });
