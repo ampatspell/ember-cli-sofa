@@ -120,4 +120,21 @@ configurations(({ module, test, createStore }) => {
     return house.get('ducks.promise');
   });
 
+  test('hasMany not loaded', assert => {
+    return db.model('house', { id: 'big' }).save().then(house => {
+      return all([ 'yellow', 'green', 'red' ].map(id => {
+        return db.model('duck', { id, house }).save();
+      }));
+    }).then(() => {
+      flush();
+      db._pushShoebox([ { _id: 'house:big', type: 'house', ducks: { content: [], isLoaded: false } } ]);
+      let house = db.existing('house', 'big');
+      assert.ok(!house.get('ducks.isLoaded'));
+      return house.get('ducks.promise').then(() => {
+        assert.ok(house.get('ducks.isLoaded'));
+        assert.ok(house.get('ducks.length') === 3);
+      });
+    });
+  });
+
 });
