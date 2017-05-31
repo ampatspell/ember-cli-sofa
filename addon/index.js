@@ -1,3 +1,4 @@
+import _ from 'sofa/promise';
 import Error from './util/error';
 import Store from './store';
 import Database from './database';

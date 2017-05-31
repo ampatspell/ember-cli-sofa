@@ -1,5 +1,10 @@
-(function() {
-  /* globals require, window */
-  // var Ember = require('ember')['default'];
-  // window.Promise = Ember.RSVP;
-}());
+define('sofa/promise', [ 'ember' ], function() {
+  'use strict';
+
+  var Promise = Ember.RSVP;
+  window.Promise = Promise;
+
+  return {
+    'default': Promise
+  };
+});
