@@ -54,7 +54,8 @@
     "loader.js": "4.4.0",
     "marked": "0.3.6",
     "morgan": "1.8.2",
-    "request": "2.81.0"
+    "request": "2.81.0",
+    "blob-util": "^1.2.1"
   },
   "keywords": [
     "ember",
@@ -66,7 +67,9 @@
     "relationships"
   ],
   "dependencies": {
-    "ember-cli-babel": "6.1.0"
+    "ember-browserify": "^1.1.13",
+    "ember-cli-babel": "6.1.0",
+    "rsvp": "^3.5.0"
   },
   "ember-addon": {
     "configPath": "tests/dummy/config"

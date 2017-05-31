@@ -1,9 +1,13 @@
+var RSVP = require('rsvp');
+
 module.exports = {
   normalizeEntityName: function() {
   },
   afterInstall: function() {
-    return this.addBowerPackageToProject('blob-util').then(() => {
-      return this.addAddonToProject({ name: 'ember-network', target: '^0.3.0' });
-    });
+    return RSVP.all([
+      this.addPackageToProject('blob-util'),
+      this.addAddonToProject('ember-browserify'),
+      this.addAddonToProject({ name: 'ember-network', target: '^0.3.0' })
+    ]);
   }
 };
