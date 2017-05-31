@@ -37,12 +37,14 @@ configurations(({ module, test, createStore }) => {
 
   let Duck = Model.extend({
     id: prefix(),
-    house: belongsTo('house', { inverse: 'ducks' })
+    house: belongsTo('house', { inverse: 'ducks' }),
+    home: belongsTo('house', { inverse: 'duck', persist: false })
   });
 
   let House = Model.extend({
     id: prefix(),
-    ducks: hasMany('duck', { inverse: 'house', query: 'house-ducks' })
+    ducks: hasMany('duck', { inverse: 'house', query: 'house-ducks' }),
+    duck: belongsTo('duck', { inverse: 'home' })
   });
 
   function flush() {
@@ -51,7 +53,7 @@ configurations(({ module, test, createStore }) => {
     db.set('modelNames', [ 'duck', 'house' ]);
   }
 
-  module('has-many-loaded-fastboot', () => {
+  module('fastboot', () => {
     registerModels({ Duck, House });
     registerQueries({ HouseDucks });
     flush();
@@ -60,17 +62,17 @@ configurations(({ module, test, createStore }) => {
     });
   });
 
-  test('hasMany serialized for shoebox', assert => {
+  test('db shoebox', assert => {
     let yellow = db.model('duck', { id: 'yellow' });
     let green = db.model('duck', { id: 'green' });
     let red = db.model('duck', { id: 'red' });
-    let house = db.model('house', { id: 'big', ducks: [ yellow, green, red ] });
+    let house = db.model('house', { id: 'big', ducks: [ yellow, green, red ], duck: green });
     return all([ house.save(), yellow.save(), green.save(), red.save() ]).then(() => {
       return house.get('ducks.promise');
     }).then(() => {
       assert.deepEqual_(db._createShoebox(), {
-        collections: [],
-        documents: [
+        "collections": [],
+        "documents": [
           {
             "_attachments": {},
             "_id": "duck:yellow",
@@ -96,7 +98,7 @@ configurations(({ module, test, createStore }) => {
             "_attachments": {},
             "_id": "house:big",
             "_rev": "ignored",
-            "type": "house",
+            "duck": "duck:green",
             "ducks": {
               "content": [
                 "duck:yellow",
@@ -104,42 +106,10 @@ configurations(({ module, test, createStore }) => {
                 "duck:red"
               ],
               "isLoaded": true
-            }
+            },
+            "type": "house"
           }
         ]
-      });
-    });
-  });
-
-  test('hasMany with models are loaded', assert => {
-    db._pushShoebox({
-      documents: [
-        { _id: 'house:big', type: 'house', ducks: { content: [ 'duck:yellow', 'duck:green', 'duck:red' ], isLoaded: true } },
-        { _id: 'duck:yellow', type: 'duck', house: 'house:big' },
-        { _id: 'duck:green', type: 'duck', house: 'house:big' },
-        { _id: 'duck:red', type: 'duck', house: 'house:big' },
-      ]
-    });
-    let house = db.existing('house', 'big');
-    assert.ok(house.get('ducks.isLoaded'));
-    return house.get('ducks.promise');
-  });
-
-  test('hasMany not loaded', assert => {
-    return db.model('house', { id: 'big' }).save().then(house => {
-      return all([ 'yellow', 'green', 'red' ].map(id => {
-        return db.model('duck', { id, house }).save();
-      }));
-    }).then(() => {
-      flush();
-      db._pushShoebox({
-        documents: [ { _id: 'house:big', type: 'house', ducks: { content: [], isLoaded: false } } ]
-      });
-      let house = db.existing('house', 'big');
-      assert.ok(!house.get('ducks.isLoaded'));
-      return house.get('ducks.promise').then(() => {
-        assert.ok(house.get('ducks.isLoaded'));
-        assert.ok(house.get('ducks.length') === 3);
       });
     });
   });
