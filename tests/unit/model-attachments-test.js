@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import { configurations, registerModels, cleanup, wait } from '../helpers/setup';
 import { Model, prefix } from 'sofa';
-import createBlob from 'sofa/util/create-blob';
+import createBlob from 'couch/util/create-blob';
 
 const {
   RSVP: { resolve }

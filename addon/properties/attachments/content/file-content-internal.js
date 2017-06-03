@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import AttachmentContent from './content-internal';
-import createFileLoader from '../../../util/file-loader/create';
+import createFileLoader from 'couch/util/file-loader/create';
 
 const {
   merge,
