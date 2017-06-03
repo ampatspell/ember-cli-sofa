@@ -1,18 +1,6 @@
-import Ember from 'ember';
+import { next, later } from 'couch/util/run';
 
-const {
-  RSVP: { Promise },
-  run
-} = Ember;
-
-export function next() {
-  return new Promise(resolve => {
-    run.next(resolve);
-  });
-}
-
-export function later(delay=0) {
-  return new Promise(resolve => {
-    run.later(resolve, delay);
-  });
+export {
+  next,
+  later
 }
