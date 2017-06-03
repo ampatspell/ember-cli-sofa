@@ -33,7 +33,6 @@ let stores = [];
 function setupGlobalOptions() {
   globalOptions.autoload.internalModel = false;
   globalOptions.autoload.persistedArray = false;
-  globalOptions.destroy.debug = true;
 }
 
 export function module(name, cb) {

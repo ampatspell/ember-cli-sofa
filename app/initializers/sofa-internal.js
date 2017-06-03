@@ -27,7 +27,6 @@ import AttachmentStubContent from 'sofa/properties/attachments/content/stub-cont
 
 export default {
   name: 'sofa:internal',
-  after: 'sofa:couch',
   initialize(container) {
     container.registerOptionsForType('model', { instantiate: false });
     container.registerOptionsForType('query', { instantiate: false });
