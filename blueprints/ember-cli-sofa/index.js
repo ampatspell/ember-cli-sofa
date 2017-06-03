@@ -2,8 +2,6 @@ module.exports = {
   normalizeEntityName: function() {
   },
   afterInstall: function() {
-    return this.addBowerPackageToProject('blob-util').then(() => {
-      return this.addAddonToProject({ name: 'ember-network', target: '^0.3.0' });
-    });
+    this.addAddonToProject('ember-cli-couch', '0.0.2')
   }
 };
