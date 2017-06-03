@@ -53,8 +53,7 @@
     "loader.js": "4.4.0",
     "marked": "0.3.6",
     "morgan": "1.8.2",
-    "request": "2.81.0",
-    "rsvp": "^3.5.0"
+    "request": "2.81.0"
   },
   "keywords": [
     "ember",
