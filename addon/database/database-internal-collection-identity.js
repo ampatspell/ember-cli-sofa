@@ -10,7 +10,19 @@ export default Ember.Mixin.create({
 
   _createCollectionIdentity: on('init', function() {
     this._collectionIdentity = new EmptyObject();
+    this._collectionIdentity.all = new EmptyObject();
+    this._collectionIdentity.initial = new EmptyObject();
   }),
+
+  _setCollectionIdentityInitialState(identifier, state) {
+    this._collectionIdentity.initial[identifier] = state;
+  },
+
+  _popCollectionIdentityInitialState(identifier) {
+    let state = this._collectionIdentity.initial[identifier];
+    delete this._collectionIdentity.initial[identifier];
+    return state;
+  },
 
   _serializeCollectionOpts(opts) {
     return JSON.stringify(opts);
@@ -26,17 +38,17 @@ export default Ember.Mixin.create({
   },
 
   _existingCollectionForIdentifier(identifier) {
-    return this._collectionIdentity[identifier];
+    return this._collectionIdentity.all[identifier];
   },
 
   _onInternalCollectionCreatedForIdentifier(identifier, internal) {
-    this._collectionIdentity[identifier] = internal;
+    this._collectionIdentity.all[identifier] = internal;
     return internal;
   },
 
   _onInternalCollectionDestroyed(internal) {
     let identifier = this._collectionIdentifier(internal.collectionClass, internal.opts);
-    delete this._collectionIdentity[identifier];
+    delete this._collectionIdentity.all[identifier];
   }
 
 });
