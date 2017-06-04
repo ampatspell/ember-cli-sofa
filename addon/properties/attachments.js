@@ -90,4 +90,18 @@ export default class Attachments extends Property {
     return this.opts.key;
   }
 
+  willSerialize(internal, type) {
+    if(type !== 'document') {
+      return;
+    }
+    if(!internal.isDeleted) {
+      return;
+    }
+    let internalAttachments = this.getInternalValue(internal);
+    if(!internalAttachments) {
+      return;
+    }
+    internalAttachments.removeStubs();
+  }
+
 }
