@@ -37,3 +37,13 @@ test('collection returns same instance when declared with params', assert => {
   assert.ok(db.collection('ducks', { house: 'big' }) === db.collection('ducks', { house: 'big' }));
   assert.deepEqual(db.collection('ducks').get('_internal.opts'), { house: 'big' });
 });
+
+test('collection opts serialization', assert => {
+  assert.equal(db._serializeCollectionOpts({ house: 'big' }), '{"house":"big"}');
+});
+
+test.only('collection identifier', assert => {
+  assert.equal(db._collectionIdentifier(db._collectionClassForName('ducks'), { house: 'big' }), 'ducks - {"house":"big"}');
+  assert.equal(db._collectionIdentifier(db._collectionClassForName('ducks'), null), 'ducks - null');
+  assert.equal(db._collectionIdentifier(db._collectionClassForName('ducks')), 'ducks - null');
+});
