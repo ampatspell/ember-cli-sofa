@@ -282,4 +282,8 @@ configurations(({ module, test, createStore, config }) => {
     });
   });
 
+  test.todo('save model with attachment, delete it and save again should kill off now missing attachment stub', assert => {
+
+  });
+
 });
