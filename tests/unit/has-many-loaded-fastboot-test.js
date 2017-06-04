@@ -69,7 +69,7 @@ configurations(({ module, test, createStore }) => {
       return house.get('ducks.promise');
     }).then(() => {
       assert.deepEqual_(db._createShoebox(), {
-        collections: [],
+        collections: {},
         documents: [
           {
             "_attachments": {},
