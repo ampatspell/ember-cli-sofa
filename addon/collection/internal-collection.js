@@ -82,4 +82,10 @@ export default class InternalCollection {
     return internal.getModel();
   }
 
+  //
+
+  collectionWillDestroy() {
+    this.database._onInternalCollectionDestroyed(this);
+  }
+
 }

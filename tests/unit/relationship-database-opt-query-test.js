@@ -51,7 +51,7 @@ module('relationships-database-opt-query', () => {
 test('save duck and user', assert => {
   let duck = main.model('duck', { id: 'yellow' });
   let user = second.model('user', { id: 'yellow' });
-  duck.set('user', user);
+  user.set('duck', duck);
   return all([ duck, user ].map(model => model.save())).then(() => {
     return next();
   }).then(() => {

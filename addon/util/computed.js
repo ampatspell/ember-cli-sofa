@@ -1,31 +1,10 @@
 import Ember from 'ember';
 import { isObject, isFunction_ } from './assert';
+import { object, array, lookup } from 'couch/util/computed';
 
 const {
-  computed,
-  getOwner,
-  A
+  computed
 } = Ember;
-
-export function array() {
-  return computed(function() {
-    return A();
-  });
-}
-
-export function object() {
-  return computed(function() {
-    return Object.create(null);
-  });
-}
-
-export function lookup(name, fn) {
-  return computed(function() {
-    let props = fn ? fn.call(this, name) : {};
-    let owner = getOwner(this);
-    return owner.factoryFor(name).create(props);
-  }).readOnly();
-}
 
 export function createInternal(InternalClass) {
   return computed(function() {
@@ -44,3 +23,9 @@ export function forwardCall(prop) {
     };
   };
 }
+
+export {
+  object,
+  array,
+  lookup
+};
