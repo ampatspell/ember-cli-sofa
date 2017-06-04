@@ -1,4 +1,4 @@
-import { module, test, createStore, registerModels, registerCollections, cleanup } from '../helpers/setup';
+import { module, test, createStore, registerModels, registerCollections, cleanup, next } from '../helpers/setup';
 import { Collection, Model, prefix, belongsTo, hasMany } from 'sofa';
 
 let store;
@@ -35,7 +35,12 @@ test('collection returns same instance when declared w/o params', assert => {
 
 test('collection returns same instance when declared with params', assert => {
   assert.ok(db.collection('ducks', { house: 'big' }) === db.collection('ducks', { house: 'big' }));
-  assert.deepEqual(db.collection('ducks').get('_internal.opts'), { house: 'big' });
+  assert.deepEqual(db.collection('ducks', { house: 'big' }).get('_internal.opts'), { house: 'big' });
+});
+
+test('collections are stored in identity', assert => {
+  let coll = db.collection('ducks');
+  assert.ok(db._collectionIdentity['ducks null'] === coll._internal);
 });
 
 test('collection opts serialization', assert => {
@@ -43,7 +48,17 @@ test('collection opts serialization', assert => {
 });
 
 test('collection identifier', assert => {
-  assert.equal(db._collectionIdentifier(db._collectionClassForName('ducks'), { house: 'big' }), 'ducks - {"house":"big"}');
-  assert.equal(db._collectionIdentifier(db._collectionClassForName('ducks'), null), 'ducks - null');
-  assert.equal(db._collectionIdentifier(db._collectionClassForName('ducks')), 'ducks - null');
+  let className = db._collectionClassForName('ducks');
+  assert.equal(db._collectionIdentifier(className, { house: 'big' }), 'ducks {"house":"big"}');
+  assert.equal(db._collectionIdentifier(className, null), 'ducks null');
+  assert.equal(db._collectionIdentifier(className), 'ducks null');
+});
+
+test('collection is removed from identity on destroy', assert => {
+  let coll = db.collection('ducks');
+  assert.ok(db._collectionIdentity['ducks null']);
+  coll.destroy();
+  return next().then(() => {
+    assert.ok(!db._collectionIdentity['ducks null']);
+  });
 });

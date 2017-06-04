@@ -18,6 +18,11 @@ const Collection = Ember.ArrayProxy.extend(
 
   toString() {
     return `<collection@:${get(this.constructor, 'modelName')}::${guidFor(this)}>`;
+  },
+
+  willDestroy() {
+    this._internal.collectionWillDestroy();
+    this._super();
   }
 
 });
