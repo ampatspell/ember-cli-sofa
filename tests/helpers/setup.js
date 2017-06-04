@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import { module as qmodule, skip } from 'qunit';
-import { test as qtest, only as qonly } from 'ember-qunit';
+import { test as qtest, only as qonly, todo as qtodo } from 'ember-qunit';
 import startApp from './start-app';
 import extendAssert from './extend-assert';
 import params from './params';
@@ -91,8 +91,13 @@ export function only(name, cb) {
   return q(qonly, name, cb);
 }
 
+export function todo(name, cb) {
+  return q(qtodo, name, cb);
+}
+
 test.only = only;
 test.skip = skip;
+test.todo = todo;
 
 export function next(arg) {
   return new Promise(function(resolve) {
