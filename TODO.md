@@ -9,6 +9,7 @@
 
 ### attachments
 
+* use `rev` instead of `_r=revpos` for attachemnt urls. allows fetching deleted doc attachments
 * allow to override attachment url resolve (per-database)
 * detached attachment models, `model.get('attachments').pushObject(attachment)`
 * `store.attachment({ name, data });`
