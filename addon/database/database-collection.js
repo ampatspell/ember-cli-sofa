@@ -11,15 +11,16 @@ export default Ember.Mixin.create({
     return this.get('store')._createCollectionForInternalCollection(internal);
   },
 
-  _createInternalCollection(collectionClass, opts) {
-    return new InternalCollection(this, collectionClass, opts);
+  _createInternalCollection(collectionClass, state, opts) {
+    return new InternalCollection(this, collectionClass, opts, state);
   },
 
   _existingCollection(collectionClass, opts, create=false) {
     let identifier = this._collectionIdentifier(collectionClass, opts);
     let internal = this._existingCollectionForIdentifier(identifier);
     if(!internal && create) {
-      internal = this._createInternalCollection(collectionClass, opts);
+      let state = this._popCollectionIdentityInitialState(identifier) || {};
+      internal = this._createInternalCollection(collectionClass, state, opts);
       this._onInternalCollectionCreatedForIdentifier(identifier, internal);
     }
     return internal;

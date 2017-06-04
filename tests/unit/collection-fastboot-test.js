@@ -66,6 +66,24 @@ configurations(({ module, test, createStore }) => {
     });
   });
 
-  test.todo('collection is laoded after fastboot push', () => {});
+  test('collection is loaded after fastboot push', assert => {
+    db._pushShoebox({
+      "documents":[
+        {
+          "_id": "section:placeholder:one",
+          "_rev":"75-78a44ca631c66a6215c0d379bcead8bd",
+          "_attachments": {},
+          "type": "section:placeholder"
+        }
+      ],
+      "collections":{
+        "sections null": {
+          "isLoaded": true
+        }
+      }
+    });
+    let collection = db.collection('sections');
+    assert.ok(collection._internal.loader.state.isLoaded);
+  });
 
 });

@@ -20,7 +20,7 @@ export default Ember.Mixin.create({
   },
 
   _createShoeboxCollections() {
-    let pairs = this._collectionIdentity;
+    let pairs = this._collectionIdentity.all;
     let result = {};
     for(let indentifier in pairs) {
       let internal = pairs[indentifier];
@@ -39,7 +39,18 @@ export default Ember.Mixin.create({
     };
   },
 
-  _pushShoeboxCollections() {
+  _pushShoeboxCollection(identifier, value) {
+    this._setCollectionIdentityInitialState(identifier, value);
+  },
+
+  _pushShoeboxCollections(collections) {
+    if(!collections) {
+      return;
+    }
+    for(let identifier in collections) {
+      let value = collections[identifier];
+      this._pushShoeboxCollection(identifier, value);
+    }
   },
 
   _pushShoeboxDocument(doc) {
