@@ -84,7 +84,7 @@ export default class InternalCollection {
 
   //
 
-  serialize(type) {
+  serialize() {
     if(!this.collectionModel) {
       return;
     }
