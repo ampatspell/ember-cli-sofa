@@ -85,6 +85,12 @@ export default class Definition {
     return this.property('type').matchesDocument(this.modelClass, doc);
   }
 
+  willSerialize(internal, type='document') {
+    this.eachProperty(property => {
+      property.willSerialize(internal, type);
+    });
+  }
+
   serialize(internal, type='document') {
     isOneOf('type', type, [ 'preview', 'document', 'shoebox' ]);
     let doc = copy(internal.raw || {});
