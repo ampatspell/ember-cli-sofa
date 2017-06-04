@@ -19,10 +19,23 @@ export default Ember.Mixin.create({
     })).compact();
   },
 
+  _createShoeboxCollections() {
+    let pairs = this._collectionIdentity;
+    let result = {};
+    for(let indentifier in pairs) {
+      let internal = pairs[indentifier];
+      let serialized = internal.serialize(shoebox);
+      if(serialized) {
+        result[indentifier] = serialized;
+      }
+    }
+    return result;
+  },
+
   _createShoebox() {
     return {
-      documents: this._createShoeboxModels(),
-      collections: []
+      documents:   this._createShoeboxModels(),
+      collections: this._createShoeboxCollections()
     };
   },
 

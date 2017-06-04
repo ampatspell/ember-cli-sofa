@@ -1,7 +1,7 @@
 /* global emit */
 import Ember from 'ember';
-import { configurations, registerModels, registerQueries, cleanup } from '../helpers/setup';
-import { Query, Model, prefix, belongsTo, hasMany } from 'sofa';
+import { configurations, registerModels, registerQueries, registerCollections, cleanup } from '../helpers/setup';
+import { Query, Model, Collection, prefix, belongsTo, hasMany } from 'sofa';
 
 const {
   computed,
@@ -17,6 +17,14 @@ const ddoc = {
         }
         emit(doc.house, null);
       }
+    },
+    'all': {
+      map(doc) {
+        if(doc.type !== 'duck') {
+          return;
+        }
+        emit(doc._id, null);
+      }
     }
   }
 };
@@ -27,12 +35,10 @@ configurations(({ module, test, createStore }) => {
   let db;
 
   let HouseDucks = Query.extend({
-
     find: computed('model.docId', function() {
       let docId = this.get('model.docId');
       return { ddoc: 'ducks', view: 'by-house', key: docId };
-    }),
-
+    })
   });
 
   let Duck = Model.extend({
@@ -47,6 +53,17 @@ configurations(({ module, test, createStore }) => {
     duck: belongsTo('duck', { inverse: 'home' })
   });
 
+  let Ducks = Collection.extend({
+    modelName: 'duck',
+    queryName: 'all-ducks'
+  });
+
+  let AllDucks = Query.extend({
+    find: computed(function() {
+      return { model: null, ddoc: 'ducks', view: 'all' };
+    })
+  });
+
   function flush() {
     store = createStore();
     db = store.get('db.main');
@@ -55,7 +72,8 @@ configurations(({ module, test, createStore }) => {
 
   module('fastboot', () => {
     registerModels({ Duck, House });
-    registerQueries({ HouseDucks });
+    registerQueries({ HouseDucks, AllDucks });
+    registerCollections({ Ducks });
     flush();
     return cleanup(store, [ 'main' ]).then(() => {
       return db.get('documents.design').save('ducks', ddoc);
@@ -67,11 +85,22 @@ configurations(({ module, test, createStore }) => {
     let green = db.model('duck', { id: 'green' });
     let red = db.model('duck', { id: 'red' });
     let house = db.model('house', { id: 'big', ducks: [ yellow, green, red ], duck: green });
+    db.collection('ducks', { nice: true });
     return all([ house.save(), yellow.save(), green.save(), red.save() ]).then(() => {
-      return house.get('ducks.promise');
+      return all([
+        house.get('ducks.promise'),
+        db.collection('ducks').get('promise')
+      ]);
     }).then(() => {
       assert.deepEqual_(db._createShoebox(), {
-        "collections": [],
+        "collections": {
+          "ducks null": {
+            "isLoaded": true
+          },
+          "ducks {\"nice\":true}": {
+            "isLoaded": false
+          }
+        },
         "documents": [
           {
             "_attachments": {},

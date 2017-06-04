@@ -84,6 +84,15 @@ export default class InternalCollection {
 
   //
 
+  serialize(type) {
+    if(!this.collectionModel) {
+      return;
+    }
+    return {
+      isLoaded: this.loader.state.isLoaded
+    };
+  }
+
   collectionWillDestroy() {
     this.database._onInternalCollectionDestroyed(this);
   }
