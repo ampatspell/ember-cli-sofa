@@ -85,6 +85,12 @@ export default class Definition {
     return this.property('type').matchesDocument(this.modelClass, doc);
   }
 
+  willSerialize(internal, type='document') {
+    this.eachProperty(property => {
+      property.willSerialize(internal, type);
+    });
+  }
+
   serialize(internal, type='document') {
     isOneOf('type', type, [ 'preview', 'document', 'shoebox' ]);
     let doc = copy(internal.raw || {});
@@ -112,17 +118,20 @@ export default class Definition {
     property.deserialize(internal, doc, changed);
   }
 
-  deserializeSaveOrUpdate(internal, json, changed) {
+  deserializeSaveUpdateOrDelete(internal, json, changed) {
     this.deserializeProperty(internal, 'id', json.id, changed);
     this.deserializeProperty(internal, 'rev', json.rev, changed);
+  }
+
+  deserializeSaveOrUpdate(internal, json, changed) {
+    this.deserializeSaveUpdateOrDelete(internal, json, changed);
   }
 
   deserializeDelete(internal, json, changed) {
     if(!json) {
       return;
     }
-    this.deserializeProperty(internal, 'id', json.id, changed);
-    this.deserializeProperty(internal, 'rev', null, changed);
+    this.deserializeSaveOrUpdate(internal, json, changed);
   }
 
   deserializeAttachments(internal, doc, changed) {

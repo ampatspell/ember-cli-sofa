@@ -229,4 +229,9 @@ export default class AttachmentsInternal {
     }
   }
 
+  removeStubs() {
+    let attachments = this.content.filter(attachment => attachment.isStubContent);
+    this.removeAttachments(attachments);
+  }
+
 }

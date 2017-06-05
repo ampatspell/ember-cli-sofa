@@ -14,6 +14,10 @@ export default class Attachment {
     this.attachmentModel = null;
   }
 
+  get isStubContent() {
+    return this.content.isStub;
+  }
+
   createContentForHash(hash) {
     return createContentInternal(this, hash);
   }

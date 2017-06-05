@@ -19,4 +19,11 @@ export default class Revision extends Attribute {
     return false;
   }
 
+  _serialize(internal, doc) {
+    if(internal.isDeleted) {
+      return;
+    }
+    return super._serialize(internal, doc);
+  }
+
 }

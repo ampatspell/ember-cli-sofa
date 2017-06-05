@@ -68,6 +68,10 @@ export default class InternalModel {
     return this.state.isNew;
   }
 
+  get isDeleted() {
+    return this.state.isDeleted;
+  }
+
   get url() {
     let docId = this.docId;
     if(!docId) {

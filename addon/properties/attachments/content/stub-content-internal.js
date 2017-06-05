@@ -23,8 +23,12 @@ export default class AttachmentStubContent extends AttachmentContent {
     return 'stub';
   }
 
+  get internalModel() {
+    return this.attachment.attachments.internalModel;
+  }
+
   get url() {
-    let doc = this.attachment.attachments.internalModel.url;
+    let doc = this.internalModel.url;
     let name = encodeURIComponent(this.attachment.name);
     let revpos = this.data.revpos;
     return `${doc}/${name}?_r=${revpos}`;

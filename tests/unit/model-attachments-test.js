@@ -282,4 +282,36 @@ configurations(({ module, test, createStore, config }) => {
     });
   });
 
+  test('save model with attachment, delete it and save again should kill off now missing attachment stub', assert => {
+    let model = db.model('duck', { id: 'yellow', attachments: [ { name: 'note', data: 'hey' } ] });
+    return model.save().then(() => {
+      assert.ok(model.get('attachments.note.url'));
+      assert.deepEqual(model.get('attachments').mapBy('name'), [ 'note' ]);
+      return model.delete();
+    }).then(() => {
+      assert.ok(model.get('attachments.note.url'));
+      model.get('attachments').pushObject({ name: 'fresh', data: 'thingie' });
+      assert.deepEqual(model.get('attachments').mapBy('name'), [ 'note', 'fresh' ]);
+      return model.save();
+    }).then(() => {
+      assert.deepEqual(model.get('attachments').mapBy('name'), [ 'fresh' ]);
+      return db.get('documents').load('duck:yellow');
+    }).then(json => {
+      assert.deepEqual_(json, {
+        "_attachments": {
+          "fresh": {
+            "content_type": "text/plain",
+            "digest": "ignored",
+            "length": 7,
+            "revpos": "ignored",
+            "stub": true
+          }
+        },
+        "_id": "duck:yellow",
+        "_rev": "ignored",
+        "type": "duck"
+      });
+    });
+  });
+
 });
