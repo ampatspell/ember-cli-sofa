@@ -10,7 +10,7 @@ const {
 
 export default class InternalCollection {
 
-  constructor(database, collectionClass, opts) {
+  constructor(database, collectionClass, opts, state) {
     this.database = database;
     this.collectionClass = collectionClass;
     this.opts = opts;
@@ -18,6 +18,9 @@ export default class InternalCollection {
     this.content = A();
     this.internalModels = database._modelIdentity.all;
     this.loader = new CollectionLoader(this);
+    if(state.isLoaded) {
+      this.loader.setLoaded(true);
+    }
   }
 
   modelClassForName(modelName) {
@@ -83,6 +86,15 @@ export default class InternalCollection {
   }
 
   //
+
+  serialize() {
+    if(!this.collectionModel) {
+      return;
+    }
+    return {
+      isLoaded: this.loader.state.isLoaded
+    };
+  }
 
   collectionWillDestroy() {
     this.database._onInternalCollectionDestroyed(this);

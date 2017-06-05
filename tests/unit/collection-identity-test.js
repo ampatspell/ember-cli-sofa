@@ -40,7 +40,7 @@ test('collection returns same instance when declared with params', assert => {
 
 test('collections are stored in identity', assert => {
   let coll = db.collection('ducks');
-  assert.ok(db._collectionIdentity['ducks null'] === coll._internal);
+  assert.ok(db._collectionIdentity.all['ducks null'] === coll._internal);
 });
 
 test('collection opts serialization', assert => {
@@ -56,9 +56,9 @@ test('collection identifier', assert => {
 
 test('collection is removed from identity on destroy', assert => {
   let coll = db.collection('ducks');
-  assert.ok(db._collectionIdentity['ducks null']);
+  assert.ok(db._collectionIdentity.all['ducks null']);
   coll.destroy();
   return next().then(() => {
-    assert.ok(!db._collectionIdentity['ducks null']);
+    assert.ok(!db._collectionIdentity.all['ducks null']);
   });
 });

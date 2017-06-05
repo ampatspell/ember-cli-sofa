@@ -45,30 +45,34 @@ configurations(({ module, test, createStore }) => {
   });
 
   test('loaded belongsTo is marked as loaded', assert => {
-    db._pushShoebox([
-      {
-        _id: "duck:yellow",
-        type: "duck",
-      },
-      {
-        _id: "house:big",
-        type: "house",
-        duck: "duck:yellow"
-      }
-    ]);
+    db._pushShoebox({
+      documents: [
+        {
+          _id: "duck:yellow",
+          type: "duck",
+        },
+        {
+          _id: "house:big",
+          type: "house",
+          duck: "duck:yellow"
+        }
+      ]
+    });
     let house = db.existing('house', 'big');
     assert.ok(house);
     assert.ok(house.get('duck.isLoaded'));
   });
 
   test('missing belongsTo is marked as not loaded', assert => {
-    db._pushShoebox([
-      {
-        _id: "house:big",
-        type: "house",
-        duck: "duck:yellow"
-      }
-    ]);
+    db._pushShoebox({
+      documents: [
+        {
+          _id: "house:big",
+          type: "house",
+          duck: "duck:yellow"
+        }
+      ]
+    });
     let house = db.existing('house', 'big');
     assert.ok(house);
     assert.ok(!house.get('duck.isLoaded'));

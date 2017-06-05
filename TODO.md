@@ -4,7 +4,6 @@
 
 ### fastboot
 
-* fastboot -- mark collections as loaded
 * fastboot -- session
 
 ### attachments
