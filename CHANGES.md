@@ -4,6 +4,13 @@
 Version: {{version}}
 ```
 
+### 2.0.0-pre.35
+* [new] extracted `ember-cli-couch` from codebase
+* [new] keep deleted model `rev`, don't serialize it on next save
+* [fix] remove stub attachments on deleted model saves
+* [new] collections are now has identity by name and serialized opts `db.collection('foo') === db.collection('foo')`
+* [new] fastboot shoebox now includes models, relations with load status and collections
+
 ### 2.0.0-pre.28
 
 * [fix] couch request `{ json: false }` support
