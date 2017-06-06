@@ -25,13 +25,10 @@
 * delete models with `type` property
 * per-database models (each database is initialized with model folder name which is returned by `store.databaseOptionsForIdentifier`)
 * embedded models (persisted as a `{ key: { model } }`)
-* abstract Couch, have also PouchDB
-* couch changes listener
 * database changes -> push
 * enable changes listener only after fastboot shoebox deserialize
 
 ## related
 
-* `validate_doc_updates` validator from previous sofa implementation
-* basic CouchDB document api for node.js environment. also extract from previous implementation.
+* basic CouchDB document api for node.js environment. extract from previous implementation.
 * CouchDB API proxy for ACL
