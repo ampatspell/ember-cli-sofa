@@ -4,7 +4,12 @@
 Version: {{version}}
 ```
 
+### 2.0.0-pre.37
+
+* [new] allow overriding attachemnt content classes (per-database)
+
 ### 2.0.0-pre.35
+
 * [new] extracted `ember-cli-couch` from codebase
 * [new] keep deleted model `rev`, don't serialize it on next save
 * [fix] remove stub attachments on deleted model saves
