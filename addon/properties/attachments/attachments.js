@@ -1,6 +1,10 @@
 import Ember from 'ember';
 import transform from '../../util/array-transform-mixin';
 
+const {
+  computed
+} = Ember;
+
 let Transform = transform({
   public(internal) {
     if(!internal) {
@@ -14,9 +18,16 @@ let Transform = transform({
   }
 });
 
+const model = () => {
+  return computed(function() {
+    return this._internal.internalModel.getModel();
+  }).readOnly();
+}
+
 export default Ember.ArrayProxy.extend(Transform, {
 
   _internal: null,
+  model: model(),
 
   named(name) {
     let internal = this._internal.getAttachmentInternalByName(name);

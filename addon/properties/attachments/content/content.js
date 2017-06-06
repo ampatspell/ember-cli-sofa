@@ -11,11 +11,16 @@ export const internal = (prop) => {
   }).readOnly();
 };
 
+const attachment = () => {
+  return computed(function() {
+    return this._internal.attachment.getAttachmentModel();
+  }).readOnly();
+}
+
 export const Content = Ember.Object.extend({
 
   _internal: null,
-
-  attachment: internal('attachment'),
+  attachment: attachment(),
 
   type: internal('type'), // local, remote
 

@@ -6,7 +6,7 @@ const {
   computed
 } = Ember;
 
-configurations(({ module, test, createStore }) => {
+configurations(({ module, test, createStore, config }) => {
 
   let store;
   let db;
@@ -16,10 +16,12 @@ configurations(({ module, test, createStore }) => {
   });
 
   let MainStub = Stub.extend({
-    url: computed('attachment.name', 'revpos', function() {
+    url: computed('attachment.name', 'attachment.attachments.model.{database.documents.url,encodedDocId}', 'revpos', function() {
       let name = this.get('attachment.name');
       let revpos = this.get('revpos');
-      return `/${name}?_r=${revpos}`;
+      let db = this.get('attachment.attachments.model.database.documents.url');
+      let docId = this.get('attachment.attachments.model.encodedDocId');
+      return `${db}/attachment/${name}/${docId}?_r=${revpos}`;
     }).readOnly()
   });
 
@@ -49,7 +51,9 @@ configurations(({ module, test, createStore }) => {
     let model = db.model('duck', { id: 'yellow' });
     model.get('attachments').pushObject({ name: 'note', type: 'text/plain', data: 'hey there' });
     return model.save().then(() => {
-      assert.equal(model.get('attachments.note.url'), `${db.get('documents.url')}/attachment/note/duck%3Ayellow?_r=1`);
+      assert.equal(model.get('attachments.note.url'), `${config.url}/ember-cli-sofa-test-main/attachment/note/duck%3Ayellow?_r=1`);
+      db.get('documents').set('name', 'ember-cli-sofa-test-second');
+      assert.equal(model.get('attachments.note.url'), `${config.url}/ember-cli-sofa-test-second/attachment/note/duck%3Ayellow?_r=1`);
     });
   });
 
