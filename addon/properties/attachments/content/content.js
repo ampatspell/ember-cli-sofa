@@ -15,6 +15,8 @@ export const Content = Ember.Object.extend({
 
   _internal: null,
 
+  attachment: internal('attachment'),
+
   type: internal('type'), // local, remote
 
   isLocal:  equal('type', 'local').readOnly(),
