@@ -45,7 +45,7 @@ configurations(({ module, test, createStore }) => {
     assert.ok(!MainStub.detect(Factory.class));
   });
 
-  test.todo('custom url for stubs', assert => {
+  test('custom url for stubs', assert => {
     let model = db.model('duck', { id: 'yellow' });
     model.get('attachments').pushObject({ name: 'note', type: 'text/plain', data: 'hey there' });
     return model.save().then(() => {
