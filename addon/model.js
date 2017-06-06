@@ -69,6 +69,16 @@ const docId = () => {
   }).readOnly();
 };
 
+const encodedDocId = () => {
+  return computed('docId', function() {
+    let docId = this.get('docId');
+    if(!docId) {
+      return;
+    }
+    return encodeURIComponent(docId);
+  }).readOnly();
+};
+
 const Model = Ember.Object.extend(ModelStateMixin, {
 
   [internalPropertyName]: null,
@@ -79,6 +89,7 @@ const Model = Ember.Object.extend(ModelStateMixin, {
   id: id(),
 
   docId: docId(),
+  encodedDocId: encodedDocId(),
   modelName: constructor('modelName'),
   database: internal('database'),
   serialize: serialize(),
