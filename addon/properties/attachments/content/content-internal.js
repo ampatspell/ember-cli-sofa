@@ -1,9 +1,3 @@
-import Ember from 'ember';
-
-const {
-  getOwner
-} = Ember;
-
 export default class AttachmentContent {
 
   constructor(attachment) {
@@ -14,9 +8,11 @@ export default class AttachmentContent {
 
   createContentModel() {
     let name = this.contentModelName;
-    let owner = this.attachment.attachments.internalModel.store;
+    let internalModel = this.attachment.attachments.internalModel;
+    let store = internalModel.store;
+    let database = internalModel.database;
     let _internal = this;
-    return getOwner(owner).factoryFor(`sofa:attachment-content/${name}`).create({ _internal });
+    return store._lookupAttachmentContentClass(database, name).create({ _internal });
   }
 
   getContentModel() {

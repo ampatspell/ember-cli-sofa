@@ -6,6 +6,10 @@ import Model from './model';
 import Query from './query';
 import Collection from './collection/collection';
 
+import AttachmentFileContent from './properties/attachments/content/file-content';
+import AttachmentStringContent from './properties/attachments/content/string-content';
+import AttachmentStubContent from './properties/attachments/content/stub-content';
+
 import {
   id,
   prefix,
@@ -28,6 +32,10 @@ export {
   Model,
   Query,
   Collection,
+
+  AttachmentStubContent,
+  AttachmentStringContent,
+  AttachmentFileContent,
 
   id,
   prefix,
