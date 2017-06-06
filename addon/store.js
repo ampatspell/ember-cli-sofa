@@ -10,6 +10,7 @@ import StoreTransform from './store/store-transform';
 import StoreDestroy from './store/store-destroy';
 import StoreModelNames from './store/store-model-names';
 import StoreCollectionClass from './store/store-collection-class';
+import StoreModelAttachments from './store/store-model-attachments';
 import StoreShoebox from './store/store-shoebox';
 
 const {
@@ -28,6 +29,7 @@ export default Ember.Service.extend(
   StoreModelNames,
   StoreDestroy,
   StoreCollectionClass,
+  StoreModelAttachments,
   StoreShoebox, {
 
   find() {
