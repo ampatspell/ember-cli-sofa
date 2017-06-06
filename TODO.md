@@ -28,6 +28,7 @@
 * abstract Couch, have also PouchDB
 * couch changes listener
 * database changes -> push
+* enable changes listener only after fastboot shoebox deserialize
 
 ## related
 
