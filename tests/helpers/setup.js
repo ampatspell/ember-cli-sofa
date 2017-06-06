@@ -158,6 +158,10 @@ export function registerCollections(hash) {
   registerHash('collection', hash);
 }
 
+export function register() {
+  return app.register(...arguments);
+}
+
 export const admin = {
   name: 'ampatspell',
   password: 'hello'

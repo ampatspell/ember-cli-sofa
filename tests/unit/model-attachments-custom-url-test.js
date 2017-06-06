@@ -1,5 +1,10 @@
-import { configurations, registerModels, cleanup } from '../helpers/setup';
-import { Model, prefix } from 'sofa';
+import Ember from 'ember';
+import { configurations, registerModels, cleanup, register } from '../helpers/setup';
+import { Model, Stub, prefix } from 'sofa';
+
+const {
+  computed
+} = Ember;
 
 configurations(({ module, test, createStore }) => {
 
@@ -10,21 +15,37 @@ configurations(({ module, test, createStore }) => {
     id: prefix(),
   });
 
+  let MainStub = Stub.extend({
+    url: computed('attachment.name', 'revpos', function() {
+      let name = this.get('attachment.name');
+      let revpos = this.get('revpos');
+      return `/${name}?_r=${revpos}`;
+    }).readOnly()
+  });
+
   const flush = () => {
     store = createStore();
     db = store.get('db.main');
-    db.attachmentUrlForOptions = function({ database, doc, attachment }) {
-      return `${database.get('documents.url')}/attachment/${attachment.name}/${doc.id}?_r=${attachment.revpos}`;
-    }.bind(db);
   };
 
   module('model-attachment-custom-url-test', () => {
     registerModels({ Duck });
+    register('sofa/database:main/attachment/content/stub', MainStub);
     flush();
     return cleanup(store, [ 'main' ]);
   });
 
-  test('custom url for stubs', assert => {
+  test('lookup custom attachment class', assert => {
+    let Factory = store._lookupAttachmentContentClass(db, 'stub');
+    assert.ok(MainStub.detect(Factory.class));
+  });
+
+  test('lookup default attachemnt content class', assert => {
+    let Factory = store._lookupAttachmentContentClass(store.get('db.second'), 'stub');
+    assert.ok(!MainStub.detect(Factory.class));
+  });
+
+  test.todo('custom url for stubs', assert => {
     let model = db.model('duck', { id: 'yellow' });
     model.get('attachments').pushObject({ name: 'note', type: 'text/plain', data: 'hey there' });
     return model.save().then(() => {
