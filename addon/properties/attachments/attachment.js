@@ -16,15 +16,18 @@ const attachments = () => {
   }).readOnly();
 }
 
+const content = () => {
+  return computed(function() {
+    return this._internal.getAttachmentContentModel();
+  }).readOnly();
+}
+
 export default Ember.ObjectProxy.extend({
 
   _internal: null,
   attachments: attachments(),
 
   name: internal('name'),
-
-  content: computed(function() {
-    return this._internal.getAttachmentContentModel();
-  }).readOnly()
+  content: content()
 
 });
