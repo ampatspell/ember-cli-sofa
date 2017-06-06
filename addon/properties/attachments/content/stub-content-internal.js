@@ -28,10 +28,31 @@ export default class AttachmentStubContent extends AttachmentContent {
   }
 
   get url() {
-    let doc = this.internalModel.url;
-    let name = encodeURIComponent(this.attachment.name);
-    let revpos = this.data.revpos;
-    return `${doc}/${name}?_r=${revpos}`;
+    let internalModel = this.internalModel;
+    let database = internalModel.database;
+
+    if(!database) {
+      return;
+    }
+
+    let doc = {
+      url: internalModel.url,
+      id:  encodeURIComponent(internalModel.docId),
+      rev: internalModel.rev
+    };
+
+    let attachment = {
+      name:   encodeURIComponent(this.attachment.name),
+      revpos: this.data.revpos
+    };
+
+    let url = database.attachmentUrlForOptions({ database, doc, attachment });
+
+    if(!url) {
+      url =`${doc.url}/${attachment.name}?_r=${attachment.revpos}`;
+    }
+
+    return url;
   }
 
   serialize() {
