@@ -6,7 +6,9 @@ import Model from './model';
 import Query from './query';
 import Collection from './collection/collection';
 
-import Stub from './properties/attachments/content/stub-content';
+import AttachmentFileContent from './properties/attachments/content/file-content';
+import AttachmentStringContent from './properties/attachments/content/string-content';
+import AttachmentStubContent from './properties/attachments/content/stub-content';
 
 import {
   id,
@@ -31,7 +33,9 @@ export {
   Query,
   Collection,
 
-  Stub,
+  AttachmentStubContent,
+  AttachmentStringContent,
+  AttachmentFileContent,
 
   id,
   prefix,

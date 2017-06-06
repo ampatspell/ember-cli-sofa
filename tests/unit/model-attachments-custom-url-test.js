@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import { configurations, registerModels, cleanup, register } from '../helpers/setup';
-import { Model, Stub, prefix } from 'sofa';
+import { Model, AttachmentStubContent, prefix } from 'sofa';
 
 const {
   computed
@@ -15,7 +15,7 @@ configurations(({ module, test, createStore, config }) => {
     id: prefix(),
   });
 
-  let MainStub = Stub.extend({
+  let MainStub = AttachmentStubContent.extend({
     url: computed('attachment.name', 'attachment.attachments.model.{database.documents.url,encodedDocId}', 'revpos', function() {
       let name = this.get('attachment.name');
       let revpos = this.get('revpos');
