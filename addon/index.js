@@ -6,6 +6,8 @@ import Model from './model';
 import Query from './query';
 import Collection from './collection/collection';
 
+import Stub from './properties/attachments/content/stub-content';
+
 import {
   id,
   prefix,
@@ -28,6 +30,8 @@ export {
   Model,
   Query,
   Collection,
+
+  Stub,
 
   id,
   prefix,
