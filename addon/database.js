@@ -11,7 +11,6 @@ import DatabaseCollection from './database/database-collection';
 import DatabaseInternalCollectionIdentity from './database/database-internal-collection-identity';
 import DatabaseSecurity from './database/database-security';
 import DatabaseShoebox from './database/database-shoebox';
-import DatabaseAttachment from './database/database-attachment';
 import DatabaseDestroy from './database/database-destroy';
 
 export default Ember.Object.extend(
@@ -26,7 +25,6 @@ export default Ember.Object.extend(
   DatabaseInternalCollectionIdentity,
   DatabaseSecurity,
   DatabaseShoebox,
-  DatabaseAttachment,
   DatabaseDestroy, {
 
   identifier: null,
