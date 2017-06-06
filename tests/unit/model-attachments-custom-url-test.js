@@ -33,4 +33,3 @@ configurations(({ module, test, createStore }) => {
   });
 
 });
-
