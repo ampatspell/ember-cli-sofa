@@ -17,10 +17,14 @@ export default class Attachment {
     return createContentInternal(this, hash);
   }
 
-  createAttachmentModel() {
+  lookupAttachmentClass() {
     let model = this.attachments.internalModel;
+    return model.store._lookupAttachmentClass(model.database);
+  }
+
+  createAttachmentModel() {
     let _internal = this;
-    return model.store._lookupAttachmentClass(model.database).create({ _internal });
+    return this.lookupAttachmentClass().create({ _internal });
   }
 
   getAttachmentModel() {
@@ -79,6 +83,22 @@ export default class Attachment {
   onModelDestroyed() {
     this.content.onModelDestroyed();
     this.destroyAttachmentModel();
+  }
+
+  onDidSetDatabase() {
+    let attachmentModel = this.attachmentModel;
+    if(!attachmentModel) {
+      return;
+    }
+
+    let Factory = this.lookupAttachmentClass();
+    let recreate = !Factory.class.detectInstance(attachmentModel);
+
+    this.content.onDidSetDatabase();
+
+    if(recreate) {
+      this.destroyAttachmentModel();
+    }
   }
 
 }

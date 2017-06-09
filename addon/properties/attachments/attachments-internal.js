@@ -3,7 +3,8 @@ import { isObject_, isString_, assert } from '../../util/assert';
 import AttachmentInternal from './attachment-internal';
 import {
   internalModelDidChangeInternalWillDestroy,
-  internalModelDidChangeModelWillDestroy
+  internalModelDidChangeModelWillDestroy,
+  internalModelDidSetDatabase
 } from '../../internal-model';
 
 const {
@@ -28,11 +29,15 @@ export default class AttachmentsInternal {
     }, true);
   }
 
-  createAttachmentsModel() {
+  lookupAttachmentsClass() {
     let model = this.internalModel;
+    return model.store._lookupAttachmentsClass(model.database);
+  }
+
+  createAttachmentsModel() {
     let _internal = this;
     let content = this.content;
-    return model.store._lookupAttachmentsClass(model.database).create({ _internal, content });
+    return this.lookupAttachmentsClass().create({ _internal, content });
   }
 
   get attachmentsModelObserverOptions() {
@@ -220,12 +225,31 @@ export default class AttachmentsInternal {
     this.property.notifyPropertyChange(this.internalModel);
   }
 
+  onDidSetDatabase() {
+    let attachmentsModel = this.attachmentsModel;
+    if(!attachmentsModel) {
+      return;
+    }
+
+    let Factory = this.lookupAttachmentsClass();
+    let recreate = !Factory.class.detectInstance(attachmentsModel);
+
+    this.content.forEach(attachment => attachment.onDidSetDatabase());
+
+    if(recreate) {
+      this.destroyAttachmentsModel();
+      this.property.notifyPropertyChange(this.internalModel);
+    }
+  }
+
   internalModelDidChange(internal, props) {
     Ember.assert(`internal model should be this.internalModel`, internal === this.internalModel);
     if(internalModelDidChangeInternalWillDestroy(internal, props)) {
       this.onInternalDestroyed();
     } else if(internalModelDidChangeModelWillDestroy(internal, props)) {
       this.onModelDestroyed();
+    } else if(internalModelDidSetDatabase(internal, props)) {
+      this.onDidSetDatabase();
     }
   }
 

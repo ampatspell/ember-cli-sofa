@@ -6,11 +6,15 @@ export default class AttachmentContent {
     this.contentModel = null;
   }
 
-  createContentModel() {
+  lookupAttachmentContentClass() {
     let model = this.attachment.attachments.internalModel;
     let name = this.contentModelName;
+    return model.store._lookupAttachmentContentClass(model.database, name);
+  }
+
+  createContentModel() {
     let _internal = this;
-    return model.store._lookupAttachmentContentClass(model.database, name).create({ _internal });
+    return this.lookupAttachmentContentClass().create({ _internal });
   }
 
   getContentModel() {
@@ -63,6 +67,20 @@ export default class AttachmentContent {
 
   onModelDestroyed() {
     this.destroyContentModel();
+  }
+
+  onDidSetDatabase() {
+    let contentModel = this.contentModel;
+    if(!contentModel) {
+      return;
+    }
+
+    let Factory = this.lookupAttachmentContentClass();
+    let recreate = !Factory.class.detectInstance(contentModel);
+
+    if(recreate) {
+      this.destroyContentModel();
+    }
   }
 
 }
