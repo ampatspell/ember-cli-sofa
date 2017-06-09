@@ -29,8 +29,8 @@ configurations(({ module, test, createStore }) => {
 
   module('model-attachment-custom-classes', () => {
     registerModels({ Duck });
-    register('sofa/database:main/attachment/content/stub', MainStub);
-    register('sofa/database:main/attachment/content/string', MainString);
+    register('sofa/database:main/attachment/stub', MainStub);
+    register('sofa/database:main/attachment/string', MainString);
     register('sofa/database:main/attachments', MainAttachments);
     register('sofa/database:main/attachment', MainAttachment);
     flush();

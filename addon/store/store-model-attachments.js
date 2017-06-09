@@ -23,7 +23,7 @@ export default Ember.Mixin.create({
     return lookup(
       this,
       database,
-      identifier => `sofa/database:${identifier}/attachment/content/${name}`,
+      identifier => `sofa/database:${identifier}/attachment/${name}`,
       `sofa:attachment-content/${name}`
     );
   },
