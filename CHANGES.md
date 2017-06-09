@@ -4,9 +4,13 @@
 Version: {{version}}
 ```
 
+### 2.0.0-pre.38
+
+* [new] allow overriding per-database attachments, attachment classes. recreate them if model database is set separately from model creation
+
 ### 2.0.0-pre.37
 
-* [new] allow overriding attachemnt content classes (per-database)
+* [new] allow overriding attachment content classes (per-database)
 
 ### 2.0.0-pre.35
 
