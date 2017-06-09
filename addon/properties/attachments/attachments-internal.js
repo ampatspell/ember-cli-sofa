@@ -7,7 +7,6 @@ import {
 } from '../../internal-model';
 
 const {
-  getOwner,
   copy,
   A
 } = Ember;
@@ -30,9 +29,10 @@ export default class AttachmentsInternal {
   }
 
   createAttachmentsModel() {
+    let model = this.internalModel;
     let _internal = this;
     let content = this.content;
-    return getOwner(this.property.store).factoryFor('sofa:attachments').create({ _internal, content });
+    return model.store._lookupAttachmentsClass(model.database).create({ _internal, content });
   }
 
   get attachmentsModelObserverOptions() {

@@ -1,12 +1,7 @@
-import Ember from 'ember';
 import { configurations, registerModels, cleanup, register } from '../helpers/setup';
 import { Model, AttachmentStubContent, Attachments, Attachment, prefix } from 'sofa';
 
-const {
-  computed
-} = Ember;
-
-configurations(({ module, test, createStore, config }) => {
+configurations(({ module, test, createStore }) => {
 
   let store;
   let db;
@@ -51,6 +46,16 @@ configurations(({ module, test, createStore, config }) => {
   test('lookup attachment content', assert => {
     let Factory = store._lookupAttachmentsClass(db);
     assert.ok(MainAttachments.detect(Factory.class));
+  });
+
+  test('saved', assert => {
+    let model = db.model('duck', { id: 'yellow' });
+    assert.ok(MainAttachments.detectInstance(model.get('attachments')));
+    model.get('attachments').pushObject({ name: 'original', data: 'hello', content_type: 'text/plain' });
+    assert.ok(MainAttachment.detectInstance(model.get('attachments.original')));
+    return model.save().then(() => {
+      assert.ok(MainStub.detectInstance(model.get('attachments.original.content')));
+    });
   });
 
 });

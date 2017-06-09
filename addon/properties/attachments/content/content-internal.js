@@ -7,12 +7,10 @@ export default class AttachmentContent {
   }
 
   createContentModel() {
+    let model = this.attachment.attachments.internalModel;
     let name = this.contentModelName;
-    let internalModel = this.attachment.attachments.internalModel;
-    let store = internalModel.store;
-    let database = internalModel.database;
     let _internal = this;
-    return store._lookupAttachmentContentClass(database, name).create({ _internal });
+    return model.store._lookupAttachmentContentClass(model.database, name).create({ _internal });
   }
 
   getContentModel() {
