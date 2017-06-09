@@ -32,7 +32,7 @@ configurations(({ module, test, createStore, config }) => {
 
   module('model-attachment-custom-url-test', () => {
     registerModels({ Duck });
-    register('sofa/database:main/attachment/content/stub', MainStub);
+    register('sofa/database:main/attachment/stub', MainStub);
     flush();
     return cleanup(store, [ 'main' ]);
   });

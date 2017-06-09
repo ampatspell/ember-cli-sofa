@@ -6,6 +6,8 @@ import Model from './model';
 import Query from './query';
 import Collection from './collection/collection';
 
+import Attachments from './properties/attachments/attachments';
+import Attachment from './properties/attachments/attachment';
 import AttachmentFileContent from './properties/attachments/content/file-content';
 import AttachmentStringContent from './properties/attachments/content/string-content';
 import AttachmentStubContent from './properties/attachments/content/stub-content';
@@ -33,6 +35,8 @@ export {
   Query,
   Collection,
 
+  Attachments,
+  Attachment,
   AttachmentStubContent,
   AttachmentStringContent,
   AttachmentFileContent,

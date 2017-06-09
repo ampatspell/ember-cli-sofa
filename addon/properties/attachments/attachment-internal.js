@@ -1,9 +1,4 @@
-import Ember from 'ember';
 import createContentInternal from './content/create-internal';
-
-const {
-  getOwner
-} = Ember;
 
 export default class Attachment {
 
@@ -22,9 +17,14 @@ export default class Attachment {
     return createContentInternal(this, hash);
   }
 
+  lookupAttachmentClass() {
+    let model = this.attachments.internalModel;
+    return model.store._lookupAttachmentClass(model.database);
+  }
+
   createAttachmentModel() {
     let _internal = this;
-    return getOwner(this.attachments.internalModel.store).factoryFor('sofa:attachment').create({ _internal });
+    return this.lookupAttachmentClass().create({ _internal });
   }
 
   getAttachmentModel() {
@@ -83,6 +83,22 @@ export default class Attachment {
   onModelDestroyed() {
     this.content.onModelDestroyed();
     this.destroyAttachmentModel();
+  }
+
+  onDidSetDatabase() {
+    let attachmentModel = this.attachmentModel;
+    if(!attachmentModel) {
+      return;
+    }
+
+    let Factory = this.lookupAttachmentClass();
+    let recreate = !Factory.class.detectInstance(attachmentModel);
+
+    this.content.onDidSetDatabase();
+
+    if(recreate) {
+      this.destroyAttachmentModel();
+    }
   }
 
 }
