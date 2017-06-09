@@ -39,6 +39,10 @@ export function internalModelDidChangeModelWillDestroy(internal, props) {
   return props.includes('onDestroyModel');
 }
 
+export function internalModelDidSetDatabase(internal, props) {
+  return props.includes('didSetDatabase');
+}
+
 export default class InternalModel {
 
   constructor(store, modelClass, database = null) {
@@ -120,6 +124,7 @@ export default class InternalModel {
     if(!database) {
       return;
     }
+    this.notifyObservers([ 'didSetDatabase' ]);
     database._internalModelDidChangeDatabase(this);
   }
 
