@@ -15,6 +15,7 @@
 
 ### other
 
+* loads from views or smth should check `internal.state.isLoaded && internal.rev === doc._rev`. if `true`, ignore update
 * is it possible to provide `promise` prop for `PassiveRelationLoaderStateMixin`?
 * attachment `data` as a Promise which must resolve to `Blob` or `String` (add scaled image)
 * `Relationship` and `hasMany({ relationship: 'foobar' })`
