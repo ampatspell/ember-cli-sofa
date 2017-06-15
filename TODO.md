@@ -4,6 +4,7 @@
 
 ### changes
 
+* suspend - resume changes
 * Changes.state - isStarted, isError, error
 * Error handling. stop? + event
 * Split Changes and InternalChanges as a base + db impl so can be used for `_db_updates`
