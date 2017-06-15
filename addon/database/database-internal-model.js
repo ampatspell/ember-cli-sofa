@@ -21,10 +21,6 @@ window.chunkArray = chunkArray;
 
 export default Ember.Mixin.create({
 
-  _suspendChanges() {
-    return () => {};
-  },
-
   _invokeInternalWillSaveCallbacks(internal) {
     let model = internal.model;
     if(!model) {

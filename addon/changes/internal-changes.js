@@ -115,6 +115,12 @@ export default class InternalChanges {
 
   //
 
+  suspend() {
+    return this.getListener().suspend();
+  }
+
+  //
+
   changesWillDestroy() {
     this.destroyListener();
     this.database._onInternalChangesDestroyed(this);

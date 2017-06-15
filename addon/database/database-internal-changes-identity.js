@@ -45,4 +45,15 @@ export default Ember.Mixin.create({
     destroyObject(this._changesIdentity);
   },
 
+  _suspendChanges() {
+    let resumes = [];
+    let identity = this._changesIdentity;
+    for(let key in identity) {
+      resumes.push(identity[key].suspend());
+    }
+    return () => {
+      return resumes.map(resume => resume());
+    };
+  },
+
 });

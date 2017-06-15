@@ -86,20 +86,21 @@ configurations(({ module, test, createStore, config }) => {
     });
   });
 
-  test.only('suspend on save', assert => {
+  test('suspend on save', assert => {
     let changes = db.changes('all');
     let log = [];
     changes.on('change', model => {
-      console.log(model);
       log.push(model);
     });
     changes.start();
     return wait(null, 100).then(() => {
       let model = db.model('hamster', { name: 'unicorn' });
-      return model.save();
-    }).then(() => {
+      return model.save().then(() => wait(model, 500));
+    }).then(model => {
       assert.ok(db._modelIdentity.all.length === 1);
       assert.ok(log.length === 1);
+      assert.ok(log[0].model === 'hamster');
+      assert.ok(log[0].id === model.get('id'));
     });
   });
 
