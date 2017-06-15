@@ -4,7 +4,7 @@
 
 ### changes
 
-* suspend - resume changes
+* push image delete, image is still in relationship: `gallery { images: hasMany('gallery-image', { inverse: 'gallery', query: 'gallery-images' }) }`
 * Changes.state - isStarted, isError, error
 * Error handling. stop? + event
 * Split Changes and InternalChanges as a base + db impl so can be used for `_db_updates`
