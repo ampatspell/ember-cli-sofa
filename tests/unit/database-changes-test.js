@@ -11,6 +11,10 @@ configurations(({ module, test, createStore, config }) => {
     name: attr('string'),
   });
 
+  let Hamster = Model.extend({
+    name: attr('string')
+  });
+
   let All = Changes.extend({
 
     feed: config.feed,
@@ -19,11 +23,11 @@ configurations(({ module, test, createStore, config }) => {
   });
 
   module('database-changes', () => {
-    registerModels({ Duck });
+    registerModels({ Duck, Hamster });
     registerChanges({ All });
     store = createStore();
     db = store.get('db.main');
-    db.set('modelNames', [ 'duck' ]);
+    db.set('modelNames', [ 'duck', 'hamster' ]);
     return cleanup(store, [ 'main' ]);
   });
 
@@ -79,6 +83,23 @@ configurations(({ module, test, createStore, config }) => {
           "model": "duck"
         }
       ]);
+    });
+  });
+
+  test.only('suspend on save', assert => {
+    let changes = db.changes('all');
+    let log = [];
+    changes.on('change', model => {
+      console.log(model);
+      log.push(model);
+    });
+    changes.start();
+    return wait(null, 100).then(() => {
+      let model = db.model('hamster', { name: 'unicorn' });
+      return model.save();
+    }).then(() => {
+      assert.ok(db._modelIdentity.all.length === 1);
+      assert.ok(log.length === 1);
     });
   });
 
