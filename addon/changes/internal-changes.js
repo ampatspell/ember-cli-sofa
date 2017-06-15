@@ -1,5 +1,4 @@
 import Ember from 'ember';
-import { options } from 'couch/couch/database/changes';
 
 const {
   merge
@@ -35,8 +34,17 @@ export default class InternalChanges {
 
   optionsForListener() {
     let model = this.getChangesModel();
-    let props = model.getProperties(options);
-    return merge({ include_docs: true }, props);
+    return merge({
+      include_docs: true
+    }, model.getProperties([
+      'feed',
+      'view',
+      'filter',
+      'timeout',
+      'attachments',
+      'heartbeat',
+      'since'
+    ]));
   }
 
   getListener() {
