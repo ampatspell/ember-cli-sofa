@@ -89,6 +89,10 @@ export default class InternalModel {
     return this.definition.modelName;
   }
 
+  get id() {
+    return this.values.id;
+  }
+
   get docId() {
     let modelId = this.values.id;
     return this.definition.docId(modelId);
