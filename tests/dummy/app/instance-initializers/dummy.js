@@ -31,19 +31,11 @@ export default {
     window.log = info;
     window.err = err => error(err.toJSON ? err.toJSON() : err.stack);
 
-    window.set = (key) => {
-      return function(arg) {
+    window.set = key => {
+      return arg => {
         window[key] = arg;
         info(key, '=', arg+'');
       };
-    };
-
-    window.createPosts = (authorId) => {
-      let author = main.existing('author', authorId);
-      for(let i = 0; i < 25; i++) {
-        let post = main.model('post', { author, title: `Post #${i}` });
-        post.save();
-      }
     };
   }
 };
