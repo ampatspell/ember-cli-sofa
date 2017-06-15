@@ -2,6 +2,13 @@
 
 ## sofa
 
+### changes
+
+* Changes.state - isStarted, isError, error
+* Error handling. stop? + event
+* Split Changes and InternalChanges as a base + db impl so can be used for `_db_updates`
+* Cleanup changes opts. `feed`, .. props should be in class, on change, `couch:database-changes should be restarted`
+
 ### fastboot
 
 * fastboot -- session
