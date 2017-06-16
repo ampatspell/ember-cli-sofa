@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import Error from '../util/error';
-import { defaultFeedIdentifier } from 'couch/couch/changes/changes';
+import { defaultFeedIdentifiers } from 'couch/couch/changes/changes';
 
 const {
   Evented,
@@ -19,7 +19,7 @@ const Changes = Ember.Object.extend(Evented, {
 
   _internal: null,
 
-  feed: defaultFeedIdentifier,
+  feed: defaultFeedIdentifiers,
   view: null,
 
   toString() {
