@@ -131,7 +131,7 @@ export default class Definition {
     if(!json) {
       return;
     }
-    this.deserializeSaveUpdateOrDelete(internal, json, changed);
+    this.deserializeSaveOrUpdate(internal, json, changed);
   }
 
   deserializeAttachments(internal, doc, changed) {
