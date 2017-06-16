@@ -116,4 +116,14 @@ configurations(({ module, test, createStore }) => {
     });
   });
 
+  test.only('push delete duck', assert => {
+    let house = db.model('house', { id: 'big' });
+    let ducks = [ 'yellow', 'green', 'red' ].map(id => db.model('duck', { id, house }));
+    return all([ house.save(), all(ducks.map(duck => duck.save())) ]).then(() => {
+      assert.ok(house.get('ducks.length') === 3);
+      db.push({ _id: 'duck:yellow', _rev: '3-asdasd', _deleted: true }, { instantiate: false, optional: true });
+      assert.ok(house.get('ducks.length') === 2);
+    });
+  });
+
 });
