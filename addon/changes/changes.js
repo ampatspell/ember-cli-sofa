@@ -23,7 +23,7 @@ const Changes = Ember.Object.extend(Evented, {
   view: null,
 
   toString() {
-    return `<changes@:${get(this.constructor, 'modelName')}::${guidFor(this)}>`;
+    return `<changes@${get(this.constructor, 'modelName')}::${guidFor(this)}>`;
   },
 
   start:   call('start'),

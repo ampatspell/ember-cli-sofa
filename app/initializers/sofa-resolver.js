@@ -6,7 +6,7 @@ Ember.Resolver.reopen({
     this.pluralizedTypes = {
       'query': 'queries',
       'sofa/query': 'sofa/queries',
-      'changes': 'changes'
+      'sofa/changes': 'sofa/changes'
     };
   }
 });

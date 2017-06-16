@@ -4,7 +4,6 @@
 
 ### changes
 
-* move Changes app classes to `sofa/<db_name>/changes/<changes_class_name>.js` and `sofa/changes/<changes_class_name>.js`
 * database.push option to ignore change is _rev matches with already loaded doc
 * Changes.state - isStarted, isError, error
 * Error handling. stop? + event

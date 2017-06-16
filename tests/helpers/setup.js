@@ -161,7 +161,7 @@ export function registerCollections(hash) {
 }
 
 export function registerChanges(hash) {
-  registerHash('changes', hash);
+  registerHash('sofa/changes', hash);
 }
 
 export function register() {
