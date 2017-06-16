@@ -4,6 +4,7 @@
 
 ### changes
 
+* database.push option to ignore change is _rev matches with already loaded doc
 * Changes.state - isStarted, isError, error
 * Error handling. stop? + event
 * Split Changes and InternalChanges as a base + db impl so can be used for `_db_updates`
