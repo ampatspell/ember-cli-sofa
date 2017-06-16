@@ -34,7 +34,7 @@ export default Ember.Mixin.create({
     internal.withPropertyChanges(changed => {
       let json = { id: docId, rev: doc._rev };
       this._deserializeInternalModelDelete(internal, json, changed);
-    });
+    }, true);
 
     return internal;
   },
