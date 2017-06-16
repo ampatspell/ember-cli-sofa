@@ -327,6 +327,19 @@ export default class InternalModel {
     return model;
   }
 
+  shouldDeserializeRevision(rev) {
+    if(!rev) {
+      return true;
+    }
+    if(!this.state.isLoaded) {
+      return true;
+    }
+    if(rev !== this.rev) {
+      return true;
+    }
+    return false;
+  }
+
   reportLazyLoadError(message, err) {
     let info = err.toJSON ? err.toJSON() : err.stack;
     error(`Lazy load failed for ${message}`, info);

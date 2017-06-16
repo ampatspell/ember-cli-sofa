@@ -25,14 +25,19 @@ export default Ember.Mixin.create({
 
   _deserializeDeletedDocumentToInternalModel(doc) {
     let docId = doc._id;
+    let rev = doc._rev;
 
     let internal = this._internalModelWithDocId(docId, true);
     if(!internal) {
       return;
     }
 
+    if(!internal.shouldDeserializeRevision(rev)) {
+      return internal;
+    }
+
     internal.withPropertyChanges(changed => {
-      let json = { id: docId, rev: doc._rev };
+      let json = { id: docId, rev };
       this._deserializeInternalModelDelete(internal, json, changed);
     }, true);
 
@@ -57,6 +62,7 @@ export default Ember.Mixin.create({
 
   _deserializeSavedDocumentToInternalModel(doc, expectedModelClass, optional=true, type=null) {
     let docId = doc._id;
+    let rev = doc._rev;
 
     let modelClass = this._modelClassForDocument(doc);
     if(!modelClass && !expectedModelClass) {
@@ -83,7 +89,9 @@ export default Ember.Mixin.create({
       internal = this._createExistingInternalModel(modelClass, modelId, false);
     }
 
-    this._deserializeDocument(internal, doc, type);
+    if(internal.shouldDeserializeRevision(rev)) {
+      this._deserializeDocument(internal, doc, type);
+    }
 
     if(expectedModelClass && !definition.is(expectedModelClass)) {
       if(optional) {

@@ -130,7 +130,6 @@ configurations(({ module, test, createStore }) => {
   test('load', assert => {
     db.push({
       "_id": "duck:green",
-      "_rev": "ignored",
       "houses": [
         "house:big",
         "house:small"
@@ -144,7 +143,6 @@ configurations(({ module, test, createStore }) => {
 
     db.push({
       "_id": "duck:yellow",
-      "_rev": "ignored",
       "houses": [
         "house:big"
       ],
@@ -158,7 +156,6 @@ configurations(({ module, test, createStore }) => {
 
     db.push({
       "_id": "house:big",
-      "_rev": "ignored",
       "ducks": [
         "duck:yellow"
       ],
@@ -172,7 +169,7 @@ configurations(({ module, test, createStore }) => {
 
     db.push({
       "_id": "house:small",
-      "_rev": "ignored",
+      "_rev": "5-asd",
       "ducks": [
         "duck:green",
         "duck:yellow"
@@ -187,7 +184,7 @@ configurations(({ module, test, createStore }) => {
 
     db.push({
       "_id": "house:small",
-      "_rev": "ignored",
+      "_rev": "6-qwe",
       "ducks": [
         "duck:green"
       ],
