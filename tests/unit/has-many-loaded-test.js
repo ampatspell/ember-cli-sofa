@@ -116,7 +116,18 @@ configurations(({ module, test, createStore }) => {
     });
   });
 
-  test.only('push delete duck', assert => {
+  test.only('deleted duck is removed from relationship', assert => {
+    let house = db.model('house', { id: 'big' });
+    let ducks = [ 'yellow', 'green', 'red' ].map(id => db.model('duck', { id, house }));
+    return all([ house.save(), all(ducks.map(duck => duck.save())) ]).then(() => {
+      assert.ok(house.get('ducks.length') === 3);
+      return house.get('ducks').objectAt(2).delete();
+    }).then(() => {
+      assert.ok(house.get('ducks.length') === 2);
+    });
+  });
+
+  test('push delete duck', assert => {
     let house = db.model('house', { id: 'big' });
     let ducks = [ 'yellow', 'green', 'red' ].map(id => db.model('duck', { id, house }));
     return all([ house.save(), all(ducks.map(duck => duck.save())) ]).then(() => {
