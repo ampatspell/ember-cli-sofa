@@ -49,10 +49,6 @@ export default class HasManyRelation extends Relation {
     this.addContentObject(internal, false);
   }
 
-  inverseDeleted(internal) {
-    this.removeContentObject(internal, false);
-  }
-
   getContent() {
     let content = this.content;
     if(!content) {

@@ -29,12 +29,6 @@ export default class BelongsToRelation extends Relation {
     });
   }
 
-  inverseDeleted() {
-    this.withPropertyChanges(changed => {
-      this.setContent(null, changed, false);
-    });
-  }
-
   //
 
   onInternalDeleted() {
