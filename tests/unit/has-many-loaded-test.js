@@ -116,4 +116,44 @@ configurations(({ module, test, createStore }) => {
     });
   });
 
+  test('deleted duck is removed from relationship', assert => {
+    let house = db.model('house', { id: 'big' });
+    let ducks = [ 'yellow', 'green', 'red' ].map(id => db.model('duck', { id, house }));
+    return all([ house.save(), all(ducks.map(duck => duck.save())) ]).then(() => {
+      return house.get('ducks.promise');
+    }).then(() => {
+      assert.ok(house.get('ducks.length') === 3);
+      return house.get('ducks').objectAt(2).delete();
+    }).then(() => {
+      assert.ok(house.get('ducks.length') === 2);
+    });
+  });
+
+  test('deleted duck is removed from relationship and kept away', assert => {
+    let house = db.model('house', { id: 'big' });
+    let ducks = [ 'yellow', 'green', 'red' ].map(id => db.model('duck', { id, house }));
+    return all([ house.save(), all(ducks.map(duck => duck.save())) ]).then(() => {
+      return house.get('ducks').objectAt(2).delete();
+    }).then(() => {
+      assert.ok(house.get('ducks.length') === 2);
+      return house.get('ducks.promise');
+    }).then(() => {
+      assert.ok(house.get('ducks.length') === 2);
+    });
+  });
+
+  test('push delete duck', assert => {
+    let house = db.model('house', { id: 'big' });
+    let ducks = [ 'yellow', 'green', 'red' ].map(id => db.model('duck', { id, house }));
+    return all([ house.save(), all(ducks.map(duck => duck.save())) ]).then(() => {
+      assert.ok(house.get('ducks.length') === 3);
+      assert.ok(!db._modelIdentity.deleted['duck:yellow']);
+      return house.get('ducks.promise');
+    }).then(() => {
+      db.push({ _id: 'duck:yellow', _rev: '3-asdasd', _deleted: true }, { instantiate: false, optional: true });
+      assert.ok(house.get('ducks.length') === 2);
+      assert.ok(db._modelIdentity.deleted['duck:yellow']);
+    });
+  });
+
 });
