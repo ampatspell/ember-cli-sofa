@@ -1,11 +1,14 @@
 import Ember from 'ember';
 
 const {
-  RSVP: { hash }
+  RSVP: { hash },
+  computed: { reads }
 } = Ember;
 
 export default Ember.Component.extend({
   classNameBindings: [':ui-screen', ':index'],
+
+  session: reads('store.db.main.couch.session'),
 
   info: null,
 
