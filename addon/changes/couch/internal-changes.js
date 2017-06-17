@@ -18,7 +18,8 @@ export default class CouchInternalChanges extends InternalChanges {
       'feed',
       'timeout',
       'heartbeat',
-      'since'
+      'since',
+      'delay'
     ]);
   }
 

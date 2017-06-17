@@ -28,7 +28,8 @@ export default class DatabaseInternalChanges extends InternalChanges {
       'timeout',
       'attachments',
       'heartbeat',
-      'since'
+      'since',
+      'delay'
     ]));
   }
 
