@@ -4,7 +4,6 @@
 
 ### changes
 
-* Split Changes and InternalChanges as a base + db impl so can be used for `_db_updates`
 * Changes.state - isStarted, isError, error
 * Error handling. stop? + event
 * on changes prop (`feed`, `view`, `...`) change `couch:database-changes` should be restarted
@@ -16,7 +15,7 @@
 
 ### destroy
 
-* check collection.destroy(), changes.destroy() and db.destroy() logic
+* check collection.destroy(), db.destroy() logic
 
 ### attachments
 
