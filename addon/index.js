@@ -5,7 +5,7 @@ import Session from './session';
 import Model from './model';
 import Query from './query';
 import Collection from './collection/collection';
-import Changes from './changes/changes';
+import Changes from './changes/database/changes';
 
 import Attachments from './properties/attachments/attachments';
 import Attachment from './properties/attachments/attachment';

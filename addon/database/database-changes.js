@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import InternalChanges from '../changes/internal-changes';
+import DatabaseInternalChanges from '../changes/database/internal-changes';
 
 export default Ember.Mixin.create({
 
@@ -12,7 +12,7 @@ export default Ember.Mixin.create({
   },
 
   _createInternalChanges(changesClass, identifier, opts) {
-    return new InternalChanges(this, changesClass, identifier, opts);
+    return new DatabaseInternalChanges(this, changesClass, identifier, opts);
   },
 
   _existingChanges(changesClass, opts, create=false) {

@@ -1,15 +1,7 @@
-import Ember from 'ember';
-
-const {
-  merge
-} = Ember;
-
 export default class InternalChanges {
 
-  constructor(database, changesClass, identifier, opts) {
-    this.database = database;
+  constructor(changesClass, opts) {
     this.changesClass = changesClass;
-    this.identifier = identifier;
     this.opts = opts;
     this.changesModel = null;
     this.listener = null;
@@ -17,10 +9,6 @@ export default class InternalChanges {
       data: this.onData.bind(this),
       error: this.onError.bind(this)
     };
-  }
-
-  createChangesModel() {
-    return this.database._createChangesForInternalChanges(this);
   }
 
   getChangesModel() {
@@ -32,25 +20,10 @@ export default class InternalChanges {
     return model;
   }
 
-  optionsForListener() {
-    let model = this.getChangesModel();
-    return merge({
-      include_docs: true
-    }, model.getProperties([
-      'feed',
-      'view',
-      'filter',
-      'timeout',
-      'attachments',
-      'heartbeat',
-      'since'
-    ]));
-  }
-
   getListener() {
     let listener = this.listener;
     if(!listener) {
-      listener = this.database.get('documents').changes(this.optionsForListener());
+      listener = this.createListener();
       this.listener = listener;
       let bindings = this.listenerBindings;
       for(let key in bindings) {
@@ -87,6 +60,12 @@ export default class InternalChanges {
 
   //
 
+  suspend() {
+    return this.getListener().suspend();
+  }
+
+  //
+
   triggerModel(name, arg) {
     let model = this.changesModel;
     if(!model) {
@@ -96,16 +75,10 @@ export default class InternalChanges {
   }
 
   onData(json) {
-    let doc = json.doc;
-    if(!doc) {
-      return;
-    }
-
-    let result = this.database.push(doc, { optional: true, instantiate: false });
+    let result = this.processData(json);
     if(!result) {
       return;
     }
-
     this.triggerModel('change', result);
   }
 
@@ -115,15 +88,8 @@ export default class InternalChanges {
 
   //
 
-  suspend() {
-    return this.getListener().suspend();
-  }
-
-  //
-
   changesWillDestroy() {
     this.destroyListener();
-    this.database._onInternalChangesDestroyed(this);
   }
 
   destroy() {

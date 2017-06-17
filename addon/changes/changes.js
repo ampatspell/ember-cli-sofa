@@ -1,11 +1,8 @@
 import Ember from 'ember';
-import Error from '../util/error';
 import { defaultFeedIdentifiers } from 'couch/couch/changes/changes';
 
 const {
-  Evented,
-  get,
-  guidFor
+  Evented
 } = Ember;
 
 const call = name => {
@@ -20,11 +17,6 @@ const Changes = Ember.Object.extend(Evented, {
   _internal: null,
 
   feed: defaultFeedIdentifiers,
-  view: null,
-
-  toString() {
-    return `<changes@${get(this.constructor, 'modelName')}::${guidFor(this)}>`;
-  },
 
   start:   call('start'),
   stop:    call('stop'),
@@ -39,14 +31,7 @@ const Changes = Ember.Object.extend(Evented, {
 
 Changes.reopenClass({
 
-  _create: Changes.create,
-
-  create() {
-    throw new Error({
-      error: 'internal',
-      reason: 'use `database.changes` to create new changes instances'
-    });
-  }
+  _create: Changes.create
 
 });
 
