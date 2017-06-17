@@ -69,7 +69,7 @@ test('collection has live filtered content', assert => {
   assert.deepEqual(collection.mapBy('docId'), [ 'house:one' ]);
 });
 
-test.only('pushed model is added to collection', assert => {
+test('pushed model is added to collection', assert => {
   let collection = db.collection('ducks');
   assert.deepEqual(collection.mapBy('docId'), []);
   db.push({ _id: 'duck:yellow', type: 'duck' });
