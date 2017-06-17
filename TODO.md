@@ -4,8 +4,6 @@
 
 ### changes
 
-* Changes.state - isStarted, isError, error
-* Error handling. stop? + event
 * on changes prop (`feed`, `view`, `...`) change `couch:database-changes` should be restarted
 * on login, logout, Changes should be restarted. optionally (or better yet `autorun: 'authenticated', ...`)
 
