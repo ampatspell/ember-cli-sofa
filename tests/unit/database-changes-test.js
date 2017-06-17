@@ -104,4 +104,70 @@ configurations(({ module, test, createStore, config }) => {
     });
   });
 
+  test.skip('state', assert => {
+    let changes = db.changes('all');
+
+    assert.deepEqual(changes.get('state'), {
+      "error": null,
+      "isError": false,
+      "isStarted": false,
+      "isSuspended": false
+    });
+
+    changes.start();
+
+    assert.deepEqual(changes.get('state'), {
+      "error": null,
+      "isError": false,
+      "isStarted": true,
+      "isSuspended": false
+    });
+
+    let resume = changes.suspend();
+
+    assert.deepEqual(changes.get('state'), {
+      "error": null,
+      "isError": false,
+      "isStarted": true,
+      "isSuspended": true
+    });
+
+    resume();
+
+    assert.deepEqual(changes.get('state'), {
+      "error": null,
+      "isError": false,
+      "isStarted": true,
+      "isSuspended": false
+    });
+
+    changes.stop();
+
+    assert.deepEqual(changes.get('state'), {
+      "error": null,
+      "isError": false,
+      "isStarted": false,
+      "isSuspended": false
+    });
+
+    changes.start();
+
+    assert.deepEqual(changes.get('state'), {
+      "error": null,
+      "isError": false,
+      "isStarted": true,
+      "isSuspended": false
+    });
+
+    let err = new Error('fake');
+    changes._internal.onError(err);
+
+    assert.deepEqual(changes.get('state'), {
+      "error": err,
+      "isError": true,
+      "isStarted": true,
+      "isSuspended": false
+    });
+  });
+
 });

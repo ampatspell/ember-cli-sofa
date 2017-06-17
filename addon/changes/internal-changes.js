@@ -11,6 +11,18 @@ export default class InternalChanges {
     };
   }
 
+  getState() {
+    return {
+      isStarted: false,
+      isSuspended: false,
+      isError: false,
+      error: null
+    };
+  }
+
+  setState() {
+  }
+
   getChangesModel() {
     let model = this.changesModel;
     if(!model) {
