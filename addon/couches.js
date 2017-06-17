@@ -12,12 +12,15 @@ const couches = () => {
 
 export default Ember.Object.extend({
 
+  store: null,
+
   _couches: couches(),
   openCouches: object(),
 
   createCouch(url) {
+    let couches = this;
     let documents = this.get('_couches').couch(url);
-    return getOwner(this).factoryFor('sofa:couch').create({ documents });
+    return getOwner(this).factoryFor('sofa:couch').create({ couches, documents });
   },
 
   couch(url) {

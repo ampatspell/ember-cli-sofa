@@ -17,7 +17,7 @@ const lookupWithStore = name => {
 
 export default Ember.Mixin.create({
 
-  _couches: lookup('sofa:couches'),
+  _couches: lookupWithStore('sofa:couches'),
   _databases: object(),
 
   databaseOptionsForIdentifier(/*identifier*/) {

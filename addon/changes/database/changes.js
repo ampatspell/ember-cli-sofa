@@ -11,7 +11,7 @@ const DatabaseChanges = Changes.extend({
 
   toString() {
     return `<database-changes@${get(this.constructor, 'modelName')}::${guidFor(this)}>`;
-  },
+  }
 
 });
 

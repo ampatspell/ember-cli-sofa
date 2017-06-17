@@ -1,5 +1,5 @@
 import { registerModels, registerChanges, next, cleanup, configurations, wait } from '../helpers/setup';
-import { Model, Changes, prefix, attr } from 'sofa';
+import { Model, DatabaseChanges, prefix, attr } from 'sofa';
 
 configurations(({ module, test, createStore, config }) => {
 
@@ -15,7 +15,7 @@ configurations(({ module, test, createStore, config }) => {
     name: attr('string')
   });
 
-  let All = Changes.extend({
+  let All = DatabaseChanges.extend({
 
     feed: config.feed,
     view: null,
