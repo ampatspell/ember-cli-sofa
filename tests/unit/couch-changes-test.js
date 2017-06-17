@@ -70,16 +70,25 @@ configurations(({ module, test, createStore, config }) => {
     }).then(() => {
       return wait(null, 300);
     }).then(() => {
-      assert.deepEqual(log, [
-        {
-          "name": "ember-cli-sofa-test-second",
-          "type": "deleted"
-        },
-        {
-          "name": "ember-cli-sofa-test-second",
-          "type": "created"
-        }
-      ]);
+      if(config.name === '2.0') {
+        assert.ok(log.find(json => {
+          return json.name === 'ember-cli-sofa-test-second' && json.type === 'deleted';
+        }));
+        assert.ok(log.find(json => {
+          return json.name === 'ember-cli-sofa-test-second' && json.type === 'created';
+        }));
+      } else {
+        assert.deepEqual(log, [
+          {
+            "name": "ember-cli-sofa-test-second",
+            "type": "deleted"
+          },
+          {
+            "name": "ember-cli-sofa-test-second",
+            "type": "created"
+          }
+        ]);
+      }
     });
   });
 
