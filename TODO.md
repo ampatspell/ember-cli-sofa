@@ -4,9 +4,9 @@
 
 ### changes
 
+* Split Changes and InternalChanges as a base + db impl so can be used for `_db_updates`
 * Changes.state - isStarted, isError, error
 * Error handling. stop? + event
-* Split Changes and InternalChanges as a base + db impl so can be used for `_db_updates`
 * on changes prop (`feed`, `view`, `...`) change `couch:database-changes` should be restarted
 * on login, logout, Changes should be restarted. optionally (or better yet `autorun: 'authenticated', ...`)
 
