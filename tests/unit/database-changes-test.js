@@ -104,7 +104,7 @@ configurations(({ module, test, createStore, config }) => {
     });
   });
 
-  test.skip('state', assert => {
+  test('state', assert => {
     let changes = db.changes('all');
 
     assert.deepEqual(changes.get('state'), {
@@ -166,6 +166,26 @@ configurations(({ module, test, createStore, config }) => {
       "error": err,
       "isError": true,
       "isStarted": true,
+      "isSuspended": false
+    });
+
+    changes._internal.onData({ doc: { _id: 'the-duck:yellow', type: 'duck' } });
+
+    assert.deepEqual(changes.get('state'), {
+      "error": null,
+      "isError": false,
+      "isStarted": true,
+      "isSuspended": false
+    });
+
+    changes._internal.onError(err);
+
+    changes.stop();
+
+    assert.deepEqual(changes.get('state'), {
+      "error": null,
+      "isError": false,
+      "isStarted": false,
       "isSuspended": false
     });
   });

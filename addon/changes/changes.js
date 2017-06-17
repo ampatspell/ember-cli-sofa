@@ -13,29 +13,44 @@ const call = name => {
   }
 }
 
-const state = () => {
+const internalProperty = key => {
   return computed(function() {
-    return this._internal.getState();
+    return this._internal.state[key];
   }).readOnly();
 }
 
-const stateProperty = key => {
-  return computed('state', function() {
-    return this.get('state')[key];
+const listener = () => {
+  return computed(function() {
+    return this._internal.getListener(false);
+  }).readOnly();
+}
+
+const listenerProperty = key => {
+  let dep = `_listener.${key}`;
+  return computed(dep, function() {
+    return this.get(dep);
+  }).readOnly();
+}
+
+const state = () => {
+  let keys = [ 'isStarted', 'isSuspended', 'isError', 'error' ];
+  return computed(...keys, function() {
+    return this.getProperties(keys);
   }).readOnly();
 }
 
 const Changes = Ember.Object.extend(Evented, {
 
   _internal: null,
+  _listener: listener(),
 
   feed: defaultFeedIdentifiers,
 
+  isStarted:   listenerProperty('isStarted'),
+  isSuspended: listenerProperty('isSuspended'),
+  isError:     internalProperty('isError'),
+  error:       internalProperty('error'),
   state:       state(),
-  isStarted:   stateProperty('isStarted'),
-  isSuspended: stateProperty('isSuspended'),
-  isError:     stateProperty('isError'),
-  error:       stateProperty('error'),
 
   start:   call('start'),
   stop:    call('stop'),

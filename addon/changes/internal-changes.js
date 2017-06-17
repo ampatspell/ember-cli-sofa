@@ -9,18 +9,25 @@ export default class InternalChanges {
       data: this.onData.bind(this),
       error: this.onError.bind(this)
     };
-  }
-
-  getState() {
-    return {
-      isStarted: false,
-      isSuspended: false,
+    this.state = {
       isError: false,
       error: null
     };
   }
 
-  setState() {
+  _setStateProperty(key, hash) {
+    let state = this.state;
+    if(state[key] !== hash[key]) {
+      state[key] = hash[key];
+      this.notifyPropertyChange(key);
+    }
+  }
+
+  setState(hash) {
+    this.withPropertyChanges(() => {
+      this._setStateProperty('isError', hash);
+      this._setStateProperty('error', hash);
+    });
   }
 
   getChangesModel() {
@@ -32,7 +39,7 @@ export default class InternalChanges {
     return model;
   }
 
-  getListener() {
+  getListener(notify=true) {
     let listener = this.listener;
     if(!listener) {
       listener = this.createListener();
@@ -40,6 +47,9 @@ export default class InternalChanges {
       let bindings = this.listenerBindings;
       for(let key in bindings) {
         listener.on(key, bindings[key]);
+      }
+      if(notify) {
+        this.notifyPropertyChange('_listener');
       }
     }
     return listener;
@@ -56,6 +66,7 @@ export default class InternalChanges {
     }
     listener.destroy();
     this.listener = null;
+    this.notifyPropertyChange('_listener');
   }
 
   start() {
@@ -64,6 +75,7 @@ export default class InternalChanges {
 
   stop() {
     this.getListener().stop();
+    this.setState({ isError: false, error: null });
   }
 
   restart() {
@@ -78,6 +90,25 @@ export default class InternalChanges {
 
   //
 
+  withPropertyChanges(cb) {
+    let model = this.changesModel;
+    if(model) {
+      model.beginPropertyChanges();
+    }
+    cb();
+    if(model) {
+      model.endPropertyChanges();
+    }
+  }
+
+  notifyPropertyChange(key) {
+    let model = this.changesModel;
+    if(!model) {
+      return;
+    }
+    model.notifyPropertyChange(key);
+  }
+
   triggerModel(name, arg) {
     let model = this.changesModel;
     if(!model) {
@@ -91,10 +122,12 @@ export default class InternalChanges {
     if(!result) {
       return;
     }
+    this.setState({ isError: false, error: null });
     this.triggerModel('change', result);
   }
 
   onError(err) {
+    this.setState({ isError: true, error: err });
     this.triggerModel('error', err);
   }
 
