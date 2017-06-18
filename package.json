@@ -1,6 +1,6 @@
 {
   "name": "ember-cli-sofa",
-  "version": "2.0.0-pre.38",
+  "version": "2.0.0",
   "description": "CouchDB persistence library for Ember.js",
   "repository": {
     "type": "git",
