@@ -119,11 +119,13 @@ export default Ember.Object.extend(State, Ember.Evented, {
     this._super();
   },
 
-  // willDestroy() {
-  //   this._super(...arguments);
-  //   let documents = this.get('documents');
-  //   documents.off('login', this, this._onDocumentsLogin);
-  //   documents.off('logout', this, this._onDocumentsLogout);
-  // }
+  actions: {
+    save() {
+      return this.save(...arguments);
+    },
+    delete() {
+      return this.delete();
+    }
+  }
 
 });

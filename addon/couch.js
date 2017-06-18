@@ -1,25 +1,30 @@
 import Ember from 'ember';
+import CouchSession from './couch/couch-session';
+import CouchChanges from './couch/couch-changes';
+import CouchInternalChangesIdentity from './couch/couch-internal-changes-identity';
+import CouchDestroy from './couch/couch-destroy';
 
 const {
-  getOwner,
-  computed,
-  computed: { oneWay }
+  computed: { reads }
 } = Ember;
 
-const session = function() {
-  return computed(function() {
-    let owner = getOwner(this);
-    let Session = owner.factoryFor('sofa/session:main') || owner.factoryFor('sofa:session');
-    return Session.create({ couch: this });
-  }).readOnly();
+const url = () => {
+  return reads('documents.url');
 };
 
-export default Ember.Object.extend({
+const store = () => {
+  return reads('couches.store');
+};
+
+export default Ember.Object.extend(
+  CouchSession,
+  CouchChanges,
+  CouchInternalChangesIdentity,
+  CouchDestroy, {
 
   documents: null,
 
-  url: oneWay('documents.url'),
-
-  session: session()
+  store: store(),
+  url: url()
 
 });

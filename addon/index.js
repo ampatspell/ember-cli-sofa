@@ -6,6 +6,9 @@ import Model from './model';
 import Query from './query';
 import Collection from './collection/collection';
 
+import DatabaseChanges from './changes/database/changes';
+import CouchChanges from './changes/couch/changes';
+
 import Attachments from './properties/attachments/attachments';
 import Attachment from './properties/attachments/attachment';
 import AttachmentFileContent from './properties/attachments/content/file-content';
@@ -34,6 +37,9 @@ export {
   Model,
   Query,
   Collection,
+
+  DatabaseChanges,
+  CouchChanges,
 
   Attachments,
   Attachment,

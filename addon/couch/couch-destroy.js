@@ -4,8 +4,6 @@ export default Ember.Mixin.create({
 
   willDestroy() {
     this._destroyInternalChangesIdentity();
-    this._destroyInternalModelIdentity();
-    this._destroySecurity();
     this._super();
   }
 

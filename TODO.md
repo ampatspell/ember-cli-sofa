@@ -2,9 +2,18 @@
 
 ## sofa
 
+### changes
+
+* on changes prop (`feed`, `view`, `...`) change `couch:database-changes` should be restarted
+* on login, logout, Changes should be restarted. optionally (or better yet `autorun: 'authenticated', ...`)
+
 ### fastboot
 
 * fastboot -- session
+
+### destroy
+
+* check collection.destroy(), db.destroy() logic
 
 ### attachments
 

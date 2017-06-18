@@ -19,10 +19,12 @@ const {
 
 const configs = {
   '1.6': {
-    url: '/api/1.6'
+    url: '/api/1.6',
+    feed: 'event-source'
   },
   '2.0': {
-    url: '/api/2.0'
+    url: '/api/2.0',
+    feed: 'long-polling'
   }
 };
 
@@ -156,6 +158,10 @@ export function registerModels(hash) {
 
 export function registerCollections(hash) {
   registerHash('collection', hash);
+}
+
+export function registerChanges(hash) {
+  registerHash('sofa/changes', hash);
 }
 
 export function register() {

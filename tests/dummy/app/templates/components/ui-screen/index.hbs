@@ -25,3 +25,24 @@
     {{/ui-row}}
   {{/ui-row}}
 {{/ui-block}}
+
+{{#ui-block title='Session'}}
+  {{#if session.isAuthenticated}}
+    {{#ui-row title='Logged in'}}
+      {{session.name}}
+    {{/ui-row}}
+    {{#ui-row}}
+      {{ui-button title='Sign out' action=(action 'delete' target=session)}}
+    {{/ui-row}}
+  {{else}}
+    {{#ui-row title='Name'}}
+      {{ui-input value=session.name}}
+    {{/ui-row}}
+    {{#ui-row title='Password'}}
+      {{ui-input value=session.password type='password'}}
+    {{/ui-row}}
+    {{#ui-row}}
+      {{ui-button title='Sign in' action=(action 'save' target=session)}}
+    {{/ui-row}}
+  {{/if}}
+{{/ui-block}}

@@ -89,6 +89,10 @@ export default class InternalModel {
     return this.definition.modelName;
   }
 
+  get id() {
+    return this.values.id;
+  }
+
   get docId() {
     let modelId = this.values.id;
     return this.definition.docId(modelId);
@@ -321,6 +325,19 @@ export default class InternalModel {
       this.model = model;
     }
     return model;
+  }
+
+  shouldDeserializeRevision(rev) {
+    if(!rev) {
+      return true;
+    }
+    if(!this.state.isLoaded) {
+      return true;
+    }
+    if(rev !== this.rev) {
+      return true;
+    }
+    return false;
   }
 
   reportLazyLoadError(message, err) {
