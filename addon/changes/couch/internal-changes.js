@@ -19,7 +19,7 @@ export default class CouchInternalChanges extends InternalChanges {
       'timeout',
       'heartbeat',
       'since',
-      'delay'
+      'reconnect'
     ]);
   }
 

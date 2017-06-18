@@ -29,7 +29,7 @@ export default class DatabaseInternalChanges extends InternalChanges {
       'attachments',
       'heartbeat',
       'since',
-      'delay'
+      'reconnect'
     ]));
   }
 
