@@ -6,10 +6,11 @@
 
 * on changes prop (`feed`, `view`, `...`) change `couch:database-changes` should be restarted
 * on login, logout, Changes should be restarted. optionally (or better yet `autorun: 'authenticated', ...`)
+* enable changes listener only after fastboot shoebox deserialize
 
 ### fastboot
 
-* fastboot -- session
+* push and retrieve session state from shoebox
 
 ### attachments
 
@@ -17,20 +18,21 @@
 * use `rev` instead of `_r=revpos` for attachemnt urls. allows fetching deleted doc attachments
 * detached attachment models, `model.get('attachments').pushObject(attachment)`
 * `store.attachment({ name, data });`
+* attachment `data` as a Promise which must resolve to `Blob` or `String` (add scaled image)
+
+### Relationship classes
+
+* `Relationship` and `hasMany({ relationship: 'foobar' })`
+* `hasMany('duck', { collection: 'barn-ducks' })` and `Collection.extend()` with `query: 'barn-ducks'` so there is a place for `paginated: ...`
+* sortable relationship helper `Relationship.extend({ sortable: sortable('position') })`
 
 ### other
 
-* loads from views or smth should check `internal.state.isLoaded && internal.rev === doc._rev`. if `true`, ignore update
 * is it possible to provide `promise` prop for `PassiveRelationLoaderStateMixin`?
-* attachment `data` as a Promise which must resolve to `Blob` or `String` (add scaled image)
-* `Relationship` and `hasMany({ relationship: 'foobar' })`
-* sortable relationship helper `Relationship.extend({ sortable: sortable('position') })`
 * `model.save()`, `model.delete()`, ... second call while 1st is pending should return the same promise
-* `hasMany('duck', { collection: 'barn-ducks' })` and `Collection.extend()` with `query: 'barn-ducks'` so there is a place for `paginated: ...`
 * option to delete documents by saving with `_deleted:true` or delete with `{_deleted: true, type:..}`
 * per-database models (each database is initialized with model folder name which is returned by `store.databaseOptionsForIdentifier`)
 * embedded models (persisted as a `{ key: { model } }`)
-* enable changes listener only after fastboot shoebox deserialize
 
 ## related
 
