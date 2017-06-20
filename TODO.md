@@ -11,10 +11,6 @@
 
 * fastboot -- session
 
-### destroy
-
-* check collection.destroy(), db.destroy() logic
-
 ### attachments
 
 * allow to override attachment url resolve (per-database)

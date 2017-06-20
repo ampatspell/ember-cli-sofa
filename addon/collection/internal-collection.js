@@ -100,4 +100,15 @@ export default class InternalCollection {
     this.database._onInternalCollectionDestroyed(this);
   }
 
+  destroy() {
+    let model = this.collectionModel;
+    if(model) {
+      model.destroy();
+    }
+    let query = this.query;
+    if(query) {
+      query.destroy();
+    }
+  }
+
 }

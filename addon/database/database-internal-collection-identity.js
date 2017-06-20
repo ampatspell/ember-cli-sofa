@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import EmptyObject from '../util/empty-object';
+import { destroyObject } from '../util/destroy';
 
 const {
   get,
@@ -49,6 +50,10 @@ export default Ember.Mixin.create({
   _onInternalCollectionDestroyed(internal) {
     let identifier = this._collectionIdentifier(internal.collectionClass, internal.opts);
     delete this._collectionIdentity.all[identifier];
+  },
+
+  _destroyInternalCollectionIdentity() {
+    destroyObject(this._collectionIdentity.all);
   }
 
 });
