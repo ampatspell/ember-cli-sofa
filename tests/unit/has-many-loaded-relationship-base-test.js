@@ -76,9 +76,9 @@ configurations(({ module, test, createStore }) => {
   });
 
   test('ducks has relationship opts prop', assert => {
-      let house = db.model('house', { id: 'big' });
-      let internal = house.get('_internal');
-      assert.equal(internal.definition.property('ducks').opts.relationship, 'house-ducks');
+    let house = db.model('house', { id: 'big' });
+    let internal = house.get('_internal');
+    assert.equal(internal.definition.property('ducks').opts.relationship, 'house-ducks');
   });
 
   test('ducks has relationship mixed in', assert => {
