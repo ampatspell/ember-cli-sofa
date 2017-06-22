@@ -15,9 +15,8 @@ export default class BelongsToLoadedRelation extends BelongsToProxiedRelation {
     return [ 'content', 'promise' ];
   }
 
-  createObjectProxy(owner) {
-    let _relation = this;
-    return owner.factoryFor('sofa:belongs-to-loaded').create({ _relation });
+  createObjectProxy(store) {
+    return store._createBelongsToLoadedProxyForRelation(this);
   }
 
   createQuery() {

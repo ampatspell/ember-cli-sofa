@@ -11,9 +11,8 @@ export default class HasManyLoadedRelation extends HasManyRelation {
     this.loader = new RelationLoader(this);
   }
 
-  createArrayProxy(owner, content) {
-    let _relation = this;
-    return owner.factoryFor('sofa:has-many-loaded').create({ _relation, content });
+  createArrayProxy(store, content) {
+    return store._createHasManyLoadedProxyForRelation(this, content);
   }
 
   createQuery() {

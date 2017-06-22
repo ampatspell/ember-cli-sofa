@@ -1,11 +1,10 @@
-import Ember from 'ember';
 import BelongsToRelation from './belongs-to';
 
-const {
-  getOwner
-} = Ember;
-
 export default class BelongsToProxiedRelation extends BelongsToRelation {
+
+  get notifyInternalModelDidSetDatabase() {
+    return true;
+  }
 
   get notifyPropertyChangeProxyPropertyNames() {
     return [ 'content' ];
@@ -26,8 +25,8 @@ export default class BelongsToProxiedRelation extends BelongsToRelation {
   getValue() {
     let value = this.value;
     if(!value) {
-      let owner = getOwner(this.relationship.store);
-      value = this.createObjectProxy(owner);
+      let store = this.relationship.store;
+      value = this.createObjectProxy(store);
       this.value = value;
     }
     return value;

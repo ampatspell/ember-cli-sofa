@@ -8,7 +8,6 @@ import {
 } from '../../internal-model';
 
 const {
-  getOwner,
   copy,
   A
 } = Ember;
@@ -27,10 +26,13 @@ const getDiff = (curr, next) => {
 
 export default class HasManyRelation extends Relation {
 
-  constructor(relationship, internal) {
+  constructor() {
     super(...arguments);
-    internal.addObserver(this);
     this.ignoreValueChanges = new Ignore();
+  }
+
+  get notifyInternalModelDidSetDatabase() {
+    return true;
   }
 
   dirty() {
@@ -121,8 +123,8 @@ export default class HasManyRelation extends Relation {
     let value = this.value;
     if(!value) {
       let content = this.getContent();
-      let owner = getOwner(this.relationship.store);
-      value = this.createArrayProxy(owner, content);
+      let store = this.relationship.store;
+      value = this.createArrayProxy(store, content);
       value.addEnumerableObserver(this, this.valueObserverOptions);
       this.value = value;
     }
@@ -210,6 +212,7 @@ export default class HasManyRelation extends Relation {
   }
 
   internalModelDidChange(internal, props) {
+    super.internalModelDidChange(...arguments);
     if(internal === this.internal) {
       if(internalModelDidChangeIsDeleted(internal, props)) {
         this.onInternalDeleted();
