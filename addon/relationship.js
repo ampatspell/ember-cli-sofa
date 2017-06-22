@@ -9,7 +9,7 @@ class RelationshipBuilder {
 
   constructor(properties) {
     this.properties = properties;
-    this.mixin;
+    this.mixin = null;
   }
 
   extend(properties) {
@@ -24,6 +24,11 @@ class RelationshipBuilder {
       this.mixin = Mixin.create(this.properties);
     }
     return this.mixin;
+  }
+
+  get hasQueryOrFind() {
+    let props = this.properties;
+    return !!props.query || !!props.find;
   }
 
 }
