@@ -4,9 +4,9 @@
 
 ### Relationship classes
 
-* `Relationship` and `hasMany({ relationship: 'foobar' })`
-* `hasMany('duck', { collection: 'barn-ducks' })` and `Collection.extend()` with `query: 'barn-ducks'` so there is a place for `paginated: ...`
-* sortable relationship helper `Relationship.extend({ sortable: sortable('position') })`
+* `hasMany('duck', { relationship: 'barn-ducks' })` with `{ query: 'barn-ducks' }` in `Relationship`
+* sortable relationship helper `Relationship.extend({ sortable: sortable('position') })`: needed?
+* paginated relationship helper `Relationship.extend({ paginated: paginated(...) })`
 
 ```
 // models/author.js
