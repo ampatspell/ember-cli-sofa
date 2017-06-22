@@ -31,6 +31,10 @@ export default class HasManyRelation extends Relation {
     this.ignoreValueChanges = new Ignore();
   }
 
+  get notifyInternalModelDidSetDatabase() {
+    return true;
+  }
+
   dirty() {
     this.withPropertyChanges(changed => {
       super.dirty(changed);
