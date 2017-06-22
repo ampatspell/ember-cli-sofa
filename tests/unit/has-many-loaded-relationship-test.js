@@ -65,7 +65,7 @@ configurations(({ module, test, createStore }) => {
     db.set('modelNames', [ 'duck', 'house' ]);
   }
 
-  module('has-many-loaded-relationship', () => {
+  module('has-many-loaded-relationship-base', () => {
     registerModels({ Duck, House });
     registerQueries({ HouseDucks: HouseDucksQuery });
     registerRelationships({ HouseDucks: HouseDucksRelationship, HouseDucksOther: HouseDucksRelationshipOther });
