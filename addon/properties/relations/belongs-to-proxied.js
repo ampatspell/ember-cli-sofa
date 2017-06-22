@@ -32,6 +32,15 @@ export default class BelongsToProxiedRelation extends BelongsToRelation {
     return value;
   }
 
+  destroyValue() {
+    let value = this.value;
+    if(!value) {
+      return;
+    }
+    value.destroy();
+    this.value = null;
+  }
+
   setModel(model) {
     return this.withPropertyChanges(changed => {
       return this.setValue(model, changed);
@@ -51,19 +60,12 @@ export default class BelongsToProxiedRelation extends BelongsToRelation {
   }
 
   onInternalDestroyed() {
-    let value = this.value;
-    if(value) {
-      value.destroy();
-      this.value = null;
-    }
+    this.destroyValue();
     super.onInternalDestroyed();
   }
 
   onContentModelDestroyed() {
-    let value = this.value;
-    if(value) {
-      value.destroy();
-    }
+    this.destroyValue();
   }
 
   valueWillDestroy() {

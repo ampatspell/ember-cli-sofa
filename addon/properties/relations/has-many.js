@@ -131,6 +131,16 @@ export default class HasManyRelation extends Relation {
     return value;
   }
 
+  destroyValue() {
+    let value = this.value;
+    if(!value) {
+      return;
+    }
+    value.removeEnumerableObserver(this, this.valueObserverOptions);
+    value.destroy();
+    this.value = null;
+  }
+
   setValue(value) {
     this.ignoreValueChanges.with(() => {
       let curr = this.getContent();
@@ -188,12 +198,7 @@ export default class HasManyRelation extends Relation {
   }
 
   onInternalDestroyed() {
-    let value = this.value;
-    if(value) {
-      value.removeEnumerableObserver(this, this.valueObserverOptions);
-      value.destroy();
-      this.value = null;
-    }
+    this.destroyValue();
 
     let content = this.content;
     if(content) {
