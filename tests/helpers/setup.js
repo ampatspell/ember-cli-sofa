@@ -152,6 +152,10 @@ export function registerQueries(hash) {
   registerHash('query', hash);
 }
 
+export function registerRelationships(hash) {
+  registerHash('relationship', hash);
+}
+
 export function registerModels(hash) {
   registerHash('model', hash);
 }
