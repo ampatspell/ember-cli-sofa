@@ -6,6 +6,7 @@ import HasManyLoaded from 'sofa/properties/relations/has-many-loaded';
 
 const {
   computed,
+  RSVP: { all }
 } = Ember;
 
 const ddoc = {
@@ -66,6 +67,20 @@ configurations(({ module, test, createStore }) => {
   test('ducks are HasManyLoaded relation', assert => {
     let house = db.model('house');
     assert.ok(house.get('ducks')._relation.constructor === HasManyLoaded);
+  });
+
+  test.only('ducks load', assert => {
+    let house = db.model('house', { id: 'big' });
+    let ducks = [ 'yellow', 'green', 'red' ].map(id => db.model('duck', { id, house }));
+    return all([ house.save(), all(ducks.map(duck => duck.save())) ]).then(() => {
+      flush();
+      return db.load('house', 'big');
+    }).then(house_ => {
+      house = house_;
+      return house.get('ducks.promise');
+    }).then(ducks => {
+      assert.deepEqual(ducks.mapBy('id'), [ "green", "red", "yellow" ]);
+    });
   });
 
 });
