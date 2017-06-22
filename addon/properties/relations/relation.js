@@ -3,6 +3,9 @@ import InternalModel, { getInternalModel } from '../../internal-model';
 import Model from '../../model';
 import Error from '../../util/error';
 import { assert } from '../../util/assert';
+import {
+  internalModelDidSetDatabase
+} from '../../internal-model';
 
 const {
   get
@@ -13,6 +16,7 @@ export default class Relation {
   constructor(relationship, internal) {
     this.relationship = relationship;
     this.internal = internal;
+    this.internal.addObserver(this);
     this.value = null;
   }
 
@@ -34,6 +38,14 @@ export default class Relation {
 
   get store() {
     return this.internal.store;
+  }
+
+  get parentModel() {
+    return this.internal.getModel();
+  }
+
+  get relationshipPropertyName() {
+    return this.relationship.name;
   }
 
   //
@@ -143,6 +155,33 @@ export default class Relation {
     }
     return null;
   }
+
+  //
+
+  get notifyInternalModelDidSetDatabase() {
+    return false;
+  }
+
+  internalModelDidSetDatabase() {
+    if(!this.notifyInternalModelDidSetDatabase) {
+      return;
+    }
+    let value = this.value;
+    if(!value) {
+      return;
+    }
+    value.notifyPropertyChange('database');
+  }
+
+  internalModelDidChange(internal, props) {
+    if(internal === this.internal) {
+      if(internalModelDidSetDatabase(internal, props)) {
+        this.internalModelDidSetDatabase();
+      }
+    }
+  }
+
+  //
 
   onInternalDestroyed() {
     this.internal.removeObserver(this);

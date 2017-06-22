@@ -2,6 +2,10 @@ import BelongsToRelation from './belongs-to';
 
 export default class BelongsToProxiedRelation extends BelongsToRelation {
 
+  get notifyInternalModelDidSetDatabase() {
+    return true;
+  }
+
   get notifyPropertyChangeProxyPropertyNames() {
     return [ 'content' ];
   }

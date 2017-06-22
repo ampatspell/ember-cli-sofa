@@ -26,9 +26,8 @@ const getDiff = (curr, next) => {
 
 export default class HasManyRelation extends Relation {
 
-  constructor(relationship, internal) {
+  constructor() {
     super(...arguments);
-    internal.addObserver(this);
     this.ignoreValueChanges = new Ignore();
   }
 
@@ -209,6 +208,7 @@ export default class HasManyRelation extends Relation {
   }
 
   internalModelDidChange(internal, props) {
+    super.internalModelDidChange(...arguments);
     if(internal === this.internal) {
       if(internalModelDidChangeIsDeleted(internal, props)) {
         this.onInternalDeleted();

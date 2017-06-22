@@ -7,11 +7,6 @@ import {
 
 export default class BelongsToRelation extends Relation {
 
-  constructor(relationship, internal) {
-    super(...arguments);
-    internal.addObserver(this);
-  }
-
   notifyPropertyChange(changed) {
     this.dirty(changed);
     this.propertyDidChange(changed);
@@ -60,6 +55,7 @@ export default class BelongsToRelation extends Relation {
   }
 
   internalModelDidChange(internal, props) {
+    super.internalModelDidChange(...arguments);
     if(internal === this.internal) {
       if(internalModelDidChangeIsDeleted(internal, props)) {
         this.onInternalDeleted();
