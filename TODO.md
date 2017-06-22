@@ -8,6 +8,36 @@
 * `hasMany('duck', { collection: 'barn-ducks' })` and `Collection.extend()` with `query: 'barn-ducks'` so there is a place for `paginated: ...`
 * sortable relationship helper `Relationship.extend({ sortable: sortable('position') })`
 
+```
+// models/author.js
+export default Model.extend({
+
+  posts: hasMany('post', { inverse: 'author', relationship: 'author-posts' })
+
+});
+
+// models/post.js
+export default Model.extend({
+
+  author: belongsTo('author', { inverse: 'posts' })
+
+});
+
+// models/author-posts.js
+export default Relationship.extend({
+
+  // `query` or `find` computed property
+
+  query: 'author-posts' // is also set from relationship opts { query }, if present,
+
+  find: computed('model.docId', function() {
+    let key = this.get('model.docId');
+    return { ddoc: 'post', view: 'by-author', key };
+  }),
+
+});
+```
+
 ### changes
 
 * on changes prop (`feed`, `view`, `...`) change `couch:database-changes` should be restarted
