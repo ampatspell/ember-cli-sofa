@@ -9,7 +9,7 @@ const {
   RSVP: { all }
 } = Ember;
 
-const ddoc = {
+const ducks_ddoc = {
   views: {
     'by-house': {
       map(doc) {
@@ -17,6 +17,19 @@ const ddoc = {
           return;
         }
         emit(doc.house, null);
+      }
+    }
+  }
+};
+
+const hamsters_ddoc = {
+  views: {
+    'all': {
+      map(doc) {
+        if(doc.type !== 'hamster') {
+          return;
+        }
+        emit(doc._id, null);
       }
     }
   }
@@ -60,7 +73,10 @@ configurations(({ module, test, createStore }) => {
     registerRelationships({ HouseDucks: HouseDucksRelationship });
     flush();
     return cleanup(store, [ 'main' ]).then(() => {
-      return db.get('documents.design').save('ducks', ddoc);
+      return all([
+        db.get('documents.design').save('ducks', ducks_ddoc),
+        db.get('documents.design').save('hamsters', hamsters_ddoc),
+      ]);
     });
   });
 
@@ -94,6 +110,56 @@ configurations(({ module, test, createStore }) => {
       return house.get('ducks.promise');
     }).then(ducks => {
       assert.deepEqual(ducks.mapBy('id'), [ "green", "red", "yellow" ]);
+    });
+  });
+
+  test.only('update query prop marks relationship for reload', assert => {
+    let Hamster = Model.extend({
+      id: prefix(),
+      building: belongsTo('building', { inverse: 'hamsters' })
+    });
+
+    let Building = Model.extend({
+      id: prefix(),
+      hamsters: hasMany('hamster', { inverse: 'building', relationship: 'hamster-buildings' }),
+    });
+
+    let HamsterBuildings = Relationship.extend({
+      query: 'hamster-buildings-one',
+    });
+
+    let HamsterBuildingsOne = Query.extend({
+      find: computed('model.docId', function() {
+        let docId = this.get('model.docId');
+        return { ddoc: 'hamsters', view: 'all', keys: [ 'hamster:green', 'hamster:red' ] };
+      })
+    });
+
+    let HamsterBuildingsTwo = Query.extend({
+      find: computed('model.docId', function() {
+        let docId = this.get('model.docId');
+        return { ddoc: 'hamsters', view: 'all', keys: [ 'hamster:yellow' ] };
+      })
+    });
+
+    registerModels({ Hamster, Building });
+    registerRelationships({ HamsterBuildings });
+    registerQueries({ HamsterBuildingsOne, HamsterBuildingsTwo });
+
+    let building = db.model('building', { id: 'big' });
+    let hamsters = [ 'yellow', 'green', 'red' ].map(id => db.model('hamster', { id, building }));
+    return all([ building.save(), all(hamsters.map(duck => duck.save())) ]).then(() => {
+      flush();
+      return db.load('building', 'big');
+    }).then(building_ => {
+      building = building_;
+      return building.get('hamsters.promise');
+    }).then(hamsters => {
+      assert.deepEqual(hamsters.mapBy('id'), [ "green", "red" ]);
+      building.set('hamsters.query', 'hamsters-query-two');
+      return hamsters.get('promise');
+    }).then(hamsters => {
+      assert.deepEqual(hamsters.mapBy('id'), [ "yellow" ]);
     });
   });
 
