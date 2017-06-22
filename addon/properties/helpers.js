@@ -72,20 +72,36 @@ function type(value, opts) {
   return make(new Type(value, opts));
 }
 
-function belongsTo(modelName, opts={}) {
+function isLoadedRelationship(store, opts) {
   if(opts.query) {
-    return make(new BelongsToLoaded(modelName, opts));
-  } else {
-    return make(new BelongsToPersisted(modelName, opts));
+    return true;
   }
+  let relationship = opts.relationship;
+  if(relationship) {
+    let builder = store._relationshipMixinBuilderForName(relationship);
+    return builder.isLoaded();
+  }
+  return false;
+}
+
+function belongsTo(modelName, opts={}) {
+  return make(store => {
+    if(isLoadedRelationship(store, opts)) {
+      return new BelongsToLoaded(modelName, opts);
+    } else {
+      return new BelongsToPersisted(modelName, opts);
+    }
+  });
 }
 
 function hasMany(modelName, opts={}) {
-  if(opts.query) {
-    return make(new HasManyLoaded(modelName, opts));
-  } else {
-    return make(new HasManyPersisted(modelName, opts));
-  }
+  return make(store => {
+    if(isLoadedRelationship(store, opts)) {
+      return new HasManyLoaded(modelName, opts);
+    } else {
+      return new HasManyPersisted(modelName, opts);
+    }
+  });
 }
 
 export {
