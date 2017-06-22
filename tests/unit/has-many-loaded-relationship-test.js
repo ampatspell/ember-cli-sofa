@@ -4,7 +4,8 @@ import { configurations, registerModels, registerQueries, registerRelationships,
 import { Relationship, Query, Model, prefix, belongsTo, hasMany } from 'sofa';
 
 const {
-  computed
+  computed,
+  RSVP: { all }
 } = Ember;
 
 const ddoc = {
@@ -73,7 +74,7 @@ configurations(({ module, test, createStore }) => {
       assert.equal(internal.definition.property('ducks').opts.relationship, 'house-ducks');
   });
 
-  test.skip('ducks has relationship mixed in', assert => {
+  test('ducks has relationship mixed in', assert => {
     let house = db.model('house', { id: 'big' });
     let ducks = house.get('ducks');
     assert.equal(ducks.get('base'), 'all your base belong to us');
@@ -81,100 +82,107 @@ configurations(({ module, test, createStore }) => {
     return ducks.get('promise');
   });
 
-  // test('hasMany returns proxy', assert => {
-  //   let house = db.model('house', { id: 'big' });
-  //   let ducks = house.get('ducks');
-  //   assert.ok(ducks);
-  //   assert.ok(ducks.get('promise'));
-  //   assert.ok(ducks.get('promise') === ducks.get('promise'));
-  //   return ducks.get('promise').then(proxy => {
-  //     assert.ok(ducks === proxy);
-  //   });
-  // });
+  test('two ducks has the same relationship proxy class', assert => {
+    let one = db.model('house', { id: 'big' }).get('ducks');
+    let two = db.model('house', { id: 'big' }).get('ducks');
+    assert.ok(one.constructor === two.constructor);
+    return all([ one.get('promise'), two.get('promise') ]);
+  });
 
-  // test('has many loads', assert => {
-  //   let house = db.model('house', { id: 'big' });
-  //   let ducks = [ 'yellow', 'green', 'red' ].map(id => db.model('duck', { id, house }));
-  //   return all([ house.save(), all(ducks.map(duck => duck.save())) ]).then(() => {
-  //     flush();
-  //     return db.load('house', 'big');
-  //   }).then(house_ => {
-  //     house = house_;
-  //     assert.deepEqual(house.get('ducks.state'), {
-  //       "error": null,
-  //       "isError": false,
-  //       "isLoaded": false,
-  //       "isLoading": true
-  //     });
-  //     return house.get('ducks.promise');
-  //   }).then(ducks => {
-  //     assert.ok(ducks);
-  //     assert.deepEqual(ducks.mapBy('id'), [ "green", "red", "yellow" ]);
-  //     assert.deepEqual(ducks.get('state'), {
-  //       "error": false,
-  //       "isError": false,
-  //       "isLoaded": true,
-  //       "isLoading": false
-  //     });
-  //   });
-  // });
+  test('hasMany returns proxy', assert => {
+    let house = db.model('house', { id: 'big' });
+    let ducks = house.get('ducks');
+    assert.ok(ducks);
+    assert.ok(ducks.get('promise'));
+    assert.ok(ducks.get('promise') === ducks.get('promise'));
+    return ducks.get('promise').then(proxy => {
+      assert.ok(ducks === proxy);
+    });
+  });
 
-  // test('length starts load', assert => {
-  //   let house = db.model('house', { id: 'big' });
-  //   let ducks = [ 'yellow', 'green', 'red' ].map(id => db.model('duck', { id, house }));
-  //   return all([ house.save(), all(ducks.map(duck => duck.save())) ]).then(() => {
-  //     flush();
-  //     return db.load('house', 'big');
-  //   }).then(house => {
-  //     assert.equal(house.get('ducks._relation').loader.state.isLoading, false);
-  //     assert.equal(house.get('ducks.length'), 0);
-  //     assert.equal(house.get('ducks._relation').loader.state.isLoading, true);
-  //     assert.equal(house.get('ducks.isLoading'), true);
-  //     return house.get('ducks.promise').then(() => house);
-  //   }).then(house => {
-  //     assert.equal(house.get('ducks.length'), 3);
-  //     assert.ok(house.get('ducks.isLoaded'));
-  //   });
-  // });
+  test('has many loads', assert => {
+    let house = db.model('house', { id: 'big' });
+    let ducks = [ 'yellow', 'green', 'red' ].map(id => db.model('duck', { id, house }));
+    return all([ house.save(), all(ducks.map(duck => duck.save())) ]).then(() => {
+      flush();
+      return db.load('house', 'big');
+    }).then(house_ => {
+      house = house_;
+      assert.deepEqual(house.get('ducks.state'), {
+        "error": null,
+        "isError": false,
+        "isLoaded": false,
+        "isLoading": true
+      });
+      return house.get('ducks.promise');
+    }).then(ducks => {
+      assert.ok(ducks);
+      assert.deepEqual(ducks.mapBy('id'), [ "green", "red", "yellow" ]);
+      assert.deepEqual(ducks.get('state'), {
+        "error": false,
+        "isError": false,
+        "isLoaded": true,
+        "isLoading": false
+      });
+    });
+  });
 
-  // test('deleted duck is removed from relationship', assert => {
-  //   let house = db.model('house', { id: 'big' });
-  //   let ducks = [ 'yellow', 'green', 'red' ].map(id => db.model('duck', { id, house }));
-  //   return all([ house.save(), all(ducks.map(duck => duck.save())) ]).then(() => {
-  //     return house.get('ducks.promise');
-  //   }).then(() => {
-  //     assert.ok(house.get('ducks.length') === 3);
-  //     return house.get('ducks').objectAt(2).delete();
-  //   }).then(() => {
-  //     assert.ok(house.get('ducks.length') === 2);
-  //   });
-  // });
+  test('length starts load', assert => {
+    let house = db.model('house', { id: 'big' });
+    let ducks = [ 'yellow', 'green', 'red' ].map(id => db.model('duck', { id, house }));
+    return all([ house.save(), all(ducks.map(duck => duck.save())) ]).then(() => {
+      flush();
+      return db.load('house', 'big');
+    }).then(house => {
+      assert.equal(house.get('ducks._relation').loader.state.isLoading, false);
+      assert.equal(house.get('ducks.length'), 0);
+      assert.equal(house.get('ducks._relation').loader.state.isLoading, true);
+      assert.equal(house.get('ducks.isLoading'), true);
+      return house.get('ducks.promise').then(() => house);
+    }).then(house => {
+      assert.equal(house.get('ducks.length'), 3);
+      assert.ok(house.get('ducks.isLoaded'));
+    });
+  });
 
-  // test('deleted duck is removed from relationship and kept away', assert => {
-  //   let house = db.model('house', { id: 'big' });
-  //   let ducks = [ 'yellow', 'green', 'red' ].map(id => db.model('duck', { id, house }));
-  //   return all([ house.save(), all(ducks.map(duck => duck.save())) ]).then(() => {
-  //     return house.get('ducks').objectAt(2).delete();
-  //   }).then(() => {
-  //     assert.ok(house.get('ducks.length') === 2);
-  //     return house.get('ducks.promise');
-  //   }).then(() => {
-  //     assert.ok(house.get('ducks.length') === 2);
-  //   });
-  // });
+  test('deleted duck is removed from relationship', assert => {
+    let house = db.model('house', { id: 'big' });
+    let ducks = [ 'yellow', 'green', 'red' ].map(id => db.model('duck', { id, house }));
+    return all([ house.save(), all(ducks.map(duck => duck.save())) ]).then(() => {
+      return house.get('ducks.promise');
+    }).then(() => {
+      assert.ok(house.get('ducks.length') === 3);
+      return house.get('ducks').objectAt(2).delete();
+    }).then(() => {
+      assert.ok(house.get('ducks.length') === 2);
+    });
+  });
 
-  // test('push delete duck', assert => {
-  //   let house = db.model('house', { id: 'big' });
-  //   let ducks = [ 'yellow', 'green', 'red' ].map(id => db.model('duck', { id, house }));
-  //   return all([ house.save(), all(ducks.map(duck => duck.save())) ]).then(() => {
-  //     assert.ok(house.get('ducks.length') === 3);
-  //     assert.ok(!db._modelIdentity.deleted['duck:yellow']);
-  //     return house.get('ducks.promise');
-  //   }).then(() => {
-  //     db.push({ _id: 'duck:yellow', _rev: '3-asdasd', _deleted: true }, { instantiate: false, optional: true });
-  //     assert.ok(house.get('ducks.length') === 2);
-  //     assert.ok(db._modelIdentity.deleted['duck:yellow']);
-  //   });
-  // });
+  test('deleted duck is removed from relationship and kept away', assert => {
+    let house = db.model('house', { id: 'big' });
+    let ducks = [ 'yellow', 'green', 'red' ].map(id => db.model('duck', { id, house }));
+    return all([ house.save(), all(ducks.map(duck => duck.save())) ]).then(() => {
+      return house.get('ducks').objectAt(2).delete();
+    }).then(() => {
+      assert.ok(house.get('ducks.length') === 2);
+      return house.get('ducks.promise');
+    }).then(() => {
+      assert.ok(house.get('ducks.length') === 2);
+    });
+  });
+
+  test('push delete duck', assert => {
+    let house = db.model('house', { id: 'big' });
+    let ducks = [ 'yellow', 'green', 'red' ].map(id => db.model('duck', { id, house }));
+    return all([ house.save(), all(ducks.map(duck => duck.save())) ]).then(() => {
+      assert.ok(house.get('ducks.length') === 3);
+      assert.ok(!db._modelIdentity.deleted['duck:yellow']);
+      return house.get('ducks.promise');
+    }).then(() => {
+      db.push({ _id: 'duck:yellow', _rev: '3-asdasd', _deleted: true }, { instantiate: false, optional: true });
+      assert.ok(house.get('ducks.length') === 2);
+      assert.ok(db._modelIdentity.deleted['duck:yellow']);
+    });
+  });
 
 });
