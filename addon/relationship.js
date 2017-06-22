@@ -9,6 +9,7 @@ class RelationshipBuilder {
 
   constructor(properties) {
     this.properties = properties;
+    this.mixin;
   }
 
   extend(properties) {
@@ -19,7 +20,10 @@ class RelationshipBuilder {
   }
 
   build() {
-    return Mixin.create(this.properties);
+    if(!this.mixin) {
+      this.mixin = Mixin.create(this.properties);
+    }
+    return this.mixin;
   }
 
 }
