@@ -11,6 +11,7 @@ import StoreDestroy from './store/store-destroy';
 import StoreModelNames from './store/store-model-names';
 import StoreCollectionClass from './store/store-collection-class';
 import StoreModelAttachments from './store/store-model-attachments';
+import StoreRelation from './store/store-relation';
 import StoreChangesClass from './store/store-changes-class';
 import StoreChanges from './store/store-changes';
 import StoreShoebox from './store/store-shoebox';
@@ -27,6 +28,7 @@ export default Ember.Service.extend(
   StoreInternalModel,
   StoreModel,
   StoreCollection,
+  StoreRelation,
   StoreChangesClass,
   StoreChanges,
   StoreTransform,

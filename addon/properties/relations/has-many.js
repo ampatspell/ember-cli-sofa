@@ -8,7 +8,6 @@ import {
 } from '../../internal-model';
 
 const {
-  getOwner,
   copy,
   A
 } = Ember;
@@ -121,8 +120,8 @@ export default class HasManyRelation extends Relation {
     let value = this.value;
     if(!value) {
       let content = this.getContent();
-      let owner = getOwner(this.relationship.store);
-      value = this.createArrayProxy(owner, content);
+      let store = this.relationship.store;
+      value = this.createArrayProxy(store, content);
       value.addEnumerableObserver(this, this.valueObserverOptions);
       this.value = value;
     }

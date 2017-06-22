@@ -8,9 +8,8 @@ export default class HasManyPersistedRelation extends HasManyRelation {
     this.loader = new HasManyContentLoader(this);
   }
 
-  createArrayProxy(owner, content) {
-    let _relation = this;
-    return owner.factoryFor('sofa:has-many-persisted').create({ _relation, content });
+  createArrayProxy(store, content) {
+    return store._createHasManyPersistedProxyForRelation(this, content);
   }
 
   didAddInternalModel() {
