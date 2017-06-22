@@ -69,7 +69,21 @@ configurations(({ module, test, createStore }) => {
     assert.ok(house.get('ducks')._relation.constructor === HasManyLoaded);
   });
 
-  test.only('ducks load', assert => {
+  test('has many with query in relationship is not persisted', assert => {
+    let house = db.model('house', { id: 'big' });
+    let ducks = [ 'yellow', 'green', 'red' ].map(id => db.model('duck', { id, house }));
+    return all([ house.save(), all(ducks.map(duck => duck.save())) ]).then(() => {
+      return db.get('documents').load('house:big');
+    }).then(doc => {
+      assert.deepEqual_(doc, {
+        "_id": "house:big",
+        "_rev": "ignored",
+        "type": "house"
+      });
+    });
+  });
+
+  test('ducks load', assert => {
     let house = db.model('house', { id: 'big' });
     let ducks = [ 'yellow', 'green', 'red' ].map(id => db.model('duck', { id, house }));
     return all([ house.save(), all(ducks.map(duck => duck.save())) ]).then(() => {
