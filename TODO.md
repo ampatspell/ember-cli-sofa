@@ -35,6 +35,10 @@ export default Relationship.extend({
     return { ddoc: 'post', view: 'by-author', key };
   }),
 
+  // -- later --
+  // search: search('...'),
+  // paginated: paginated('...'),
+
 });
 ```
 
