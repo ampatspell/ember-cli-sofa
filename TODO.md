@@ -30,6 +30,13 @@ export default Relationship.extend({
 
   query: 'author-posts' // is also set from relationship opts { query }, if present,
 
+  // query has:
+  // * database (may be null)
+  // * model (parent)
+  // * store
+
+  // query is kept in relation.query, looked up by using relation.getQuery(), created in relation.createQuery()
+
   find: computed('model.docId', function() {
     let key = this.get('model.docId');
     return { ddoc: 'post', view: 'by-author', key };
