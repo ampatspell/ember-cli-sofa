@@ -16,7 +16,7 @@ export default class HasManyLoadedRelation extends HasManyRelation {
   }
 
   createQuery() {
-    return this.relationship.createQuery(this, 'relation-find', Query => {
+    return this._createQuery('relation-find', Query => {
       return Query.extend(QueryFindMixin, RelationQueryMixin, RelationFindQueryMixin);
     });
   }

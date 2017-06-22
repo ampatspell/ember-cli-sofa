@@ -48,12 +48,6 @@ export default class Relationship extends Property {
     return relation;
   }
 
-  createQuery(relation, variantName, variantFn) {
-    let queryModelName = this.opts.query;
-    let Query = this.store._queryClassForName(queryModelName, variantName, variantFn);
-    return Query._create({ _relation: relation });
-  }
-
   _getValue(internal) {
     let relation = this.getRelation(internal);
     return relation.getValue();

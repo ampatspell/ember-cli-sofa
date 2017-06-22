@@ -64,6 +64,17 @@ export default class Relation {
 
   //
 
+  _createQuery(variantName, variantFn) {
+    let _relation = this;
+    let queryModelName = this.relationship.opts.query;
+    if(!queryModelName) {
+      let proxy = this.getValue();
+      queryModelName = proxy.get('query');
+    }
+    let Query = this.store._queryClassForName(queryModelName, variantName, variantFn);
+    return Query._create({ _relation });
+  }
+
   getQuery() {
     let query = this.query;
     if(!query) {
