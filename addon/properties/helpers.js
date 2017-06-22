@@ -11,20 +11,32 @@ import HasManyPersisted from './has-many-persisted';
 import HasManyLoaded from './has-many-loaded';
 
 const {
-  computed
+  computed,
+  merge
 } = Ember;
 
 const __sofa = true;
 
-function make(property) {
-  return computed({
+function makeMeta(arg) {
+  let meta;
+  if(typeof arg === 'function') {
+    meta = { build: arg };
+  } else {
+    meta = { property: arg };
+  }
+  return merge({ __sofa }, meta);
+}
+
+function make(arg) {
+  let property = computed({
     get(key) {
-      return property.getPropertyValue(this, key);
+      return property._meta.property.getPropertyValue(this, key);
     },
     set(key, value) {
-      return property.setPropertyValue(this, value, key);
+      return property._meta.property.setPropertyValue(this, value, key);
     }
-  }).meta({ __sofa, property });
+  }).meta(makeMeta(arg));
+  return property;
 }
 
 function attr(transform, opts) {
