@@ -10,9 +10,6 @@ const K = () => undefined;
 export default class Relationship extends Property {
 
   constructor(relationshipModelName, opts={}) {
-    if(opts.query) {
-      opts.persist = false;
-    }
     delete opts.initial;
     super(merge({ polymorphic: false, relationshipModelName }, opts));
   }
