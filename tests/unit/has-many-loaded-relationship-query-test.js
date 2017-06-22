@@ -113,7 +113,7 @@ configurations(({ module, test, createStore }) => {
     });
   });
 
-  test.only('update query prop marks relationship for reload', assert => {
+  test('update query prop marks relationship for reload', assert => {
     let Hamster = Model.extend({
       id: prefix(),
       building: belongsTo('building', { inverse: 'hamsters' })
@@ -129,15 +129,13 @@ configurations(({ module, test, createStore }) => {
     });
 
     let HamsterBuildingsOne = Query.extend({
-      find: computed('model.docId', function() {
-        let docId = this.get('model.docId');
+      find: computed(function() {
         return { ddoc: 'hamsters', view: 'all', keys: [ 'hamster:green', 'hamster:red' ] };
       })
     });
 
     let HamsterBuildingsTwo = Query.extend({
-      find: computed('model.docId', function() {
-        let docId = this.get('model.docId');
+      find: computed(function() {
         return { ddoc: 'hamsters', view: 'all', keys: [ 'hamster:yellow' ] };
       })
     });
