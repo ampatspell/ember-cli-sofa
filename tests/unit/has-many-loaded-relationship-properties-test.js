@@ -52,7 +52,7 @@ configurations(({ module, test, createStore }) => {
     db.set('modelNames', [ 'duck', 'house' ]);
   }
 
-  module('has-many-loaded-relationship-query', () => {
+  module('has-many-loaded-relationship-properties', () => {
     registerModels({ Duck, House });
     registerQueries({ HouseDucks: HouseDucksQuery });
     registerRelationships({ HouseDucks: HouseDucksRelationship });
