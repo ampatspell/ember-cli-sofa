@@ -156,7 +156,7 @@ configurations(({ module, test, createStore }) => {
       return building.get('hamsters.promise');
     }).then(hamsters => {
       assert.deepEqual(hamsters.mapBy('id'), [ "green", "red" ]);
-      building.set('hamsters.query', 'hamsters-query-two');
+      building.set('hamsters.query', 'hamster-buildings-two');
       return hamsters.get('promise');
     }).then(hamsters => {
       assert.deepEqual(hamsters.mapBy('id'), [ "yellow" ]);

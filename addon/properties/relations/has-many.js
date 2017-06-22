@@ -126,9 +126,13 @@ export default class HasManyRelation extends Relation {
       let store = this.relationship.store;
       value = this.createArrayProxy(store, content);
       value.addEnumerableObserver(this, this.valueObserverOptions);
+      value.addObserver('query', this, 'valueQueryDidChange');
       this.value = value;
     }
     return value;
+  }
+
+  valueQueryDidChange() {
   }
 
   destroyValue() {
@@ -137,6 +141,7 @@ export default class HasManyRelation extends Relation {
       return;
     }
     value.removeEnumerableObserver(this, this.valueObserverOptions);
+    value.removeObserver('query', this, 'valueQueryDidChange');
     value.destroy();
     this.value = null;
   }

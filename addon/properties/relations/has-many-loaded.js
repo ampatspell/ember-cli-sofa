@@ -21,6 +21,13 @@ export default class HasManyLoadedRelation extends HasManyRelation {
     });
   }
 
+  valueQueryDidChange() {
+    console.log('TODO: valueQueryDidChange');
+    // needs more generic approach
+    this.destroyQuery();
+    this.loader.setNeedsReload();
+  }
+
   relationLoaderDidLoad(array) {
     this.setValue(array);
   }

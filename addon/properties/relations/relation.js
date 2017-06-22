@@ -84,6 +84,15 @@ export default class Relation {
     return query;
   }
 
+  destroyQuery() {
+    let query = this.query;
+    if(!query) {
+      return;
+    }
+    query.destroy();
+    this.query = null;
+  }
+
   getInverseRelation(internal) {
     if(!internal) {
       return;
