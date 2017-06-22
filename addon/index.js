@@ -4,6 +4,7 @@ import Database from './database';
 import Session from './session';
 import Model from './model';
 import Query from './query';
+import Relationship from './relationship';
 import Collection from './collection/collection';
 
 import DatabaseChanges from './changes/database/changes';
@@ -37,6 +38,7 @@ export {
   Model,
   Query,
   Collection,
+  Relationship,
 
   DatabaseChanges,
   CouchChanges,
