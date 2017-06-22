@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import { LoadableRelationLoaderStateMixin } from './util/relation-loader-state-mixin';
 import ValueWillDestroyMixin from './util/value-will-destroy-mixin';
+import PropertiesForQueryMixin from './util/properties-for-query-mixin';
 
 const {
   computed
@@ -17,7 +18,10 @@ const content = () => {
   });
 };
 
-export default Ember.ObjectProxy.extend(LoadableRelationLoaderStateMixin, ValueWillDestroyMixin, {
+export default Ember.ObjectProxy.extend(
+  LoadableRelationLoaderStateMixin,
+  ValueWillDestroyMixin,
+  PropertiesForQueryMixin, {
 
   _relation: null,
 
