@@ -20,7 +20,7 @@ export default class BelongsToLoadedRelation extends BelongsToProxiedRelation {
   }
 
   createQuery() {
-    return this.relationship.createQuery(this, 'relation-first', Query => {
+    return this._createQuery('relation-first', Query => {
       return Query.extend(QueryFindMixin, RelationQueryMixin, RelationFirstQueryMixin);
     });
   }

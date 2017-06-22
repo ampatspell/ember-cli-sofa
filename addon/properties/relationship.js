@@ -10,9 +10,6 @@ const K = () => undefined;
 export default class Relationship extends Property {
 
   constructor(relationshipModelName, opts={}) {
-    if(opts.query) {
-      opts.persist = false;
-    }
     delete opts.initial;
     super(merge({ polymorphic: false, relationshipModelName }, opts));
   }
@@ -49,12 +46,6 @@ export default class Relationship extends Property {
       this.setInternalValue(internal, relation, K);
     }
     return relation;
-  }
-
-  createQuery(relation, variantName, variantFn) {
-    let queryModelName = this.opts.query;
-    let Query = this.store._queryClassForName(queryModelName, variantName, variantFn);
-    return Query._create({ _relation: relation });
   }
 
   _getValue(internal) {

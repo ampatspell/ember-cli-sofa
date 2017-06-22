@@ -17,17 +17,27 @@ export function create() {
 
 const sofaKey = '__sofa';
 
+function lookupProperty(meta, store) {
+  let property = meta.property;
+  if(!property) {
+    property = meta.build(store);
+    delete meta.build;
+    meta.property = property;
+  }
+  return property;
+}
+
 function lookupProperties(modelClass) {
   let all = A();
   let byName = new EmptyObject();
 
   let store = get(modelClass, 'store');
   modelClass.eachComputedProperty((name, meta) => {
-    if(!meta || meta[sofaKey] !== true) {
+    if(!meta || meta[sofaKey] !== true ) {
       return;
     }
 
-    let property = meta.property;
+    let property = lookupProperty(meta, store);
     property.prepareModelClass(name, modelClass, store);
 
     all.push(property);

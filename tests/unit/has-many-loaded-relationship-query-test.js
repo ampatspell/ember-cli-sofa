@@ -2,10 +2,11 @@
 import Ember from 'ember';
 import { configurations, registerModels, registerQueries, registerRelationships, cleanup } from '../helpers/setup';
 import { Relationship, Query, Model, prefix, belongsTo, hasMany } from 'sofa';
-// import HasManyLoaded from 'sofa/properties/relations/has-many-loaded';
+import HasManyLoaded from 'sofa/properties/relations/has-many-loaded';
 
 const {
   computed,
+  RSVP: { all }
 } = Ember;
 
 const ddoc = {
@@ -21,7 +22,7 @@ const ddoc = {
   }
 };
 
-configurations(({ module, /*test,*/ createStore }) => {
+configurations(({ module, test, createStore }) => {
 
   let store;
   let db;
@@ -63,12 +64,37 @@ configurations(({ module, /*test,*/ createStore }) => {
     });
   });
 
-  // helpers create hasMany based on opts.query
-  // soo... now what?
+  test('ducks are HasManyLoaded relation', assert => {
+    let house = db.model('house');
+    assert.ok(house.get('ducks')._relation.constructor === HasManyLoaded);
+  });
 
-  // test.only('ducks are HasManyLoaded relation', assert => {
-  //   let house = db.model('house');
-  //   assert.ok(house.get('ducks')._relation.constructor === HasManyLoaded);
-  // });
+  test('has many with query in relationship is not persisted', assert => {
+    let house = db.model('house', { id: 'big' });
+    let ducks = [ 'yellow', 'green', 'red' ].map(id => db.model('duck', { id, house }));
+    return all([ house.save(), all(ducks.map(duck => duck.save())) ]).then(() => {
+      return db.get('documents').load('house:big');
+    }).then(doc => {
+      assert.deepEqual_(doc, {
+        "_id": "house:big",
+        "_rev": "ignored",
+        "type": "house"
+      });
+    });
+  });
+
+  test('ducks load', assert => {
+    let house = db.model('house', { id: 'big' });
+    let ducks = [ 'yellow', 'green', 'red' ].map(id => db.model('duck', { id, house }));
+    return all([ house.save(), all(ducks.map(duck => duck.save())) ]).then(() => {
+      flush();
+      return db.load('house', 'big');
+    }).then(house_ => {
+      house = house_;
+      return house.get('ducks.promise');
+    }).then(ducks => {
+      assert.deepEqual(ducks.mapBy('id'), [ "green", "red", "yellow" ]);
+    });
+  });
 
 });

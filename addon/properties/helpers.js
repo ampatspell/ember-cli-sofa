@@ -11,20 +11,32 @@ import HasManyPersisted from './has-many-persisted';
 import HasManyLoaded from './has-many-loaded';
 
 const {
-  computed
+  computed,
+  merge
 } = Ember;
 
 const __sofa = true;
 
-function make(property) {
-  return computed({
+function makeMeta(arg) {
+  let meta;
+  if(typeof arg === 'function') {
+    meta = { build: arg };
+  } else {
+    meta = { property: arg };
+  }
+  return merge({ __sofa }, meta);
+}
+
+function make(arg) {
+  let property = computed({
     get(key) {
-      return property.getPropertyValue(this, key);
+      return property._meta.property.getPropertyValue(this, key);
     },
     set(key, value) {
-      return property.setPropertyValue(this, value, key);
+      return property._meta.property.setPropertyValue(this, value, key);
     }
-  }).meta({ __sofa, property });
+  }).meta(makeMeta(arg));
+  return property;
 }
 
 function attr(transform, opts) {
@@ -60,20 +72,36 @@ function type(value, opts) {
   return make(new Type(value, opts));
 }
 
-function belongsTo(modelName, opts={}) {
+function isLoadedRelationship(store, opts) {
   if(opts.query) {
-    return make(new BelongsToLoaded(modelName, opts));
-  } else {
-    return make(new BelongsToPersisted(modelName, opts));
+    return true;
   }
+  let relationship = opts.relationship;
+  if(relationship) {
+    let builder = store._relationshipMixinBuilderForName(relationship);
+    return builder.isLoaded();
+  }
+  return false;
+}
+
+function belongsTo(modelName, opts={}) {
+  return make(store => {
+    if(isLoadedRelationship(store, opts)) {
+      return new BelongsToLoaded(modelName, opts);
+    } else {
+      return new BelongsToPersisted(modelName, opts);
+    }
+  });
 }
 
 function hasMany(modelName, opts={}) {
-  if(opts.query) {
-    return make(new HasManyLoaded(modelName, opts));
-  } else {
-    return make(new HasManyPersisted(modelName, opts));
-  }
+  return make(store => {
+    if(isLoadedRelationship(store, opts)) {
+      return new HasManyLoaded(modelName, opts);
+    } else {
+      return new HasManyPersisted(modelName, opts);
+    }
+  });
 }
 
 export {
