@@ -4,6 +4,7 @@ import { configurations, registerModels, registerQueries, registerRelationships,
 import { Relationship, Query, Model, prefix, belongsTo, hasMany } from 'sofa';
 
 const {
+  get,
   computed,
   RSVP: { all }
 } = Ember;
@@ -74,11 +75,12 @@ configurations(({ module, test, createStore }) => {
       assert.equal(internal.definition.property('ducks').opts.relationship, 'house-ducks');
   });
 
-  test('ducks has relationship mixed in', assert => {
+  test.only('ducks has relationship mixed in', assert => {
     let house = db.model('house', { id: 'big' });
     let ducks = house.get('ducks');
     assert.equal(ducks.get('base'), 'all your base belong to us');
     assert.equal(ducks.get('hello'), 'ducks are nice');
+    assert.equal(get(ducks.constructor, 'modelVariant'), 'house-ducks');
     return ducks.get('promise');
   });
 

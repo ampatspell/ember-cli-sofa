@@ -36,7 +36,7 @@ export default Ember.Mixin.create({
 
   _relationProxyClassForName(_relation, proxyName) {
     let { variant, Mixin } = this._buildRelationshipMixin(_relation);
-    return this.__relationProxyClassForName(proxyName, variant, Proxy => Proxy.reopen(Mixin));
+    return this.__relationProxyClassForName(proxyName, variant, Proxy => Proxy.extend(Mixin));
   },
 
   _createBelongsToLoadedProxyForRelation(_relation) {
