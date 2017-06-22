@@ -97,7 +97,7 @@ configurations(({ module, test, createStore }) => {
     return all([ one.get('promise'), two.get('promise') ]);
   });
 
-  test.only('relationship mixin inheritance', assert => {
+  test('relationship mixin inheritance', assert => {
     let one = db.model('house', { id: 'big' }).get('ducks');
     let two = db.model('house', { id: 'big' }).get('ducksOther');
     let three = db.model('house', { id: 'big' }).get('ducksSame');
