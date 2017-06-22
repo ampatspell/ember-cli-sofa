@@ -4,7 +4,7 @@
 
 ### Relationship classes
 
-* add `{ model, database, store }` props in `relationship`
+* add `{ model, property, database, store }` props in `relationship`
 * `hasMany('duck', { relationship: 'barn-ducks' })` with `{ query: 'barn-ducks' }` in `Relationship`
 * `loader.setNeedsReload()` on `relationship.query` change
 * sortable relationship helper `Relationship.extend({ sortable: sortable('position') })`: needed?
