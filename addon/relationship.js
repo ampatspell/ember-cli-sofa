@@ -26,9 +26,9 @@ class RelationshipBuilder {
     return this.mixin;
   }
 
-  get hasQueryOrFind() {
-    let props = this.properties;
-    return !!props.query || !!props.find;
+  isLoaded() {
+    let properties = this.properties;
+    return !!properties.query || !!properties.find;
   }
 
 }
