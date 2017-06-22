@@ -2,6 +2,12 @@
 
 ## sofa
 
+### Relationship classes
+
+* `Relationship` and `hasMany({ relationship: 'foobar' })`
+* `hasMany('duck', { collection: 'barn-ducks' })` and `Collection.extend()` with `query: 'barn-ducks'` so there is a place for `paginated: ...`
+* sortable relationship helper `Relationship.extend({ sortable: sortable('position') })`
+
 ### changes
 
 * on changes prop (`feed`, `view`, `...`) change `couch:database-changes` should be restarted
@@ -22,12 +28,6 @@
 * detached attachment models, `model.get('attachments').pushObject(attachment)`
 * `store.attachment({ name, data });`
 * attachment `data` as a Promise which must resolve to `Blob` or `String` (add scaled image)
-
-### Relationship classes
-
-* `Relationship` and `hasMany({ relationship: 'foobar' })`
-* `hasMany('duck', { collection: 'barn-ducks' })` and `Collection.extend()` with `query: 'barn-ducks'` so there is a place for `paginated: ...`
-* sortable relationship helper `Relationship.extend({ sortable: sortable('position') })`
 
 ### other
 
