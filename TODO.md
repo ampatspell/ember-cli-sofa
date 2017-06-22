@@ -4,6 +4,7 @@
 
 ### Relationship classes
 
+* `hasMany('duck', { relationship: 'barn-ducks' })` -- figure out how to choose internal `Relationship` class
 * `hasMany('duck', { relationship: 'barn-ducks' })` with `{ query: 'barn-ducks' }` in `Relationship`
 * `loader.setNeedsReload()` on `relationship.query` change
 * sortable relationship helper `Relationship.extend({ sortable: sortable('position') })`: needed?
