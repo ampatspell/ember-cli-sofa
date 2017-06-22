@@ -2,7 +2,7 @@
 import Ember from 'ember';
 import { configurations, registerModels, registerQueries, registerRelationships, cleanup } from '../helpers/setup';
 import { Relationship, Query, Model, prefix, belongsTo, hasMany } from 'sofa';
-// import HasManyLoaded from 'sofa/properties/relations/has-many-loaded';
+import HasManyLoaded from 'sofa/properties/relations/has-many-loaded';
 
 const {
   computed,
@@ -21,7 +21,7 @@ const ddoc = {
   }
 };
 
-configurations(({ module, /*test,*/ createStore }) => {
+configurations(({ module, test, createStore }) => {
 
   let store;
   let db;
@@ -63,12 +63,9 @@ configurations(({ module, /*test,*/ createStore }) => {
     });
   });
 
-  // helpers create hasMany based on opts.query
-  // soo... now what?
-
-  // test.only('ducks are HasManyLoaded relation', assert => {
-  //   let house = db.model('house');
-  //   assert.ok(house.get('ducks')._relation.constructor === HasManyLoaded);
-  // });
+  test('ducks are HasManyLoaded relation', assert => {
+    let house = db.model('house');
+    assert.ok(house.get('ducks')._relation.constructor === HasManyLoaded);
+  });
 
 });
