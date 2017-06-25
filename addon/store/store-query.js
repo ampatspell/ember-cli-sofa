@@ -1,9 +1,35 @@
 import Ember from 'ember';
 
+const {
+  copy
+} = Ember;
+
 export default Ember.Mixin.create({
 
-  _createQueryForName(query, props, variant) {
-    return this._queryClassForName({ name: query, variant })._create(props);
+  _buildQueryFactoryOptions(query) {
+    if(typeof query === 'string') {
+      return {
+        name: query
+      };
+    }
+
+    let factory = copy(query);
+    let name = factory.name;
+    delete factory.name;
+
+    return {
+      name,
+      factory
+    };
+  },
+
+  _createQuery({ query, variant, properties}) {
+    let { name, factory } = this._buildQueryFactoryOptions(query);
+    return this._queryClassForName({
+      name,
+      factory,
+      variant
+    })._create(properties);
   },
 
   _createQueryForRelation(_relation, variant) {
@@ -12,7 +38,11 @@ export default Ember.Mixin.create({
       let relationship = _relation.getValue();
       query = relationship.get('query');
     }
-    return this._createQueryForName(query, { _relation }, variant);
+    return this._createQuery({
+      query,
+      variant,
+      properties: { _relation }
+    });
   },
 
   _createQueryForInternalCollection(_internalCollection, variant) {
@@ -21,7 +51,11 @@ export default Ember.Mixin.create({
     if(!query) {
       return;
     }
-    return this._createQueryForName(query, { _internalCollection }, variant);
+    return this._createQuery({
+      query,
+      variant,
+      properties: { _internalCollection }
+    });
   }
 
 });
