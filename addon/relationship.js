@@ -27,8 +27,7 @@ class RelationshipBuilder {
   }
 
   isLoaded() {
-    let properties = this.properties;
-    return !!properties.query || !!properties.find;
+    return !!this.properties.query;
   }
 
 }
