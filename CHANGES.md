@@ -10,8 +10,8 @@ Version: {{version}}
 
 ### 2.0.3
 
-* [new] Relationship classes
-* [new] Query factories
+* [new] `Relationship` classes
+* [new] `Query` factories
 * [new] Relationship properties are now created on model definition creation
 * [fix] `database.destroy()` now destroys collections
 
@@ -30,7 +30,7 @@ Version: {{version}}
 
 ### 2.0.0-pre.39
 
-* [fix] isDeleted propogation fixed
+* [fix] `isDeleted` propogation fixed
 
 ### 2.0.0-pre.38
 
