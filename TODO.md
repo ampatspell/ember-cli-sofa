@@ -4,7 +4,7 @@
 
 ### Relationship classes
 
-* `loader.setNeedsReload()` on `relationship.query` change
+* instead of creating Relationship mixin, extend actual relationship base class on build
 * sortable relationship helper `Relationship.extend({ sortable: sortable('position') })`: needed?
 * paginated relationship helper `Relationship.extend({ paginated: paginated(...) })`
 
