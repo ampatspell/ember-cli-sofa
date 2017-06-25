@@ -44,7 +44,7 @@ export default Ember.Mixin.create({
 
   _createQueryForInternalCollection(_internalCollection, variantName, variantFn) {
     let collection = _internalCollection.getCollectionModel();
-    let query = collection.get('queryName');
+    let query = collection.get('query') || collection.get('queryName');
     if(!query) {
       return;
     }
