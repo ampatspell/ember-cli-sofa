@@ -21,6 +21,11 @@ export default class HasManyLoadedRelation extends HasManyRelation {
     });
   }
 
+  valueQueryDidChange() {
+    this.destroyQuery();
+    this.loader.setNeedsReload();
+  }
+
   relationLoaderDidLoad(array) {
     this.setValue(array);
   }

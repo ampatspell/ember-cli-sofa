@@ -1,36 +1,46 @@
 import Ember from 'ember';
 
 const {
-  Mixin,
-  merge
+  A
 } = Ember;
+
+function properties(builder) {
+  let array = A();
+  while(builder) {
+    array.push(builder.properties);
+    builder = builder.parent;
+  }
+  return array.reverse();
+}
 
 class RelationshipBuilder {
 
-  constructor(properties) {
+  constructor(parent, properties={}) {
+    this.parent = parent;
     this.properties = properties;
-    this.mixin = null;
   }
 
   extend(properties) {
-    let merged = {};
-    merge(merged, this.properties);
-    merge(merged, properties);
-    return new this.constructor(merged);
+    return new this.constructor(this, properties);
   }
 
-  build() {
-    if(!this.mixin) {
-      this.mixin = Mixin.create(this.properties);
+  build(Proxy) {
+    let array = properties(this);
+    for(let i = 0; i < array.length; i++) {
+      let hash = array[i];
+      Proxy = Proxy.extend(hash);
     }
-    return this.mixin;
+    return Proxy;
   }
 
-  isLoaded() {
-    let properties = this.properties;
-    return !!properties.query || !!properties.find;
+  hasInheritedProperty(name) {
+    return !!properties(this).find(properties => !!properties[name]);
   }
 
 }
 
-export default new RelationshipBuilder();
+export default {
+  extend(properties) {
+    return new RelationshipBuilder(null, properties);
+  }
+};

@@ -25,6 +25,19 @@ export default class BelongsToLoadedRelation extends BelongsToProxiedRelation {
     });
   }
 
+  valueQueryDidChange() {
+    this.destroyQuery();
+    this.loader.setNeedsReload();
+  }
+
+  didCreateObjectProxy(value) {
+    value.addObserver('query', this, 'valueQueryDidChange');
+  }
+
+  willDestroyObjectProxy(value) {
+    value.removeObserver('query', this, 'valueQueryDidChange');
+  }
+
   relationLoaderDidLoad(internal) {
     this.withPropertyChanges(changed => {
       this.setContent(internal, changed);

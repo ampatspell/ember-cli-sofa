@@ -76,12 +76,7 @@ function isLoadedRelationship(store, opts) {
   if(opts.query) {
     return true;
   }
-  let relationship = opts.relationship;
-  if(relationship) {
-    let builder = store._relationshipMixinBuilderForName(relationship);
-    return builder.isLoaded();
-  }
-  return false;
+  return store._relationshipBuilderForNameHasProperty(opts.relationship, 'query');
 }
 
 function belongsTo(modelName, opts={}) {

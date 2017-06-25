@@ -4,49 +4,9 @@
 
 ### Relationship classes
 
-* `loader.setNeedsReload()` on `relationship.query` change
 * sortable relationship helper `Relationship.extend({ sortable: sortable('position') })`: needed?
 * paginated relationship helper `Relationship.extend({ paginated: paginated(...) })`
 
-```
-// models/author.js
-export default Model.extend({
-
-  posts: hasMany('post', { inverse: 'author', relationship: 'author-posts' })
-
-});
-
-// models/post.js
-export default Model.extend({
-
-  author: belongsTo('author', { inverse: 'posts' })
-
-});
-
-// models/author-posts.js
-export default Relationship.extend({
-
-  // `query` or `find` computed property
-
-  query: 'author-posts' // is also set from relationship opts { query }, if present,
-
-  // query has:
-  // * database (may be null)
-  // * model (parent)
-  // * store
-
-  // query is kept in relation.query, looked up by using relation.getQuery(), created in relation.createQuery()
-
-  find: computed('model.docId', function() {
-    let key = this.get('model.docId');
-    return { ddoc: 'post', view: 'by-author', key };
-  }),
-
-  // -- later --
-  // search: search('...'),
-  // paginated: paginated('...'),
-
-});
 ```
 
 ### changes
