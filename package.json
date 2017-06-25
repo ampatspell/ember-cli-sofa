@@ -24,12 +24,12 @@
   "license": "MIT",
   "devDependencies": {
     "broccoli-asset-rev": "2.5.0",
-    "ember-cli": "2.13.2",
+    "ember-cli": "2.13.3",
     "ember-cli-app-version": "3.0.0",
-    "ember-cli-couch": "0.0.11",
-    "ember-cli-dependency-checker": "2.0.0",
-    "ember-cli-eslint": "3.1.0",
-    "ember-cli-htmlbars": "2.0.1",
+    "ember-cli-couch": "0.0.12",
+    "ember-cli-dependency-checker": "2.0.1",
+    "ember-cli-eslint": "4.0.0",
+    "ember-cli-htmlbars": "2.0.2",
     "ember-cli-htmlbars-inline-precompile": "0.4.3",
     "ember-cli-inject-live-reload": "1.6.1",
     "ember-cli-less": "1.5.4",
@@ -38,19 +38,19 @@
     "ember-cli-shims": "1.1.0",
     "ember-cli-sri": "2.1.1",
     "ember-cli-uglify": "1.2.0",
-    "ember-disable-prototype-extensions": "1.1.0",
+    "ember-disable-prototype-extensions": "1.1.2",
     "ember-export-application-global": "2.0.0",
-    "ember-fetch": "3.0.0",
+    "ember-fetch": "3.1.2",
     "ember-load-initializers": "1.0.0",
     "ember-resolver": "4.1.0",
-    "ember-source": "2.13.2",
+    "ember-source": "2.13.3",
     "glob": "7.1.2",
     "gulp": "3.9.1",
     "gulp-compile-handlebars": "0.6.1",
     "gulp-data": "1.2.1",
-    "gulp-less": "3.3.0",
+    "gulp-less": "3.3.2",
     "gulp-rename": "1.2.2",
-    "loader.js": "4.4.0",
+    "loader.js": "4.5.1",
     "marked": "0.3.6",
     "morgan": "1.8.2",
     "request": "2.81.0"
@@ -65,7 +65,7 @@
     "relationships"
   ],
   "dependencies": {
-    "ember-cli-babel": "6.1.0"
+    "ember-cli-babel": "6.4.1"
   },
   "ember-addon": {
     "configPath": "tests/dummy/config"
