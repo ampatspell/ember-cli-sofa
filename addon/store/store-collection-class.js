@@ -21,11 +21,15 @@ export default Ember.Mixin.create({
   },
 
   _collectionClassForName(queryName) {
-    return this._classForName('collection', queryName, null, (Collection, normalizedModelName) => {
-      assert(`collection '${normalizedModelName}' must be sofa Collection`, this._isCollectionClass(Collection));
-      let Extended = Collection.extend();
-      Extended.reopenClass({ store: this, [__sofa_type__]: __sofa_collection_type__ });
-      return Extended;
+    return this._classForName({
+      prefix: 'collection',
+      name: queryName,
+      prepare: (Collection, normalizedModelName) => {
+        assert(`collection '${normalizedModelName}' must be sofa Collection`, this._isCollectionClass(Collection));
+        let Extended = Collection.extend();
+        Extended.reopenClass({ store: this, [__sofa_type__]: __sofa_collection_type__ });
+        return Extended;
+      }
     });
   }
 

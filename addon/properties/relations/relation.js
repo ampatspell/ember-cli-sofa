@@ -64,8 +64,8 @@ export default class Relation {
 
   //
 
-  _createQuery(variantName, variantFn) {
-    return this.store._createQueryForRelation(this, variantName, variantFn);
+  _createQuery(variant) {
+    return this.store._createQueryForRelation(this, variant);
   }
 
   getQuery() {

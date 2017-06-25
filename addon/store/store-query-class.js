@@ -23,14 +23,19 @@ export default Ember.Mixin.create({
     return false;
   },
 
-  _queryClassForName(queryName, variantName, variantFn) {
-    Ember.assert(`query variant name is required`, !!variantName);
-    return this._classForName('query', queryName, variantName, (Query, normalizedModelName) => {
-      assert(`query '${normalizedModelName}' must be sofa Query`, this._isQueryClass(Query));
-      let Extended = Query.extend();
-      Extended.reopenClass({ store: this, [__sofa_type__]: __sofa_query_type__ });
-      return Extended;
-    }, variantFn);
+  _queryClassForName({ name, variant }) {
+    Ember.assert(`query variant name is required`, variant && variant.name);
+    return this._classForName({
+      prefix: 'query',
+      name,
+      prepare: (Query, normalizedModelName) => {
+        assert(`query '${normalizedModelName}' must be sofa Query`, this._isQueryClass(Query));
+        let Extended = Query.extend();
+        Extended.reopenClass({ store: this, [__sofa_type__]: __sofa_query_type__ });
+        return Extended;
+      },
+      variant
+    });
   }
 
 });
