@@ -14,6 +14,10 @@ export default Ember.Mixin.create({
 
   _classes: object(),
 
+  _classFactoryIdentifier(factory) {
+    return JSON.stringify(factory);
+  },
+
   _normalizeModelName(modelName, prefix) {
     notBlank(`${prefix} name`, modelName);
     return dasherize(modelName);
@@ -25,7 +29,8 @@ export default Ember.Mixin.create({
     let fullName = `${prefix}:${normalizedModelName}`;
     let cache = this.get('_classes');
 
-    let keyPrefix = `${fullName}${factory ? `:${JSON.stringify(factory)}` : ''}`;
+    let factoryIdentifier = this._classFactoryIdentifier(factory);
+    let keyPrefix = `${fullName}${factory ? `:${factoryIdentifier}` : ''}`;
     let baseKey = `${keyPrefix}:-base`;
     let Base = cache[baseKey];
     if(!Base) {
