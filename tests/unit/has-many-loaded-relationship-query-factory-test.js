@@ -144,7 +144,7 @@ configurations(({ module, test, createStore }) => {
     });
   });
 
-  test.only('query in relationship opts', assert => {
+  test('query in relationship opts', assert => {
     let Hamster = Model.extend({
       id: prefix(),
       building: belongsTo('building', { inverse: 'hamsters' })
