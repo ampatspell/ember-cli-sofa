@@ -65,3 +65,38 @@ test('create query factory with options', assert => {
   assert.ok(classes['query:thing:{"info":"that"}:-base']);
   assert.ok(classes['query:thing:{"info":"that"}:main']);
 });
+
+test('create query factory with options class is cached', assert => {
+  let Thing = opts => Query.extend({
+    info: opts.info
+  });
+  registerQueries({ Thing });
+
+  let one = store._createQuery({
+    query: {
+      name: 'thing',
+      info: 'that'
+    },
+    variant: {
+      name: 'main',
+      prepare: Query => Query
+    }
+  }).constructor;
+
+  let two = store._createQuery({
+    query: {
+      name: 'thing',
+      info: 'that'
+    },
+    variant: {
+      name: 'main',
+      prepare: Query => Query
+    }
+  }).constructor;
+
+  assert.ok(one !== two);
+  assert.ok(one.constructor === two.constructor);
+
+  assert.ok(classes['query:thing:{"info":"that"}:-base']);
+  assert.ok(classes['query:thing:{"info":"that"}:main']);
+});
