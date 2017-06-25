@@ -7,6 +7,20 @@
 * sortable relationship helper `Relationship.extend({ sortable: sortable('position') })`: needed?
 * paginated relationship helper `Relationship.extend({ paginated: paginated(...) })`
 
+### Collections
+
+* consider droping collections and adding support for model relationships which are updated w/o inverse:
+
+``` javascript
+// models/session.js
+export default Model.extend({
+
+  // relationship with `matches`?
+  authors: hasMany('author', { inverse: null, query: { name: 'view', ddoc: 'author', view: 'all' }, matches: ...? })
+
+});
+```
+
 ### changes
 
 * on changes prop (`feed`, `view`, `...`) change `couch:database-changes` should be restarted
