@@ -1,8 +1,30 @@
 import Ember from 'ember';
 
+const {
+  copy
+} = Ember;
+
 export default Ember.Mixin.create({
 
-  _createQueryForName({ name, factory, variant, props}) {
+  _buildQueryFactoryOptions(query) {
+    if(typeof query === 'string') {
+      return {
+        name: query
+      };
+    }
+
+    let factory = copy(query);
+    let name = factory.name;
+    delete factory.name;
+
+    return {
+      name,
+      factory
+    };
+  },
+
+  _createQuery({ query, variant, props}) {
+    let { name, factory } = this._buildQueryFactoryOptions(query);
     return this._queryClassForName({
       name,
       factory,
@@ -10,36 +32,14 @@ export default Ember.Mixin.create({
     })._create(props);
   },
 
-  // _buildQueryFactoryOptions(query) {
-  //   if(typeof query === 'string') {
-  //     return {
-  //       name: query
-  //     };
-  //   };
-  //   return query;
-  // },
-
-  // _queryIdentifier(variant, opts) {
-  //   return `${variant} ${JSON.stringify(opts)}`;
-  // },
-
-  // _createQuery(query, props, variant, fn) {
-  //   let opts = merge({}, this._buildQueryFactoryOptions(query));
-  //   let name = opts.name;
-  //   delete opts.name;
-  //   // variant = this._queryIdentifier(variant, opts);
-  //   return this._createQueryForName(name, props, variant, fn);
-  //   // return this._queryClassForName(query.name, variantName, variantFn)._create(props);
-  // },
-
   _createQueryForRelation(_relation, variant) {
-    let name = _relation.relationship.opts.query;
-    if(!name) {
+    let query = _relation.relationship.opts.query;
+    if(!query) {
       let relationship = _relation.getValue();
-      name = relationship.get('query');
+      query = relationship.get('query');
     }
-    return this._createQueryForName({
-      name,
+    return this._createQuery({
+      query,
       variant,
       props: { _relation }
     });
@@ -47,12 +47,12 @@ export default Ember.Mixin.create({
 
   _createQueryForInternalCollection(_internalCollection, variant) {
     let collection = _internalCollection.getCollectionModel();
-    let name = collection.get('query') || collection.get('queryName');
-    if(!name) {
+    let query = collection.get('query') || collection.get('queryName');
+    if(!query) {
       return;
     }
-    return this._createQueryForName({
-      name,
+    return this._createQuery({
+      query,
       variant,
       props: { _internalCollection }
     });
