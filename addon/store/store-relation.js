@@ -14,29 +14,28 @@ export default Ember.Mixin.create({
     }, variantFn);
   },
 
-  _relationshipMixinBuilderForName(name) {
+  _relationshipBuilderForName(name) {
     if(!name) {
       return;
     }
     return this._classForName('relationship', name);
   },
 
-  _buildRelationshipMixin(relation) {
+  _buildRelationshipVariantOptions(relation) {
     let variant = relation.relationship.opts.relationship;
-    let builder = this._relationshipMixinBuilderForName(variant);
-    let Mixin;
+    let builder = this._relationshipBuilderForName(variant);
+    let build;
     if(builder) {
-      Mixin = builder.build();
+      build = Proxy => builder.build(Proxy);
+    } else {
+      build = Proxy => Proxy;
     }
-    return {
-      variant,
-      Mixin
-    };
+    return { variant, build };
   },
 
   _relationProxyClassForName(_relation, proxyName) {
-    let { variant, Mixin } = this._buildRelationshipMixin(_relation);
-    return this.__relationProxyClassForName(proxyName, variant, Proxy => Proxy.extend(Mixin));
+    let { variant, build } = this._buildRelationshipVariantOptions(_relation);
+    return this.__relationProxyClassForName(proxyName, variant, Proxy => build(Proxy));
   },
 
   _createBelongsToLoadedProxyForRelation(_relation) {

@@ -78,7 +78,7 @@ function isLoadedRelationship(store, opts) {
   }
   let relationship = opts.relationship;
   if(relationship) {
-    let builder = store._relationshipMixinBuilderForName(relationship);
+    let builder = store._relationshipBuilderForName(relationship);
     return builder.isLoaded();
   }
   return false;
