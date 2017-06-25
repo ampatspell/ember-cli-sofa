@@ -25,6 +25,8 @@ export default Ember.ObjectProxy.extend(
 
   _relation: null,
 
+  query: null,
+
   content: content()
 
 });

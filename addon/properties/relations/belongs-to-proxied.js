@@ -22,11 +22,18 @@ export default class BelongsToProxiedRelation extends BelongsToRelation {
     }
   }
 
+  didCreateObjectProxy() {
+  }
+
+  willDestroyObjectProxy() {
+  }
+
   getValue() {
     let value = this.value;
     if(!value) {
       let store = this.relationship.store;
       value = this.createObjectProxy(store);
+      this.didCreateObjectProxy(value);
       this.value = value;
     }
     return value;
@@ -37,6 +44,7 @@ export default class BelongsToProxiedRelation extends BelongsToRelation {
     if(!value) {
       return;
     }
+    this.willDestroyObjectProxy(value);
     value.destroy();
     this.value = null;
   }

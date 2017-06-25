@@ -132,9 +132,6 @@ export default class HasManyRelation extends Relation {
     return value;
   }
 
-  valueQueryDidChange() {
-  }
-
   destroyValue() {
     let value = this.value;
     if(!value) {
@@ -164,6 +161,9 @@ export default class HasManyRelation extends Relation {
         this.didAddContentObject(internal, true);
       });
     });
+  }
+
+  valueQueryDidChange() {
   }
 
   valueWillChange(proxy, removing) {
