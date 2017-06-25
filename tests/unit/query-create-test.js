@@ -81,7 +81,7 @@ test('create query factory with options class is cached', assert => {
       name: 'main',
       prepare: Query => Query
     }
-  }).constructor;
+  });
 
   let two = store._createQuery({
     query: {
@@ -92,7 +92,7 @@ test('create query factory with options class is cached', assert => {
       name: 'main',
       prepare: Query => Query
     }
-  }).constructor;
+  });
 
   assert.ok(one !== two);
   assert.ok(one.constructor === two.constructor);
