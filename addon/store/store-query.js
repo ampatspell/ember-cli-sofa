@@ -23,13 +23,13 @@ export default Ember.Mixin.create({
     };
   },
 
-  _createQuery({ query, variant, props}) {
+  _createQuery({ query, variant, properties}) {
     let { name, factory } = this._buildQueryFactoryOptions(query);
     return this._queryClassForName({
       name,
       factory,
       variant
-    })._create(props);
+    })._create(properties);
   },
 
   _createQueryForRelation(_relation, variant) {
@@ -41,7 +41,7 @@ export default Ember.Mixin.create({
     return this._createQuery({
       query,
       variant,
-      props: { _relation }
+      properties: { _relation }
     });
   },
 
@@ -54,7 +54,7 @@ export default Ember.Mixin.create({
     return this._createQuery({
       query,
       variant,
-      props: { _internalCollection }
+      properties: { _internalCollection }
     });
   }
 
