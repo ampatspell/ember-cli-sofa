@@ -2,36 +2,6 @@
 
 ## sofa
 
-### Query
-
-* query factories
-
-``` javascript
-// queries/view-by-key.js
-export default opts => {
-  let { ddoc, view key } = opts;
-  let keyPath = `model.${key}`;
-  return Query.extend({
-    find: computed(keyPath, function() {
-      let value = model.get(keyPath);
-      return {
-        ddoc,
-        view,
-        key: value
-      };
-    }).readOnly()
-  });
-}
-
-// relationships/blog-entries.js
-// blog hasMany blog-entry
-export default Relationship.extend({
-
-  query: { name: 'view-by-key', ddoc: 'blog-entry', view: 'by-blog', key: 'model.docId' }
-
-});
-```
-
 ### Relationship classes
 
 * sortable relationship helper `Relationship.extend({ sortable: sortable('position') })`: needed?
