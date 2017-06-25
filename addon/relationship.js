@@ -33,8 +33,8 @@ class RelationshipBuilder {
     return Proxy;
   }
 
-  isLoaded() {
-    return !!this.properties.query;
+  hasProperty(name) {
+    return !!properties(this).find(properties => !!properties[name]);
   }
 
 }
