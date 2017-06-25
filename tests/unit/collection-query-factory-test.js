@@ -68,7 +68,7 @@ configurations(({ module, test, createStore }) => {
     });
   });
 
-  test('load by getting promise', assert => {
+  test.skip('load by getting promise', assert => {
     let collection;
     return all([
       db.model('placeholder', { id: 'one' }).save(),
