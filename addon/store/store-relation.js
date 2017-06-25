@@ -33,6 +33,14 @@ export default Ember.Mixin.create({
     return { variant, build };
   },
 
+  _relationshipBuilderForNameHasProperty(relationshipName, name) {
+    let builder = this._relationshipBuilderForName(relationshipName);
+    if(!builder) {
+      return false;
+    }
+    return builder.hasInheritedProperty(name);
+  },
+
   _relationProxyClassForName(_relation, proxyName) {
     let { variant, build } = this._buildRelationshipVariantOptions(_relation);
     return this.__relationProxyClassForName(proxyName, variant, Proxy => build(Proxy));

@@ -33,7 +33,7 @@ class RelationshipBuilder {
     return Proxy;
   }
 
-  hasProperty(name) {
+  hasInheritedProperty(name) {
     return !!properties(this).find(properties => !!properties[name]);
   }
 
