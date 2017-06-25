@@ -12,7 +12,15 @@ module('store-model-class', () => {
 });
 
 function make(variant, baseFn, variantFn) {
-  return store._classForName('query', 'foo', variant, baseFn, variantFn);
+  return store._classForName({
+    prefix: 'query',
+    name: 'foo',
+    prepare: baseFn,
+    variant: {
+      name: variant,
+      prepare: variantFn
+    }
+  });
 }
 
 function makeBase() {

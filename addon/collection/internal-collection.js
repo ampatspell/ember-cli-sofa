@@ -47,8 +47,9 @@ export default class InternalCollection {
   //
 
   createQuery() {
-    return this.store._createQueryForInternalCollection(this, 'collection-find', Query => {
-      return Query.extend(QueryFindMixin, CollectionQueryMixin);
+    return this.store._createQueryForInternalCollection(this, {
+      name: 'collection-find',
+      prepare: Query => Query.extend(QueryFindMixin, CollectionQueryMixin)
     });
   }
 

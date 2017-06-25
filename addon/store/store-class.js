@@ -6,44 +6,55 @@ const {
   getOwner,
   setOwner,
   String: { dasherize },
-  set
+  set,
+  typeOf
 } = Ember;
 
 export default Ember.Mixin.create({
 
   _classes: object(),
 
+  _classFactoryIdentifier(factory) {
+    return JSON.stringify(factory);
+  },
+
   _normalizeModelName(modelName, prefix) {
     notBlank(`${prefix} name`, modelName);
     return dasherize(modelName);
   },
 
-  _classForName(prefix, modelName, variantName, prepareBaseFn, prepareVariantFn) {
-    let normalizedModelName = this._normalizeModelName(modelName, prefix);
+  // { prefix, name, factory, prepare, variant: { name, prepare }}
+  _classForName({ prefix, name, factory, prepare, variant }) {
+    let normalizedModelName = this._normalizeModelName(name, prefix);
     let fullName = `${prefix}:${normalizedModelName}`;
     let cache = this.get('_classes');
 
-    let baseKey = `${fullName}:-base`;
+    let factoryIdentifier = this._classFactoryIdentifier(factory);
+    let keyPrefix = `${fullName}${factory ? `:${factoryIdentifier}` : ''}`;
+    let baseKey = `${keyPrefix}:-base`;
     let Base = cache[baseKey];
     if(!Base) {
       Base = getOwner(this).factoryFor(fullName);
       assert(`class for name ${fullName} is not registered`, !!Base);
       Base = Base.class;
-      if(prepareBaseFn) {
-        Base = prepareBaseFn(Base, normalizedModelName);
+      if(typeOf(Base) === 'function') {
+        Base = Base(factory || {});
+      }
+      if(prepare) {
+        Base = prepare(Base, normalizedModelName);
       }
       setOwner(Base, getOwner(this));
       set(Base, 'modelName', normalizedModelName);
       cache[baseKey] = Base;
     }
 
-    if(variantName) {
-      let normalizedVariantName = this._normalizeModelName(variantName, `${prefix} variant`);
-      let variantKey = `${fullName}:${normalizedVariantName}`;
+    if(variant && variant.name) {
+      let normalizedVariantName = this._normalizeModelName(variant.name, `${prefix} ${name} variant`);
+      let variantKey = `${keyPrefix}:${normalizedVariantName}`;
       let Variant = cache[variantKey];
       if(!Variant) {
-        if(prepareVariantFn) {
-          Variant = prepareVariantFn(Base, normalizedVariantName);
+        if(variant.prepare) {
+          Variant = variant.prepare(Base, normalizedVariantName);
         }
         set(Variant, 'modelVariant', normalizedVariantName);
         cache[variantKey] = Variant;

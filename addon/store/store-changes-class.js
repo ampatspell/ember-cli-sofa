@@ -21,11 +21,15 @@ export default Ember.Mixin.create({
   },
 
   _changesClassForName(changesName) {
-    return this._classForName('sofa/changes', changesName, null, (Changes, normalizedModelName) => {
-      assert(`changes '${normalizedModelName}' must be sofa Changes`, this._isChangesClass(Changes));
-      let Extended = Changes.extend();
-      Extended.reopenClass({ store: this, [__sofa_type__]: __sofa_changes_type__ });
-      return Extended;
+    return this._classForName({
+      prefix: 'sofa/changes',
+      name: changesName,
+      prepare: (Changes, normalizedModelName) => {
+        assert(`changes '${normalizedModelName}' must be sofa Changes`, this._isChangesClass(Changes));
+        let Extended = Changes.extend();
+        Extended.reopenClass({ store: this, [__sofa_type__]: __sofa_changes_type__ });
+        return Extended;
+      }
     });
   }
 
