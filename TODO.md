@@ -7,8 +7,6 @@
 * sortable relationship helper `Relationship.extend({ sortable: sortable('position') })`: needed?
 * paginated relationship helper `Relationship.extend({ paginated: paginated(...) })`
 
-```
-
 ### changes
 
 * on changes prop (`feed`, `view`, `...`) change `couch:database-changes` should be restarted
