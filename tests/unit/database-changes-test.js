@@ -44,7 +44,7 @@ configurations(({ module, test, createStore, config }) => {
     assert.ok(db.changes('all', { ok: true }) === db.changes('all', { ok: true }));
     let changes = db.changes('all', { ok: true });
     assert.ok(changes.get('ok'));
-    assert.equal(changes.get('_internal').identifier, 'all {\"ok\":true}');
+    assert.equal(changes.get('_internal').identifier, 'all {"ok":true}');
   });
 
   test('destroy changes model destroys internal', assert => {

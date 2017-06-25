@@ -24,7 +24,7 @@ configurations(({ module, test, createStore, config }) => {
   test('changes is created', assert => {
     let changes = couch.changes('all', { ok: true });
     assert.ok(changes);
-    assert.equal(changes._internal.identifier, 'all {\"ok\":true}');
+    assert.equal(changes._internal.identifier, 'all {"ok":true}');
     assert.ok(couch.changes('all') === couch.changes('all'));
     assert.ok(couch.changes('all', { ok: true }) === couch.changes('all', { ok: true }));
     assert.ok(couch.changes('all', { ok: true }) !== couch.changes('all'));
