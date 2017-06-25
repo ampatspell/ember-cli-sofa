@@ -4,6 +4,34 @@
 Version: {{version}}
 ```
 
+### 2.0.4
+
+* [new] Ember 2.13.3
+
+### 2.0.3
+
+* [new] Relationship classes
+* [new] Query factories
+* [new] Relationship properties are now created on model definition creation
+* [fix] `database.destroy()` now destroys collections
+
+### 2.0.2
+
+* [fix] fastboot initializer compatibility with the latest `ember-cli-fastboot`
+
+### 2.0.1
+
+* [new] use `ember-fetch` instead of `ember-network`. works in fastboot
+
+### 2.0.0
+
+* [new] database `_changes` listeners
+* [new] couch `_db_updates` listeners
+
+### 2.0.0-pre.39
+
+* [fix] isDeleted propogation fixed
+
 ### 2.0.0-pre.38
 
 * [new] allow overriding per-database attachments, attachment classes. recreate them if model database is set separately from model creation
