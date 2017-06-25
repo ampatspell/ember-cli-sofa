@@ -3,6 +3,7 @@ import StoreDatabase from './store/store-database';
 import StoreClass from './store/store-class';
 import StoreModelClass from './store/store-model-class';
 import StoreQueryClass from './store/store-query-class';
+import StoreQuery from './store/store-query';
 import StoreInternalModel from './store/store-internal-model';
 import StoreModel from './store/store-model';
 import StoreCollection from './store/store-collection';
@@ -25,6 +26,7 @@ export default Ember.Service.extend(
   StoreClass,
   StoreModelClass,
   StoreQueryClass,
+  StoreQuery,
   StoreInternalModel,
   StoreModel,
   StoreCollection,

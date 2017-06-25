@@ -12,6 +12,7 @@ export default class InternalCollection {
 
   constructor(database, collectionClass, opts, state) {
     this.database = database;
+    this.store = database.get('store');
     this.collectionClass = collectionClass;
     this.opts = opts;
     this.collectionModel = null;
@@ -46,15 +47,9 @@ export default class InternalCollection {
   //
 
   createQuery() {
-    let collection = this.getCollectionModel();
-    let queryModelName = collection.get('queryName');
-    if(!queryModelName) {
-      return;
-    }
-    let Query = this.database.get('store')._queryClassForName(queryModelName, 'collection-find', Query => {
+    return this.store._createQueryForInternalCollection(this, 'collection-find', Query => {
       return Query.extend(QueryFindMixin, CollectionQueryMixin);
     });
-    return Query._create({ _internalCollection: this });
   }
 
   getQuery() {
