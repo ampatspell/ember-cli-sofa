@@ -7,9 +7,7 @@ const {
 function properties(builder) {
   let array = A();
   while(builder) {
-    if(builder.properties) {
-      array.push(builder.properties);
-    }
+    array.push(builder.properties);
     builder = builder.parent;
   }
   return array.reverse();
@@ -17,7 +15,7 @@ function properties(builder) {
 
 class RelationshipBuilder {
 
-  constructor(parent, properties) {
+  constructor(parent, properties={}) {
     this.parent = parent;
     this.properties = properties;
   }
@@ -41,4 +39,8 @@ class RelationshipBuilder {
 
 }
 
-export default new RelationshipBuilder();
+export default {
+  extend(properties) {
+    return new RelationshipBuilder(null, properties);
+  }
+};
