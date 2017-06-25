@@ -19,7 +19,8 @@ export default Ember.Mixin.create({
     return dasherize(modelName);
   },
 
-  _classForName(prefix, name, factory, variant, prepareBase, prepareVariant) {
+  // { prefix, name, factory, prepare, variant: { name, prepare }}
+  _classForName({ prefix, name, factory, prepare, variant }) {
     let normalizedModelName = this._normalizeModelName(name, prefix);
     let fullName = `${prefix}:${normalizedModelName}`;
     let cache = this.get('_classes');
@@ -34,21 +35,21 @@ export default Ember.Mixin.create({
       if(typeOf(Base) === 'function') {
         Base = Base(factory || {});
       }
-      if(prepareBase) {
-        Base = prepareBase(Base, normalizedModelName);
+      if(prepare) {
+        Base = prepare(Base, normalizedModelName);
       }
       setOwner(Base, getOwner(this));
       set(Base, 'modelName', normalizedModelName);
       cache[baseKey] = Base;
     }
 
-    if(variant) {
-      let normalizedVariantName = this._normalizeModelName(variant, `${prefix} variant`);
+    if(variant && variant.name) {
+      let normalizedVariantName = this._normalizeModelName(variant.name, `${prefix} ${name} variant`);
       let variantKey = `${keyPrefix}:${normalizedVariantName}`;
       let Variant = cache[variantKey];
       if(!Variant) {
-        if(prepareVariant) {
-          Variant = prepareVariant(Base, normalizedVariantName);
+        if(variant.prepare) {
+          Variant = variant.prepare(Base, normalizedVariantName);
         }
         set(Variant, 'modelVariant', normalizedVariantName);
         cache[variantKey] = Variant;

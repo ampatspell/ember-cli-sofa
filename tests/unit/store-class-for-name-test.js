@@ -1,3 +1,4 @@
+import Ember from 'ember';
 import { module, test, createStore, register } from '../helpers/setup';
 
 let store;
@@ -11,7 +12,7 @@ module('store-class-for-name', () => {
 test('base', assert => {
   let Class = Ember.Object.extend({ name: 'thing' });
   register('test:thing', Class);
-  let Thing = store._classForName('test', 'thing');
+  let Thing = store._classForName({ prefix: 'test', name: 'thing' });
   assert.ok(Thing);
   assert.equal(Thing.create().get('name'), 'thing');
   assert.ok(classes['test:thing:-base'] === Thing);
@@ -20,10 +21,10 @@ test('base', assert => {
 test('base prepared', assert => {
   let Class = Ember.Object.extend();
   register('test:thing', Class);
-  let Thing = store._classForName('test', 'thing', null, null, Thing => {
-    return Thing.extend({
-      name: 'thing'
-    });
+  let Thing = store._classForName({
+    prefix: 'test',
+    name: 'thing',
+    prepare: Thing => Thing.extend({ name: 'thing' })
   });
   assert.ok(Thing);
   assert.equal(Thing.create().get('name'), 'thing');
@@ -33,14 +34,14 @@ test('base prepared', assert => {
 test('variant prepared', assert => {
   let Class = Ember.Object.extend();
   register('test:thing', Class);
-  let Thing = store._classForName('test', 'thing', null, 'cute', Thing => {
-    return Thing.extend({
-      name: 'thing'
-    });
-  }, Thing => {
-    return Thing.extend({
-      variant: 'cute'
-    });
+  let Thing = store._classForName({
+    prefix: 'test',
+    name: 'thing',
+    prepare: Thing => Thing.extend({ name: 'thing' }),
+    variant: {
+      name: 'cute',
+      prepare: Thing => Thing.extend({ variant: 'cute' })
+    }
   });
   assert.ok(Thing);
   assert.equal(Thing.create().get('name'), 'thing');
@@ -52,7 +53,7 @@ test('variant prepared', assert => {
 test('base factory without opts', assert => {
   let factory = opts => Ember.Object.extend({ name: opts.name });
   register('test:thing', factory);
-  let Thing = store._classForName('test', 'thing');
+  let Thing = store._classForName({ prefix: 'test', name: 'thing' });
   assert.ok(Thing);
   assert.equal(Thing.create().get('name'), undefined);
   assert.ok(classes['test:thing:-base'] === Thing);
@@ -61,7 +62,7 @@ test('base factory without opts', assert => {
 test('base factory with opts', assert => {
   let factory = opts => Ember.Object.extend({ name: opts.name });
   register('test:thing', factory);
-  let Thing = store._classForName('test', 'thing', { name: 'thing' });
+  let Thing = store._classForName({ prefix: 'test', name: 'thing', factory: { name: 'thing' }});
   assert.ok(Thing);
   assert.equal(Thing.create().get('name'), 'thing');
   assert.ok(classes['test:thing:{"name":"thing"}:-base']);
@@ -70,7 +71,15 @@ test('base factory with opts', assert => {
 test('variant factory without opts', assert => {
   let factory = opts => Ember.Object.extend({ name: opts.name });
   register('test:thing', factory);
-  let Thing = store._classForName('test', 'thing', null, 'cute', Thing => Thing, Thing => Thing.extend({ variant: 'cute' }));
+  let Thing = store._classForName({
+    prefix: 'test',
+    name: 'thing',
+    prepare: Thing => Thing,
+    variant: {
+      name: 'cute',
+      prepare: Thing => Thing.extend({ variant: 'cute' })
+    }
+  });
   assert.ok(Thing);
   assert.equal(Thing.create().get('name'), undefined);
   assert.equal(Thing.create().get('variant'), 'cute');
@@ -81,7 +90,16 @@ test('variant factory without opts', assert => {
 test('variant factory with opts', assert => {
   let factory = opts => Ember.Object.extend({ name: opts.name });
   register('test:thing', factory);
-  let Thing = store._classForName('test', 'thing', { name: 'thing' }, 'cute', Thing => Thing, Thing => Thing.extend({ variant: 'cute' }));
+  let Thing = store._classForName({
+    prefix: 'test',
+    name: 'thing',
+    factory: { name: 'thing' },
+    prepare: Thing => Thing,
+    variant: {
+      name: 'cute',
+      prepare: Thing => Thing.extend({ variant: 'cute' })
+    }
+  });
   assert.ok(Thing);
   assert.equal(Thing.create().get('name'), 'thing');
   assert.equal(Thing.create().get('variant'), 'cute');

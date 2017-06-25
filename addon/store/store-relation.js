@@ -6,31 +6,36 @@ import {
 
 export default Ember.Mixin.create({
 
-  __relationProxyClassForName(proxyName, variant, variantFn) {
-    return this._classForName(`sofa:${proxyName}`, 'base', variant, Proxy => {
-      let Extended = Proxy.extend();
-      Extended.reopenClass({ store: this, [__sofa_type__]: __sofa_relation_proxy_type__ });
-      return Extended;
-    }, variantFn);
+  __relationProxyClassForName(proxyName, variant) {
+    return this._classForName({
+      prefix: `sofa:${proxyName}`,
+      name: 'base',
+      prepare: Proxy => {
+        let Extended = Proxy.extend();
+        Extended.reopenClass({ store: this, [__sofa_type__]: __sofa_relation_proxy_type__ });
+        return Extended;
+      },
+      variant,
+    });
   },
 
   _relationshipBuilderForName(name) {
     if(!name) {
       return;
     }
-    return this._classForName('relationship', name);
+    return this._classForName({ prefix: 'relationship', name });
   },
 
   _buildRelationshipVariantOptions(relation) {
-    let variant = relation.relationship.opts.relationship;
-    let builder = this._relationshipBuilderForName(variant);
-    let build;
+    let name = relation.relationship.opts.relationship;
+    let builder = this._relationshipBuilderForName(name);
+    let prepare;
     if(builder) {
-      build = Proxy => builder.build(Proxy);
+      prepare = Proxy => builder.build(Proxy);
     } else {
-      build = Proxy => Proxy;
+      prepare = Proxy => Proxy;
     }
-    return { variant, build };
+    return { name, prepare };
   },
 
   _relationshipBuilderForNameHasProperty(relationshipName, name) {
@@ -42,8 +47,8 @@ export default Ember.Mixin.create({
   },
 
   _relationProxyClassForName(_relation, proxyName) {
-    let { variant, build } = this._buildRelationshipVariantOptions(_relation);
-    return this.__relationProxyClassForName(proxyName, variant, Proxy => build(Proxy));
+    let variant = this._buildRelationshipVariantOptions(_relation);
+    return this.__relationProxyClassForName(proxyName, variant);
   },
 
   _createBelongsToLoadedProxyForRelation(_relation) {
