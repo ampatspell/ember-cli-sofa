@@ -24,7 +24,7 @@ export default Ember.Mixin.create({
   },
 
   // { prefix, name, factory, prepare, variant: { name, prepare }}
-  _classForName({ prefix, name, factory, prepare, variant }) {
+  _classForName({ prefix, name, factory, prepare, variant, augment=true }) {
     let normalizedModelName = this._normalizeModelName(name, prefix);
     let fullName = `${prefix}:${normalizedModelName}`;
     let cache = this.get('_classes');
@@ -43,8 +43,10 @@ export default Ember.Mixin.create({
       if(prepare) {
         Base = prepare(Base, normalizedModelName);
       }
-      setOwner(Base, getOwner(this));
-      set(Base, 'modelName', normalizedModelName);
+      if(augment) {
+        setOwner(Base, getOwner(this));
+        set(Base, 'modelName', normalizedModelName);
+      }
       cache[baseKey] = Base;
     }
 
@@ -56,7 +58,9 @@ export default Ember.Mixin.create({
         if(variant.prepare) {
           Variant = variant.prepare(Base, normalizedVariantName);
         }
-        set(Variant, 'modelVariant', normalizedVariantName);
+        if(augment) {
+          set(Variant, 'modelVariant', normalizedVariantName);
+        }
         cache[variantKey] = Variant;
       }
       return Variant;
