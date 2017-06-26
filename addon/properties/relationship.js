@@ -24,8 +24,13 @@ export default class Relationship extends Property {
 
   get relationshipModelClass() {
     let modelClass = this.opts.relationshipModelClass;
-    if(!modelClass) {
-      modelClass = this.modelClassForName(this.opts.relationshipModelName);
+    if(!modelClass && modelClass !== null) {
+      let modelName = this.opts.relationshipModelName;
+      if(modelName) {
+        modelClass = this.modelClassForName(modelName);
+      } else {
+        modelClass = null;
+      }
       this.opts.relationshipModelClass = modelClass;
     }
     return modelClass;
