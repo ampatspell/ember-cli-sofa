@@ -14,12 +14,33 @@
 ``` javascript
 // models/session.js
 export default Model.extend({
+  sections: hasMany('section', { inverse: null, relationship: 'session-sections' })
+});
+```
 
-  // relationship with `matches`?
-  authors: hasMany('author', { inverse: null, query: { name: 'view', ddoc: 'author', view: 'all' }, matches: ...? })
+``` javascript
+// relationships/session-sections.js
+export default Relationship.extend({
+
+  // optional
+  query: { name: 'view', ddoc: 'section', view: 'all' },
+
+  root: computed('@each.{category,position}', function() {
+    return this.filterBy('category', null).sortBy('position');
+  }).readOnly(),
+
+  visible: computed('root.@each.visible', function() {
+    return this.get('root').filterBy('visible', true);
+  }).readOnly(),
 
 });
 ```
+
+* query load results are not directly added to relationship
+* relationship can have `matches` computed property
+* relationship can have `{ modelName: null }`
+* relationship should be destroyable, not only parent model
+
 
 ### changes
 
