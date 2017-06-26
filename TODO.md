@@ -2,6 +2,10 @@
 
 ## sofa
 
+### _classFor
+
+* extend, owner.register(.., extended), owner.factoryFor(...)
+
 ### Relationship classes
 
 * sortable relationship helper `Relationship.extend({ sortable: sortable('position') })`: needed?
