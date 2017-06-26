@@ -7,9 +7,9 @@ const {
 
 export default Ember.Mixin.create({
 
-  _createCollectionForInternalCollection(internal) {
-    let collectionClass = internal.collectionClass;
-    return create(collectionClass, merge({ _internal: internal, content: internal.content }, internal.opts));
+  _createCollectionForInternalCollection(_internal) {
+    let collectionClass = _internal.collectionClass;
+    return create(collectionClass, merge({ _internal }, _internal.opts));
   }
 
 });
