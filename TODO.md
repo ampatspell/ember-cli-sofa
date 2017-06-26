@@ -14,7 +14,9 @@
 ``` javascript
 // models/session.js
 export default Model.extend({
+
   sections: hasMany('section', { inverse: null, relationship: 'session-sections' })
+
 });
 ```
 
@@ -25,6 +27,7 @@ export default Relationship.extend({
   // optional
   query: { name: 'view', ddoc: 'section', view: 'all' },
 
+  // relationship is mixed in ArrayProxy (or ObjectProxy if belongsTo)
   root: computed('@each.{category,position}', function() {
     return this.filterBy('category', null).sortBy('position');
   }).readOnly(),
