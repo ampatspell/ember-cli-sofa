@@ -16,7 +16,6 @@ export default class InternalCollection {
     this.collectionClass = collectionClass;
     this.opts = opts;
     this.collectionModel = null;
-    this.content = A();
     this.internalModels = database._modelIdentity.all;
     this.loader = new CollectionLoader(this);
     if(state.isLoaded) {
