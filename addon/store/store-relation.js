@@ -63,8 +63,8 @@ export default Ember.Mixin.create({
     return this._relationProxyClassForName(_relation, 'has-many-persisted').create({ _relation, content });
   },
 
-  _createHasManyCollectionProxyForRelation(_relation, content) {
-    return this._relationProxyClassForName(_relation, 'has-many-collection').create({ _relation, content });
+  _createHasManyCollectionProxyForRelation(_relation) {
+    return this._relationProxyClassForName(_relation, 'has-many-collection').create({ _relation });
   }
 
 

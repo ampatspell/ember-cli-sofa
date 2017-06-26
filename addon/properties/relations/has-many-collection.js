@@ -5,10 +5,6 @@ import QueryFindMixin from '../../util/query-find-mixin';
 import RelationQueryMixin from './query/relation';
 import RelationFindQueryMixin from './query/relation-find';
 
-const {
-  A
-} = Ember;
-
 export default class HasManyCollectionRelation extends Relation {
 
   constructor() {
@@ -16,10 +12,17 @@ export default class HasManyCollectionRelation extends Relation {
     this.loader = new RelationLoader(this);
   }
 
+  get internalModels() {
+    let database = this.database;
+    if(!database) {
+      return;
+    }
+    return database._modelIdentity.all;
+  }
+
   createArrayProxy() {
-    let content = this.getContent();
     let store = this.relationship.store;
-    return store._createHasManyCollectionProxyForRelation(this, content);
+    return store._createHasManyCollectionProxyForRelation(this);
   }
 
   createQuery() {
@@ -29,10 +32,6 @@ export default class HasManyCollectionRelation extends Relation {
     });
   }
 
-  getContent() {
-    return A();
-  }
-
   setValue() {
   }
 
@@ -40,7 +39,6 @@ export default class HasManyCollectionRelation extends Relation {
     let value = this.value;
     if(!value) {
       value = this.createArrayProxy();
-      // value.addObserver('query', this, 'valueQueryDidChange');
       this.value = value;
     }
     return value;
@@ -48,5 +46,20 @@ export default class HasManyCollectionRelation extends Relation {
 
   // destroyValue() {
   // }
+
+  get notifyInternalModelDidSetDatabase() {
+    return true;
+  }
+
+  internalModelDidSetDatabase() {
+    super.internalModelDidSetDatabase();
+    let value = this.value;
+    if(value) {
+      value.beginPropertyChanges();
+      value.notifyPropertyChange('database');
+      value.notifyPropertyChange('models');
+      value.endPropertyChanges();
+    }
+  }
 
 }
