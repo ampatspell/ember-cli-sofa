@@ -14,13 +14,22 @@ const models = () => {
     let relation = this._relation;
     let modelClass = relation.relationshipModelClass;
     let allModels = A(relation.internalModels);
-    let withClass = A(allModels.filter(internal => internal.definition.is(modelClass)));
-    return A(withClass.map(internal => internal.getModel()));
+    let filtered;
+    if(modelClass) {
+      filtered = A(allModels.filter(internal => internal.definition.is(modelClass)));
+    } else {
+      filtered = allModels;
+    }
+    return A(filtered.map(internal => internal.getModel()));
   }).readOnly();
 };
 
-const content = () => {
+const matches = () => {
   return reads('models');
+};
+
+const content = () => {
+  return reads('matches').readOnly();
 };
 
 export default Ember.ArrayProxy.extend(
@@ -31,6 +40,8 @@ export default Ember.ArrayProxy.extend(
   _relation: null,
 
   models: models(),
+
+  matches: matches(),
   content: content()
 
 });
