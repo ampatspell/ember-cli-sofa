@@ -29,7 +29,10 @@ const matches = () => {
 };
 
 const content = () => {
-  return reads('matches').readOnly();
+  return computed('matches.[]', function() {
+    this._relation.loader.load(true);
+    return this.get('matches');
+  }).readOnly();
 };
 
 export default Ember.ArrayProxy.extend(
@@ -40,7 +43,6 @@ export default Ember.ArrayProxy.extend(
   _relation: null,
 
   models: models(),
-
   matches: matches(),
   content: content()
 
