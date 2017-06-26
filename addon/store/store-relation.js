@@ -23,7 +23,7 @@ export default Ember.Mixin.create({
     if(!name) {
       return;
     }
-    return this._classForName({ prefix: 'relationship', name });
+    return this._classForName({ prefix: 'relationship', name, augment: false });
   },
 
   _buildRelationshipVariantOptions(relation) {
@@ -66,6 +66,5 @@ export default Ember.Mixin.create({
   _createHasManyCollectionProxyForRelation(_relation) {
     return this._relationProxyClassForName(_relation, 'has-many-collection').create({ _relation });
   }
-
 
 });
