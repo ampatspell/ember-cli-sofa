@@ -9,6 +9,7 @@ import BelongsToPersisted from './belongs-to-persisted';
 import BelongsToLoaded from './belongs-to-loaded';
 import HasManyPersisted from './has-many-persisted';
 import HasManyLoaded from './has-many-loaded';
+import HasManyCollection from './has-many-collection';
 import Error from 'sofa/util/error';
 
 const {
@@ -99,7 +100,7 @@ function belongsTo(modelName, opts={}) {
 function hasMany(modelName, opts={}) {
   return make(store => {
     if(isCollectionRelationship(store, opts)) {
-      throw new Error({ error: 'not-implemented', reason: 'collection hasMany is not yet implemented' });
+      return new HasManyCollection(modelName, opts);
     } else if(isLoadedRelationship(store, opts)) {
       return new HasManyLoaded(modelName, opts);
     } else {
