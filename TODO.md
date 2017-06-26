@@ -15,6 +15,7 @@
 // models/session.js
 export default Model.extend({
 
+  all:      hasMany(null, { inverse: null }) // _modelIdentity.all
   sections: hasMany('section', { inverse: null, relationship: 'session-sections' })
 
 });
