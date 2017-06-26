@@ -37,6 +37,9 @@ export default Ember.Mixin.create({
     if(!query) {
       let relationship = _relation.getValue();
       query = relationship.get('query');
+      if(!query) {
+        return;
+      }
     }
     return this._createQuery({
       query,
