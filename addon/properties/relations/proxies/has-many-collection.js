@@ -1,12 +1,9 @@
 import Ember from 'ember';
-import Transform from './util/internal-model-to-model-transform';
 import ValueWillDestroyMixin from './util/value-will-destroy-mixin';
 import { LoadableRelationLoaderStateMixin } from './util/relation-loader-state-mixin';
 import PropertiesForQueryMixin from './util/properties-for-query-mixin';
-import { getInternalModel } from '../../../internal-model';
 
 const {
-  get,
   computed,
   computed: { reads },
   A

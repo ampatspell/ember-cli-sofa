@@ -1,7 +1,7 @@
 /* global emit */
 import Ember from 'ember';
 import { configurations, registerModels, registerQueries, cleanup } from '../helpers/setup';
-import { Query, Model, prefix, belongsTo, hasMany } from 'sofa';
+import { Query, Model, prefix, hasMany } from 'sofa';
 
 const {
   computed,

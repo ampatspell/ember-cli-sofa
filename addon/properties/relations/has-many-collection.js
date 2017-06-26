@@ -1,4 +1,3 @@
-import Ember from 'ember';
 import Relation from './relation';
 import RelationLoader from './util/relation-loader';
 import QueryFindMixin from '../../util/query-find-mixin';

@@ -1,12 +1,7 @@
-import Ember from 'ember';
 import { getInternalModel } from '../internal-model';
 import CollectionLoader from './collection-loader';
 import QueryFindMixin from '../util/query-find-mixin';
 import CollectionQueryMixin from './collection-query';
-
-const {
-  A
-} = Ember;
 
 export default class InternalCollection {
 
