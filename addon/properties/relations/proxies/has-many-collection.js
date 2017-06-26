@@ -30,7 +30,7 @@ const matches = () => {
 
 const content = () => {
   return computed('matches.[]', function() {
-    this._relation.loader.load(true);
+    this._relation.loader.deferredLoad();
     return this.get('matches');
   }).readOnly();
 };
