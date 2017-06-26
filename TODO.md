@@ -2,9 +2,9 @@
 
 ## sofa
 
-### _classFor
+### `_classFor`
 
-* extend, owner.register(.., extended), owner.factoryFor(...)
+* extend, `owner.register(.., extended)`, `owner.factoryFor(...)`
 
 ### Relationship classes
 
