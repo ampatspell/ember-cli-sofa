@@ -1,8 +1,7 @@
 import Ember from 'ember';
 
 const {
-  RSVP: { resolve, reject },
-  run: { cancel, next }
+  RSVP: { resolve, reject }
 } = Ember;
 
 export default class QueryLoader {
@@ -118,12 +117,6 @@ export default class QueryLoader {
 
   load(notify) {
     this.getPromise(notify);
-  }
-
-  deferredLoad() {
-    // TODO: make sure this thing is needed. where is infinite loop?
-    cancel(this._deferredLoad);
-    this._deferredLoad = next(() => this.load(true));
   }
 
   getState() {

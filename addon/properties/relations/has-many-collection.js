@@ -65,10 +65,19 @@ export default class HasManyCollectionRelation extends Relation {
     let value = this.value;
     if(value) {
       value.beginPropertyChanges();
-      value.notifyPropertyChange('database');
-      value.notifyPropertyChange('models');
+      {
+        value.notifyPropertyChange('database');
+        value.notifyPropertyChange('models');
+      }
       value.endPropertyChanges();
     }
+  }
+
+  load(notify) {
+    if(!this.value) {
+      return;
+    }
+    this.loader.load(notify);
   }
 
 }

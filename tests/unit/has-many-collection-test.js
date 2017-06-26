@@ -1,7 +1,7 @@
 /* global emit */
 import Ember from 'ember';
-import { configurations, registerModels, registerQueries, cleanup, next } from '../helpers/setup';
-import { Query, Model, prefix, hasMany } from 'sofa';
+import { configurations, registerModels, registerQueries, registerRelationships, cleanup, next, wait } from '../helpers/setup';
+import { Relationship, Query, Model, prefix, hasMany } from 'sofa';
 
 const {
   computed,
@@ -32,12 +32,16 @@ configurations(({ module, test, createStore }) => {
     })
   });
 
+  let AllDucksRelationship = Relationship.extend({
+    query: 'all-ducks'
+  });
+
   let Duck = Model.extend({
     id: prefix(),
   });
 
   let Root = Model.extend({
-    ducks: hasMany('duck', { inverse: null, query: 'all-ducks' })
+    ducks: hasMany('duck', { inverse: null, relationship: 'all-ducks' })
   });
 
   function flush() {
@@ -49,6 +53,7 @@ configurations(({ module, test, createStore }) => {
   module('has-many-collection', () => {
     registerModels({ Duck, Root });
     registerQueries({ AllDucks });
+    registerRelationships({ AllDucks: AllDucksRelationship });
     flush();
     return cleanup(store, [ 'main' ]).then(() => {
       return db.get('documents.design').save('ducks', ddoc);
@@ -92,12 +97,24 @@ configurations(({ module, test, createStore }) => {
     assert.deepEqual(root.get('ducks').mapBy('id'), [ 'yellow' ]);
   });
 
-  test('load', assert => {
+  test.skip('autoload', assert => {
     let root;
     return all([ 'yellow', 'red', 'green' ].map(id => db.model('duck', { id }).save())).then(() => {
       flush();
       root = db.model('root');
-      return root.get('ducks.promise');
+      assert.deepEqual(root.get('ducks').mapBy('id'), []);
+      return wait(null, 100);
+    }).then(() => {
+      assert.deepEqual(root.get('ducks').mapBy('id'), [ 'green', 'red', 'yellow' ]);
+    });
+  });
+
+  test.skip('load', assert => {
+    let root;
+    return all([ 'yellow', 'red', 'green' ].map(id => db.model('duck', { id }).save())).then(() => {
+      flush();
+      root = db.model('root');
+      return db.get('ducks.promise');
     }).then(() => {
       assert.deepEqual(root.get('ducks').mapBy('id'), [ 'green', 'red', 'yellow' ]);
     });
