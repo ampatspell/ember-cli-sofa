@@ -19,10 +19,8 @@ const models = () => {
   }).readOnly();
 };
 
-const database = () => {
-  return computed(function() {
-    return this._relation.database;
-  }).readOnly();
+const content = () => {
+  return reads('models');
 };
 
 export default Ember.ArrayProxy.extend(
@@ -32,9 +30,7 @@ export default Ember.ArrayProxy.extend(
 
   _relation: null,
 
-  database: database(),
   models: models(),
-
-  content: reads('models'),
+  content: content()
 
 });

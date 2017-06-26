@@ -46,7 +46,6 @@ configurations(({ module, test, createStore }) => {
     db.set('modelNames', [ 'root', 'duck' ]);
   }
 
-  // from has-many-loaded
   module('has-many-collection', () => {
     registerModels({ Duck, Root });
     registerQueries({ AllDucks });
@@ -82,6 +81,25 @@ configurations(({ module, test, createStore }) => {
     return next().then(() => {
       assert.deepEqual(root.get('ducks').mapBy('id'), [ 'red', 'green' ]);
       return root.get('ducks.promise');
+    });
+  });
+
+  test('assign database after model creation', assert => {
+    db.model('duck', { id: 'yellow' });
+    let root = store.model('root');
+    assert.deepEqual(root.get('ducks').mapBy('id'), []);
+    root.set('database', db);
+    assert.deepEqual(root.get('ducks').mapBy('id'), [ 'yellow' ]);
+  });
+
+  test('load', assert => {
+    let root;
+    return all([ 'yellow', 'red', 'green' ].map(id => db.model('duck', { id }).save())).then(() => {
+      flush();
+      root = db.model('root');
+      return root.get('ducks.promise');
+    }).then(() => {
+      assert.deepEqual(root.get('ducks').mapBy('id'), [ 'green', 'red', 'yellow' ]);
     });
   });
 

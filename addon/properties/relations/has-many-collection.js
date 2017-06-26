@@ -33,6 +33,9 @@ export default class HasManyCollectionRelation extends Relation {
     });
   }
 
+  relationLoaderDidLoad() {
+  }
+
   setValue() {
   }
 
