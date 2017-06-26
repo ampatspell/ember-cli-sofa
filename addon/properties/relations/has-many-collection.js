@@ -48,15 +48,20 @@ export default class HasManyCollectionRelation extends Relation {
     return value;
   }
 
-  // destroyValue() {
-  // }
+  destroyValue() {
+    let value = this.value;
+    if(!value) {
+      return;
+    }
+    value.destroy();
+    this.value = null;
+  }
 
   get notifyInternalModelDidSetDatabase() {
     return true;
   }
 
   internalModelDidSetDatabase() {
-    super.internalModelDidSetDatabase();
     let value = this.value;
     if(value) {
       value.beginPropertyChanges();
