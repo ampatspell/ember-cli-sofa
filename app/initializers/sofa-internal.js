@@ -18,6 +18,7 @@ import JSONTransform from 'sofa/transforms/json';
 import BelongsToLoaded from 'sofa/properties/relations/proxies/belongs-to-loaded';
 import HasManyPersisted from 'sofa/properties/relations/proxies/has-many-persisted';
 import HasManyLoaded from 'sofa/properties/relations/proxies/has-many-loaded';
+import HasManyCollection from 'sofa/properties/relations/proxies/has-many-collection';
 
 import Attachments from 'sofa/properties/attachments/attachments';
 import Attachment from 'sofa/properties/attachments/attachment';
@@ -51,6 +52,7 @@ export default {
     container.register('sofa:belongs-to-loaded', BelongsToLoaded, { instantiate: false });
     container.register('sofa:has-many-persisted', HasManyPersisted, { instantiate: false });
     container.register('sofa:has-many-loaded', HasManyLoaded, { instantiate: false });
+    container.register('sofa:has-many-collection', HasManyCollection, { instantiate: false });
 
     container.register('sofa:transform/noop', NoopTransform, { instantiate: false });
     container.register('sofa:transform/string', StringTransform, { instantiate: false });
