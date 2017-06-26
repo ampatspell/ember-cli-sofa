@@ -20,6 +20,7 @@ const model = () => {
 };
 
 const isLoadable = opts => {
+  opts = merge({ requireSavedModel: true }, opts);
   let props = [ 'find', 'database' ];
   if(opts.requireSavedModel) {
     props.push('model.isNew');
@@ -33,51 +34,42 @@ const isLoadable = opts => {
     if(!database) {
       return false;
     }
-    if(opts.requireSavedModel) {
-      if(this.get('model.isNew')) {
-        return false;
-      }
+    if(opts.requireSavedModel && this.get('model.isNew')) {
+      return false;
     }
     return true;
   }).readOnly();
 }
 
-export default opts => {
-  opts = merge({ requireSavedModel: true }, opts);
+export default opts => Ember.Mixin.create({
 
-  let _isLoadable = isLoadable(opts);
+  _relation: null,
+  _isLoadable: isLoadable(opts),
 
-  return Ember.Mixin.create({
+  model: model(),
+  store: relation('store'),
+  database: relation('database'),
 
-    _relation: null,
+  _find() {
+    let relation = this._relation;
+    let database = relation.relationshipDatabase;
+    let model = relation.relationshipModelName;
+    return this.__find(database, model);
+  },
 
-    model: model(),
-    store: relation('store'),
-    database: relation('database'),
-
-    _find() {
-      let relation = this._relation;
-      let database = relation.relationshipDatabase;
-      let model = relation.relationshipModelName;
-      return this.__find(database, model);
-    },
-
-    _isLoadable,
-
-    _observePropertyChanges: observer('find', '_isLoadable', function() {
-      cancel(this.__propertyChanges);
-      if(!this.get('_isLoadable')) {
-        return;
-      }
-      this.__propertyChanges = next(() => {
-        this._relation.loader.setNeedsReload();
-      });
-    }),
-
-    willDestroy() {
-      cancel(this.__propertyChanges);
-      this._super();
+  _observePropertyChanges: observer('find', '_isLoadable', function() {
+    cancel(this.__propertyChanges);
+    if(!this.get('_isLoadable')) {
+      return;
     }
+    this.__propertyChanges = next(() => {
+      this._relation.loader.setNeedsReload();
+    });
+  }),
 
-  });
-}
+  willDestroy() {
+    cancel(this.__propertyChanges);
+    this._super();
+  }
+
+});
