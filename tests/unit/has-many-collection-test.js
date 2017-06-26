@@ -26,7 +26,7 @@ configurations(({ module, test, createStore }) => {
   let store;
   let db;
 
-  let HouseDucks = Query.extend({
+  let AllDucks = Query.extend({
     find: computed(function() {
       return { ddoc: 'ducks', view: 'all' };
     })
@@ -37,7 +37,7 @@ configurations(({ module, test, createStore }) => {
   });
 
   let Root = Model.extend({
-    ducks: hasMany('duck', { inverse: null, query: 'house-ducks' })
+    ducks: hasMany('duck', { inverse: null, query: 'all-ducks' })
   });
 
   function flush() {
@@ -49,7 +49,7 @@ configurations(({ module, test, createStore }) => {
   // from has-many-loaded
   module('has-many-collection', () => {
     registerModels({ Duck, Root });
-    registerQueries({ HouseDucks });
+    registerQueries({ AllDucks });
     flush();
     return cleanup(store, [ 'main' ]).then(() => {
       return db.get('documents.design').save('ducks', ddoc);
