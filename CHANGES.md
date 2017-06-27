@@ -4,6 +4,10 @@
 Version: {{version}}
 ```
 
+### 2.0.7
+
+* [new] `has-many-collection` relationships now support fastboot
+
 ### 2.0.6
 
 * [new] collection api removed
