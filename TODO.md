@@ -2,13 +2,8 @@
 
 ## sofa
 
-### `_classFor`
-
-* extend, `owner.register(.., extended)`, `owner.factoryFor(...)`
-
 ### Relationship classes
 
-* fix `getOwner(relationship) === null`
 * sortable relationship helper `Relationship.extend({ sortable: sortable('position') })`: needed?
 * paginated relationship helper `Relationship.extend({ paginated: paginated(...) })`
 
