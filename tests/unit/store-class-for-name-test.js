@@ -13,12 +13,17 @@ module('store-class-for-name', () => {
   classes = store.get('_classes');
 });
 
-test.only('base has owner', assert => {
+test('instances has owner', assert => {
   let Class = Ember.Object.extend({ name: 'thing' });
-  register('test:thing', Class);
-  let Thing = store._classForName({ prefix: 'test', name: 'thing' });
-  assert.ok(getOwner(Thing.create()));
-  console.log(Thing.create()+'');
+  register('model:thing', Class);
+  let fn = opts => {
+    let Thing = store._classForName(opts);
+    assert.ok(getOwner(Thing.create()));
+    console.log(Thing.create()+'');
+  };
+  fn({ prefix: 'model', name: 'thing' });
+  fn({ prefix: 'model', name: 'thing', variant: { name: 'nice' } });
+  fn({ prefix: 'model', name: 'thing', factory: { ok: true }, variant: { name: 'nice' } });
 });
 
 test('base', assert => {
