@@ -73,4 +73,11 @@ export default class HasManyCollectionRelation extends Relation {
     }
   }
 
+  valueWillDestroy() {
+    this.value = null;
+    this.withPropertyChanges(changed => {
+      this.propertyDidChange(changed);
+    });
+  }
+
 }

@@ -120,4 +120,24 @@ configurations(({ module, test, createStore }) => {
     });
   });
 
+  test.only('destroy', assert => {
+    let root;
+    let relation;
+    return all([ 'yellow', 'red', 'green' ].map(id => db.model('duck', { id }).save())).then(() => {
+      flush();
+      root = db.model('root');
+      return root.get('ducks.promise');
+    }).then(() => {
+      assert.deepEqual(root.get('ducks').mapBy('id'), [ 'green', 'red', 'yellow' ]);
+      relation = root.get('ducks._relation');
+      assert.ok(relation);
+      root.get('ducks').destroy();
+      return next();
+    }).then(() => {
+      assert.ok(!relation.value);
+      assert.ok(!root.get('ducks').isDestroying);
+      assert.ok(relation.value);
+    });
+  });
+
 });
