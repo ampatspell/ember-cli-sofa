@@ -29,7 +29,7 @@ const ddoc = {
   }
 };
 
-configurations(({ module, test, createStore }) => {
+configurations({ only: '1.6' }, ({ module, test, createStore }) => {
 
   let store;
   let db;
