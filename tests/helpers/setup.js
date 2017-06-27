@@ -163,10 +163,6 @@ export function registerModels(hash) {
   registerHash('model', hash);
 }
 
-export function registerCollections(hash) {
-  registerHash('collection', hash);
-}
-
 export function registerChanges(hash) {
   registerHash('sofa/changes', hash);
 }

@@ -1,7 +1,7 @@
 /* global emit */
 import Ember from 'ember';
-import { configurations, registerModels, registerQueries, registerCollections, cleanup } from '../helpers/setup';
-import { Query, Model, Collection, prefix, belongsTo, hasMany } from 'sofa';
+import { configurations, registerModels, registerQueries, cleanup } from '../helpers/setup';
+import { Query, Model, prefix, belongsTo, hasMany } from 'sofa';
 
 const {
   computed,
@@ -53,17 +53,6 @@ configurations(({ module, test, createStore }) => {
     duck: belongsTo('duck', { inverse: 'home' })
   });
 
-  let Ducks = Collection.extend({
-    modelName: 'duck',
-    queryName: 'all-ducks'
-  });
-
-  let AllDucks = Query.extend({
-    find: computed(function() {
-      return { model: null, ddoc: 'ducks', view: 'all' };
-    })
-  });
-
   function flush() {
     store = createStore();
     db = store.get('db.main');
@@ -72,8 +61,7 @@ configurations(({ module, test, createStore }) => {
 
   module('fastboot', () => {
     registerModels({ Duck, House });
-    registerQueries({ HouseDucks, AllDucks });
-    registerCollections({ Ducks });
+    registerQueries({ HouseDucks });
     flush();
     return cleanup(store, [ 'main' ]).then(() => {
       return db.get('documents.design').save('ducks', ddoc);
@@ -85,22 +73,12 @@ configurations(({ module, test, createStore }) => {
     let green = db.model('duck', { id: 'green' });
     let red = db.model('duck', { id: 'red' });
     let house = db.model('house', { id: 'big', ducks: [ yellow, green, red ], duck: green });
-    db.collection('ducks', { nice: true });
     return all([ house.save(), yellow.save(), green.save(), red.save() ]).then(() => {
       return all([
-        house.get('ducks.promise'),
-        db.collection('ducks').get('promise')
+        house.get('ducks.promise')
       ]);
     }).then(() => {
       assert.deepEqual_(db._createShoebox(), {
-        "collections": {
-          "ducks null": {
-            "isLoaded": true
-          },
-          "ducks {\"nice\":true}": {
-            "isLoaded": false
-          }
-        },
         "documents": [
           {
             "_attachments": {},
