@@ -32,7 +32,8 @@ test('base', assert => {
   let Thing = store._classForName({ prefix: 'test', name: 'thing' });
   assert.ok(Thing);
   assert.equal(Thing.create().get('name'), 'thing');
-  assert.ok(classes['test:thing:-base'] === Thing);
+  assert.ok(classes['test:thing'].class === Class);
+  assert.ok(classes['sofa:test/thing'] === Thing);
 });
 
 test('base prepared', assert => {
@@ -45,7 +46,7 @@ test('base prepared', assert => {
   });
   assert.ok(Thing);
   assert.equal(Thing.create().get('name'), 'thing');
-  assert.ok(classes['test:thing:-base'] === Thing);
+  assert.ok(classes['sofa:test/thing'] === Thing);
 });
 
 test('variant prepared', assert => {
@@ -63,8 +64,8 @@ test('variant prepared', assert => {
   assert.ok(Thing);
   assert.equal(Thing.create().get('name'), 'thing');
   assert.equal(Thing.create().get('variant'), 'cute');
-  assert.ok(classes['test:thing:-base']);
-  assert.ok(classes['test:thing:cute'] === Thing);
+  assert.ok(classes['sofa:test/thing']);
+  assert.ok(classes['sofa:test/thing/cute'] === Thing);
 });
 
 test('base factory without opts', assert => {
@@ -73,7 +74,7 @@ test('base factory without opts', assert => {
   let Thing = store._classForName({ prefix: 'test', name: 'thing' });
   assert.ok(Thing);
   assert.equal(Thing.create().get('name'), undefined);
-  assert.ok(classes['test:thing:-base'] === Thing);
+  assert.ok(classes['sofa:test/thing'] === Thing);
 });
 
 test('base factory with opts', assert => {
@@ -82,7 +83,7 @@ test('base factory with opts', assert => {
   let Thing = store._classForName({ prefix: 'test', name: 'thing', factory: { name: 'thing' }});
   assert.ok(Thing);
   assert.equal(Thing.create().get('name'), 'thing');
-  assert.ok(classes['test:thing:{"name":"thing"}:-base']);
+  assert.ok(classes['sofa:test/thing/{name=thing}']);
 });
 
 test('variant factory without opts', assert => {
@@ -100,8 +101,8 @@ test('variant factory without opts', assert => {
   assert.ok(Thing);
   assert.equal(Thing.create().get('name'), undefined);
   assert.equal(Thing.create().get('variant'), 'cute');
-  assert.ok(classes['test:thing:-base']);
-  assert.ok(classes['test:thing:cute'] === Thing);
+  assert.ok(classes['sofa:test/thing']);
+  assert.ok(classes['sofa:test/thing/cute'] === Thing);
 });
 
 test('variant factory with opts', assert => {
@@ -120,8 +121,8 @@ test('variant factory with opts', assert => {
   assert.ok(Thing);
   assert.equal(Thing.create().get('name'), 'thing');
   assert.equal(Thing.create().get('variant'), 'cute');
-  assert.ok(classes['test:thing:{"name":"thing"}:-base']);
-  assert.ok(classes['test:thing:{"name":"thing"}:cute'] === Thing);
+  assert.ok(classes['sofa:test/thing/{name=thing}']);
+  assert.ok(classes['sofa:test/thing/{name=thing}/cute'] === Thing);
 });
 
 test('base is cached', assert => {
