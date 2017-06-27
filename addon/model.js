@@ -9,12 +9,16 @@ const {
   computed,
   get,
   assert,
-  RSVP: { reject },
-  guidFor
+  RSVP: { reject }
 } = Ember;
 
-export function getDefinition(modelClass) {
+function getDefinitionForClass(modelClass) {
   return get(modelClass, 'definition');
+}
+
+export function getDefinition(modelClass) {
+  assert('modelClass must be factory', !!modelClass.class);
+  return getDefinitionForClass(modelClass.class);
 }
 
 const constructor = () => {
@@ -37,7 +41,7 @@ const internal = name => {
 
 const serialize = () => {
   return function(type) {
-    let definition = getDefinition(this.constructor);
+    let definition = getDefinitionForClass(this.constructor);
     let internal = getInternalModel(this);
     return definition.serialize(internal, type);
   };
@@ -64,7 +68,7 @@ const databaseInternalPromise = functionName => {
 const docId = () => {
   return computed('id', function() {
     let modelId = this.get('id');
-    let definition = getDefinition(this.constructor);
+    let definition = getDefinitionForClass(this.constructor);
     return definition.docId(modelId);
   }).readOnly();
 };
@@ -106,11 +110,6 @@ const Model = Ember.Object.extend(ModelStateMixin, {
   willDestroy() {
     getInternalModel(this).modelWillDestroy();
     this._super();
-  },
-
-  toString() {
-    let id = this.get('id');
-    return `<model@${this.get('modelName')}::${guidFor(this)}${id ? `:${id}` : ''}>`;
   }
 
 });
@@ -121,12 +120,10 @@ Model.reopenClass({
   modelName: null,
   definition: definition(),
 
-  _create: Model.create,
-
-  create() {
+  _create() {
     throw new Error({
       error: 'internal',
-      reason: 'use `store.model` or `database.model` to create new models'
+      reason: 'model.create'
     });
   }
 

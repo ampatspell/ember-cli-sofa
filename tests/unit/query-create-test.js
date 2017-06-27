@@ -23,8 +23,8 @@ test('create query with string', assert => {
   });
   assert.ok(query);
   assert.ok(query.get('info') === 'this');
-  assert.ok(classes['query:thing:-base']);
-  assert.ok(classes['query:thing:main']);
+  assert.ok(classes['sofa:query/thing']);
+  assert.ok(classes['sofa:query/thing/main']);
 });
 
 test('create query factory with string', assert => {
@@ -41,8 +41,8 @@ test('create query factory with string', assert => {
   });
   assert.ok(query);
   assert.ok(query.get('info') === 'this');
-  assert.ok(classes['query:thing:-base']);
-  assert.ok(classes['query:thing:main']);
+  assert.ok(classes['sofa:query/thing']);
+  assert.ok(classes['sofa:query/thing/main']);
 });
 
 test('create query factory with options', assert => {
@@ -62,8 +62,8 @@ test('create query factory with options', assert => {
   });
   assert.ok(query);
   assert.ok(query.get('info') === 'that');
-  assert.ok(classes['query:thing:{"info":"that"}:-base']);
-  assert.ok(classes['query:thing:{"info":"that"}:main']);
+  assert.ok(classes['sofa:query/thing/{info=that}']);
+  assert.ok(classes['sofa:query/thing/{info=that}/main']);
 });
 
 test('create query factory with options class is cached', assert => {
@@ -97,6 +97,6 @@ test('create query factory with options class is cached', assert => {
   assert.ok(one !== two);
   assert.ok(one.constructor === two.constructor);
 
-  assert.ok(classes['query:thing:{"info":"that"}:-base']);
-  assert.ok(classes['query:thing:{"info":"that"}:main']);
+  assert.ok(classes['sofa:query/thing/{info=that}']);
+  assert.ok(classes['sofa:query/thing/{info=that}/main']);
 });

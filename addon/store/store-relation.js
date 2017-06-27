@@ -8,8 +8,8 @@ export default Ember.Mixin.create({
 
   __relationProxyClassForName(proxyName, variant) {
     return this._classForName({
-      prefix: `sofa:${proxyName}`,
-      name: 'base',
+      prefix: 'sofa',
+      name: proxyName,
       prepare: Proxy => {
         let Extended = Proxy.extend();
         Extended.reopenClass({ store: this, [__sofa_type__]: __sofa_relation_proxy_type__ });
@@ -23,7 +23,7 @@ export default Ember.Mixin.create({
     if(!name) {
       return;
     }
-    return this._classForName({ prefix: 'relationship', name, augment: false });
+    return this._classForName({ prefix: 'relationship', name, augment: false })['class'];
   },
 
   _buildRelationshipVariantOptions(relation) {

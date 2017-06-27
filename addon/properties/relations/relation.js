@@ -119,7 +119,7 @@ export default class Relation {
       let definition = this.relationship.store._definitionForModelClass(modelClass);
       assert({
         error: 'invalid_document',
-        reason: `document '${docId} is expected to be ${get(relationshipModelClass, 'modelName')} not ${definition.modelName}`
+        reason: `document '${docId} is expected to be ${get(relationshipModelClass.class, 'modelName')} not ${definition.modelName}`
       }, definition.is(modelClass));
     } else {
       docId = obj;

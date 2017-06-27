@@ -77,7 +77,7 @@ configurations(({ module, test, createStore }) => {
     function t(ok, a, b) {
       let aa = db.modelClassForName(a);
       let bb = db.modelClassForName(b);
-      assert.ok(db._definitionForModelClass(aa).is(bb) === ok, `${ok} ${aa} -> ${bb}`);
+      assert.ok(db._definitionForModelClass(aa).is(bb) === ok, `${ok} ${aa.class} -> ${bb.class}`);
     }
 
     t(true, 'test-duck', 'test-duck');

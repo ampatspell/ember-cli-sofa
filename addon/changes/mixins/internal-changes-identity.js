@@ -21,7 +21,7 @@ export default Ember.Mixin.create({
     if(!opts) {
       opts = null;
     }
-    let modelName = get(changesClass, 'modelName');
+    let modelName = get(changesClass.class, 'modelName');
     let serializedOpts = this._serializeChangesOpts(opts);
     return `${modelName} ${serializedOpts}`;
   },

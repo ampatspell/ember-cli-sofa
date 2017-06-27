@@ -46,9 +46,10 @@ export function internalModelDidSetDatabase(internal, props) {
 export default class InternalModel {
 
   constructor(store, modelClass, database = null) {
+    Ember.assert('modelClass should be factory', !!modelClass.class);
     this.store = store;
     this.modelClass = modelClass;
-    this.definition = getDefinition(modelClass);
+    this.definition = getDefinition(this.modelClass);
     this.values = new EmptyObject();
     this.raw = null;
     this._database = database;

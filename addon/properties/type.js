@@ -26,7 +26,7 @@ export default class Identifier extends Attribute {
   }
 
   valueForModelClass(modelClass) {
-    return this.opts.value || get(modelClass, 'modelName');
+    return this.opts.value || get(modelClass.class, 'modelName');
   }
 
   serialize(internal, doc) {
