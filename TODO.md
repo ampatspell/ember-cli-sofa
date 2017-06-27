@@ -11,14 +11,9 @@
 * sortable relationship helper `Relationship.extend({ sortable: sortable('position') })`: needed?
 * paginated relationship helper `Relationship.extend({ paginated: paginated(...) })`
 
-### Collections
-
-* consider droping collections and adding support for model relationships which are updated w/o inverse
-
 ### Collection relation
 
 * belongsTo with `{ inverse: null }`
-* fastboot support
 
 ### changes
 
