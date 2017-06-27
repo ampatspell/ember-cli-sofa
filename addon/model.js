@@ -9,8 +9,7 @@ const {
   computed,
   get,
   assert,
-  RSVP: { reject },
-  guidFor
+  RSVP: { reject }
 } = Ember;
 
 function getDefinitionForClass(modelClass) {

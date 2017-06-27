@@ -5,9 +5,15 @@ const {
   computed
 } = Ember;
 
-const coll = (name) => {
+const root = () => {
   return computed(function() {
-    return this.get('db.main').collection(name);
+    return this.get('db.main').model('dummy-root', { id: 'singleton' });
+  }).readOnly();
+};
+
+const prop = key => {
+  return computed(function() {
+    return this.get('root').get(key);
   }).readOnly();
 };
 
@@ -29,10 +35,11 @@ export default Store.extend({
     }
   },
 
-  allModels: coll('all'),
-  dirtyModels: coll('dirty'),
+  root: root(),
 
-  authors: coll('authors'),
-  images: coll('images'),
+  allModels: prop('all'),
+  dirtyModels: prop('dirty'),
+  authors: prop('authors'),
+  images: prop('images')
 
 });

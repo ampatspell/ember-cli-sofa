@@ -2,6 +2,10 @@
 
 ## sofa
 
+### Query
+
+* figure out what context properties are needed, provide those
+
 ### Relationship classes
 
 * sortable relationship helper `Relationship.extend({ sortable: sortable('position') })`: needed?
@@ -9,42 +13,12 @@
 
 ### Collections
 
-* consider droping collections and adding support for model relationships which are updated w/o inverse:
+* consider droping collections and adding support for model relationships which are updated w/o inverse
 
-``` javascript
-// models/session.js
-export default Model.extend({
+### Collection relation
 
-  all:      hasMany(null, { inverse: null }) // _modelIdentity.all
-  sections: hasMany('section', { inverse: null, relationship: 'session-sections' })
-
-});
-```
-
-``` javascript
-// relationships/session-sections.js
-export default Relationship.extend({
-
-  // optional
-  query: { name: 'view', ddoc: 'section', view: 'all' },
-
-  // relationship is mixed in ArrayProxy (or ObjectProxy if belongsTo)
-  root: computed('@each.{category,position}', function() {
-    return this.filterBy('category', null).sortBy('position');
-  }).readOnly(),
-
-  visible: computed('root.@each.visible', function() {
-    return this.get('root').filterBy('visible', true);
-  }).readOnly(),
-
-});
-```
-
-* query load results are not directly added to relationship
-* relationship can have `matches` computed property
-* relationship can have `{ modelName: null }`
+* belongsTo with `{ inverse: null }`
 * relationship should be destroyable, not only parent model
-
 
 ### changes
 

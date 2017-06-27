@@ -1,8 +1,10 @@
 import HasManyRelation from './has-many';
 import RelationLoader from './util/relation-loader';
 import QueryFindMixin from '../../util/query-find-mixin';
-import RelationQueryMixin from './query/relation';
+import relationQueryMixinBuilder from './query/relation';
 import RelationFindQueryMixin from './query/relation-find';
+
+const RelationQueryMixin = relationQueryMixinBuilder({ requireSavedModel: true });
 
 export default class HasManyLoadedRelation extends HasManyRelation {
 
@@ -17,7 +19,7 @@ export default class HasManyLoadedRelation extends HasManyRelation {
 
   createQuery() {
     return this._createQuery({
-      name: 'relation-find',
+      name: 'loaded-relation-find',
       prepare: Query => Query.extend(QueryFindMixin, RelationQueryMixin, RelationFindQueryMixin)
     });
   }

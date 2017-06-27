@@ -58,6 +58,6 @@ export default Ember.Mixin.create({
 
   match: oneWay('models').readOnly(),
 
-  arrangedContent: matchToInternalModels(),
+  content: matchToInternalModels(),
 
 });

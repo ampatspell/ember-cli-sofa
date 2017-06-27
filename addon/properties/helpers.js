@@ -9,6 +9,8 @@ import BelongsToPersisted from './belongs-to-persisted';
 import BelongsToLoaded from './belongs-to-loaded';
 import HasManyPersisted from './has-many-persisted';
 import HasManyLoaded from './has-many-loaded';
+import HasManyCollection from './has-many-collection';
+import Error from 'sofa/util/error';
 
 const {
   computed,
@@ -79,9 +81,15 @@ function isLoadedRelationship(store, opts) {
   return store._relationshipBuilderForNameHasProperty(opts.relationship, 'query');
 }
 
+function isCollectionRelationship(store, opts={}) {
+  return opts.inverse === null;
+}
+
 function belongsTo(modelName, opts={}) {
   return make(store => {
-    if(isLoadedRelationship(store, opts)) {
+    if(isCollectionRelationship(store, opts)) {
+      throw new Error({ error: 'not-implemented', reason: 'collection belongsTo is not yet implemented' });
+    } else if(isLoadedRelationship(store, opts)) {
       return new BelongsToLoaded(modelName, opts);
     } else {
       return new BelongsToPersisted(modelName, opts);
@@ -91,7 +99,9 @@ function belongsTo(modelName, opts={}) {
 
 function hasMany(modelName, opts={}) {
   return make(store => {
-    if(isLoadedRelationship(store, opts)) {
+    if(isCollectionRelationship(store, opts)) {
+      return new HasManyCollection(modelName, opts);
+    } else if(isLoadedRelationship(store, opts)) {
       return new HasManyLoaded(modelName, opts);
     } else {
       return new HasManyPersisted(modelName, opts);

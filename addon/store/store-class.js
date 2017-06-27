@@ -63,7 +63,7 @@ export default Ember.Mixin.create({
   },
 
   // { prefix, name, factory, prepare, variant: { name, prepare }}
-  _classForName({ prefix, name, factory, prepare, variant }) {
+  _classForName({ prefix, name, factory, prepare, variant, augment=true }) {
     let normalizedModelName = this._normalizeModelName(name, prefix);
     let fullName = `${prefix}:${normalizedModelName}`;
 
@@ -90,7 +90,9 @@ export default Ember.Mixin.create({
       if(prepare) {
         Base = prepare(Base, normalizedModelName);
       }
-      set(Base, 'modelName', normalizedModelName);
+      if(augment) {
+        set(Base, 'modelName', normalizedModelName);
+      }
       Base = this._registerClassFactory(baseFactoryName, Base);
     }
 
@@ -103,7 +105,9 @@ export default Ember.Mixin.create({
         } else {
           Variant = Variant.extend();
         }
-        set(Variant, 'modelVariant', normalizedVariantName);
+        if(augment) {
+          set(Variant, 'modelVariant', normalizedVariantName);
+        }
         Variant = this._registerClassFactory(variantFactoryName, Variant);
       }
       return Variant;
