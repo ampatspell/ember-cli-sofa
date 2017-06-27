@@ -19,7 +19,6 @@ test('instances has owner', assert => {
   let fn = opts => {
     let Thing = store._classForName(opts);
     assert.ok(getOwner(Thing.create()));
-    console.log(Thing.create()+'');
   };
   fn({ prefix: 'model', name: 'thing' });
   fn({ prefix: 'model', name: 'thing', variant: { name: 'nice' } });

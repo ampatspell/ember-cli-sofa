@@ -74,7 +74,7 @@ configurations(({ module, test, createStore }) => {
   test('matchedDocument', assert => {
     var model = db.model('test-duck', {});
     var type = model.get('_internal').getProperty('type');
-    var modelClass = model.constructor;
+    var modelClass = store.modelClassForName('test-duck');
 
     assert.ok(!type.matchesDocument(modelClass));
     assert.ok(!type.matchesDocument(modelClass, {}));
@@ -88,7 +88,7 @@ configurations(({ module, test, createStore }) => {
   test('matchesDocument for custom key-value', assert => {
     var model = db.model('custom-duck', {});
     var type = model.get('_internal').getProperty('type');
-    var modelClass = model.constructor;
+    var modelClass = store.modelClassForName('custom-duck');
 
     assert.ok(!type.matchesDocument(modelClass));
     assert.ok(!type.matchesDocument(modelClass, {}));
