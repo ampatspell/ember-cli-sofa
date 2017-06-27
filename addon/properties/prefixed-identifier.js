@@ -14,7 +14,7 @@ export default class PrefixedIdentifier extends Identifier {
   }
 
   prefix(modelClass) {
-    return this.opts.value || `${get(modelClass, 'modelName')}:`;
+    return this.opts.value || `${get(modelClass.class, 'modelName')}:`;
   }
 
   docId(modelClass, modelId) {

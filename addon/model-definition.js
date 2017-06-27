@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import EmptyObject from './util/empty-object';
-import { isClass_, isOneOf } from './util/assert';
+import { assert, isClass_, isOneOf } from './util/assert';
 
 const {
   computed,
@@ -11,7 +11,9 @@ const {
 
 export function create() {
   return computed(function() {
-    return new Definition(this);
+    let store = get(this, 'store');
+    let factory = store._classFactoryForClass(this);
+    return new Definition(factory);
   }).readOnly();
 }
 
@@ -27,9 +29,10 @@ function lookupProperty(meta, store) {
   return property;
 }
 
-function lookupProperties(modelClass) {
+function lookupProperties(modelClassFactory) {
   let all = A();
   let byName = new EmptyObject();
+  let modelClass = modelClassFactory.class;
 
   let store = get(modelClass, 'store');
   modelClass.eachComputedProperty((name, meta) => {
@@ -52,6 +55,7 @@ function lookupProperties(modelClass) {
 export default class Definition {
 
   constructor(modelClass) {
+    Ember.assert('modelClass must be factory', !!modelClass.class);
     this.modelClass = modelClass;
     this.properties = lookupProperties(modelClass);
   }
@@ -59,7 +63,7 @@ export default class Definition {
   get modelName() {
     let modelName = this._modelName;
     if(!modelName) {
-      modelName = get(this.modelClass, 'modelName');
+      modelName = get(this.modelClass.class, 'modelName');
       this._modelName = modelName;
     }
     return modelName;
@@ -157,9 +161,10 @@ export default class Definition {
   }
 
   is(parent) {
-    isClass_(`parent must be class not ${parent}`, parent);
-    let arg = parent.superclass;
-    let self = this.modelClass.superclass;
+    assert('parent', !!parent);
+    isClass_(`parent must be factory`, parent.class);
+    let arg = parent.class.superclass;
+    let self = this.modelClass.class.superclass;
     while(self) {
       if(arg === self) {
         return true;
