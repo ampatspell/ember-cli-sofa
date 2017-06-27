@@ -1,12 +1,24 @@
 import Ember from 'ember';
 import { module, test, createStore, register } from '../helpers/setup';
 
+const {
+  getOwner
+} = Ember;
+
 let store;
 let classes;
 
 module('store-class-for-name', () => {
   store = createStore();
   classes = store.get('_classes');
+});
+
+test.only('base has owner', assert => {
+  let Class = Ember.Object.extend({ name: 'thing' });
+  register('test:thing', Class);
+  let Thing = store._classForName({ prefix: 'test', name: 'thing' });
+  assert.ok(getOwner(Thing.create()));
+  console.log(Thing.create()+'');
 });
 
 test('base', assert => {

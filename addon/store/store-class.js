@@ -23,6 +23,13 @@ export default Ember.Mixin.create({
     return dasherize(modelName);
   },
 
+  _register(Class, baseKey) {
+    baseKey = `sofa:${baseKey.replace(/:/g, '-')}`;
+    let owner = getOwner(this);
+    owner.register(baseKey, Class, { instantiate: false });
+    return owner.factoryFor(baseKey);
+  },
+
   // { prefix, name, factory, prepare, variant: { name, prepare }}
   _classForName({ prefix, name, factory, prepare, variant }) {
     let normalizedModelName = this._normalizeModelName(name, prefix);
@@ -43,8 +50,8 @@ export default Ember.Mixin.create({
       if(prepare) {
         Base = prepare(Base, normalizedModelName);
       }
-      setOwner(Base, getOwner(this));
       set(Base, 'modelName', normalizedModelName);
+      Base = this._register(Base, baseKey);
       cache[baseKey] = Base;
     }
 
