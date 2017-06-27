@@ -4,7 +4,6 @@ import { test as qtest, only as qonly, todo as qtodo } from 'ember-qunit';
 import startApp from './start-app';
 import extendAssert from './extend-assert';
 import params from './params';
-import { Store } from 'sofa';
 
 import globalOptions from 'sofa/util/global-options';
 
@@ -14,9 +13,7 @@ const {
   run,
   String: { dasherize },
   copy,
-  merge,
-  getOwner,
-  setOwner
+  merge
 } = Ember;
 
 const configs = {
@@ -126,6 +123,7 @@ export function wait(arg, delay) {
 }
 
 export const baseURL = configs['2.0'].url;
+let storeIdentifier = 0;
 
 export function createStore(url = baseURL) {
   let Store = instance.factoryFor('sofa:store').class.extend({
@@ -137,8 +135,9 @@ export function createStore(url = baseURL) {
       }
     }
   });
-  instance.register('sofa:store/test', Store, { instantiate: false });
-  Store = instance.factoryFor('sofa:store/test');
+  let key = `sofa:store/test/${storeIdentifier++}`;
+  instance.register(key, Store);
+  Store = instance.factoryFor(key);
   let store = Store.create();
   stores.push(store);
   return store;
