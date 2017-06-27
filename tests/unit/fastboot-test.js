@@ -121,4 +121,18 @@ configurations(({ module, test, createStore }) => {
     });
   });
 
+  test('model includes state', assert => {
+    let duck = db.model('duck', { id: 'red' });
+    let json = duck.serialize('shoebox');
+    assert.deepEqual_(json, {
+      "_state": {
+        "isNew": true
+      },
+      "_attachments": {},
+      "_id": "duck:red",
+      "house": null,
+      "type": "duck"
+    });
+  });
+
 });
