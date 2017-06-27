@@ -18,6 +18,7 @@
 ### Collection relation
 
 * belongsTo with `{ inverse: null }`
+* fastboot support
 
 ### changes
 

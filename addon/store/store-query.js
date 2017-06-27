@@ -46,19 +46,6 @@ export default Ember.Mixin.create({
       variant,
       properties: { _relation }
     });
-  },
-
-  _createQueryForInternalCollection(_internalCollection, variant) {
-    let collection = _internalCollection.getCollectionModel();
-    let query = collection.get('query') || collection.get('queryName');
-    if(!query) {
-      return;
-    }
-    return this._createQuery({
-      query,
-      variant,
-      properties: { _internalCollection }
-    });
   }
 
 });

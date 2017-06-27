@@ -7,8 +7,6 @@ import DatabaseDeserialize from './database/database-deserialize';
 import DatabaseSerialize from './database/database-serialize';
 import DatabaseInternalModelIdentity from './database/database-internal-model-identity';
 import DatabaseInternalModel from './database/database-internal-model';
-import DatabaseCollection from './database/database-collection';
-import DatabaseInternalCollectionIdentity from './database/database-internal-collection-identity';
 import DatabaseSecurity from './database/database-security';
 import DatabaseShoebox from './database/database-shoebox';
 import DatabaseChanges from './database/database-changes';
@@ -23,8 +21,6 @@ export default Ember.Object.extend(
   DatabaseSerialize,
   DatabaseInternalModelIdentity,
   DatabaseInternalModel,
-  DatabaseCollection,
-  DatabaseInternalCollectionIdentity,
   DatabaseSecurity,
   DatabaseShoebox,
   DatabaseChanges,
