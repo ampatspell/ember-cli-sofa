@@ -80,12 +80,12 @@ export default class HasManyCollectionRelation extends Relation {
     });
   }
 
-  serialize(type) {
+  serialize() {
     let isLoaded = this.loader.state.isLoaded;
     return { isLoaded };
   }
 
-  deserialize(value, changed) {
+  deserialize(value) {
     if(value.isLoaded) {
       this.loader.setLoaded();
     }
