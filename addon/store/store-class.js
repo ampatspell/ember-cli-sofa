@@ -67,10 +67,12 @@ export default Ember.Mixin.create({
   _classForName({ prefix, name, factory, prepare, variant }) {
     let normalizedModelName = this._normalizeModelName(name, prefix);
     let fullName = `${prefix}:${normalizedModelName}`;
-    let keyPrefix = `${prefix}/${normalizedModelName}`;
-    let factoryIdentifier = this._classFactoryIdentifier(factory);
+
     let storePrefix = this._storeClassFactoryPrefix();
+    let factoryIdentifier = this._classFactoryIdentifier(factory);
+
     let baseFactoryName = `${storePrefix}:${prefix}/${normalizedModelName}${factoryIdentifier ? `/${factoryIdentifier}` : ''}`;
+
     let normalizedVariantName;
     let variantFactoryName;
     if(variant && variant.name) {
