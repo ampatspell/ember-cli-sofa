@@ -4,6 +4,14 @@
 Version: {{version}}
 ```
 
+### 2.0.6
+
+* [new] collection api removed
+
+### 2.0.5
+
+* [new] has-many relationship with `{ inverse: null }` works the same like collection
+
 ### 2.0.4
 
 * [new] Ember 2.13.3
