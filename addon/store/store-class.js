@@ -5,7 +5,6 @@ import { lookupStoreIdentifier } from '../store-identifier';
 
 const {
   getOwner,
-  setOwner,
   String: { dasherize },
   set,
   typeOf
@@ -111,6 +110,16 @@ export default Ember.Mixin.create({
     }
 
     return Base;
+  },
+
+  _classFactoryForClass(modelClass) {
+    let classes = this.get('_classes');
+    for(let key in classes) {
+      let factory = classes[key];
+      if(factory.class === modelClass) {
+        return factory;
+      }
+    }
   }
 
 });
