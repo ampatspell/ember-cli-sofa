@@ -27,12 +27,10 @@ configurations(({ module, test, createStore }) => {
   let db;
 
   let HouseDucks = Query.extend({
-
     find: computed('model.docId', function() {
       let docId = this.get('model.docId');
       return { ddoc: 'ducks', view: 'by-house', key: docId };
-    }),
-
+    })
   });
 
   let Duck = Model.extend({
