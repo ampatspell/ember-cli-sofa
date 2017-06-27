@@ -18,7 +18,6 @@
 ### Collection relation
 
 * belongsTo with `{ inverse: null }`
-* relationship should be destroyable, not only parent model
 
 ### changes
 
