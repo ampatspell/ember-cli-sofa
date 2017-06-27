@@ -120,7 +120,7 @@ configurations(({ module, test, createStore }) => {
     });
   });
 
-  test.only('destroy', assert => {
+  test('destroy', assert => {
     let root;
     let relation;
     return all([ 'yellow', 'red', 'green' ].map(id => db.model('duck', { id }).save())).then(() => {
