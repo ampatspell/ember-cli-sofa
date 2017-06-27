@@ -111,11 +111,6 @@ const Model = Ember.Object.extend(ModelStateMixin, {
   willDestroy() {
     getInternalModel(this).modelWillDestroy();
     this._super();
-  },
-
-  toString() {
-    let id = this.get('id');
-    return `<model@${this.get('modelName')}::${guidFor(this)}${id ? `:${id}` : ''}>`;
   }
 
 });
