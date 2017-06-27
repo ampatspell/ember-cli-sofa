@@ -33,7 +33,7 @@ export default Ember.Mixin.create({
     if(!opts) {
       opts = null;
     }
-    let modelName = get(collectionClass, 'modelName');
+    let modelName = get(collectionClass.class, 'modelName');
     let serializedOpts = this._serializeCollectionOpts(opts);
     return `${modelName} ${serializedOpts}`;
   },

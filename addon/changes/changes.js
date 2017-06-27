@@ -39,7 +39,7 @@ const state = () => {
   }).readOnly();
 }
 
-const Changes = Ember.Object.extend(Evented, {
+export default Ember.Object.extend(Evented, {
 
   _internal: null,
   _listener: listener(),
@@ -63,11 +63,3 @@ const Changes = Ember.Object.extend(Evented, {
   }
 
 });
-
-Changes.reopenClass({
-
-  _create: Changes.create
-
-});
-
-export default Changes;

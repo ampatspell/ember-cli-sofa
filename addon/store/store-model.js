@@ -1,12 +1,11 @@
 import Ember from 'ember';
 import { internalPropertyName } from '../internal-model';
-import create from '../util/create';
 
 export default Ember.Mixin.create({
 
   _createModelForInternalModel(internal, props) {
-    let modelClass = internal.modelClass;
-    let model = create(modelClass, { [internalPropertyName]: internal });
+    let Model = internal.modelClass;
+    let model = Model.create({ [internalPropertyName]: internal });
     if(props) {
       model.setProperties(props);
     }
@@ -14,8 +13,8 @@ export default Ember.Mixin.create({
   },
 
   _createModelForName(modelName, database, props) {
-    let Model = this.modelClassForName(modelName);
-    let { internal, instance } = this._createNewInternalModel(Model, database, props);
+    let ModelFactory = this.modelClassForName(modelName);
+    let { internal, instance } = this._createNewInternalModel(ModelFactory, database, props);
     return internal.getModel(instance);
   },
 

@@ -13,8 +13,7 @@ const {
   run,
   String: { dasherize },
   copy,
-  merge,
-  setOwner
+  merge
 } = Ember;
 
 const configs = {
@@ -29,7 +28,7 @@ const configs = {
 };
 
 let app;
-let container;
+let instance;
 let stores = [];
 
 function setupGlobalOptions() {
@@ -45,9 +44,9 @@ export function module(name, cb) {
       setupGlobalOptions();
       let done = assert.async();
       app = startApp();
-      container = app.__container__;
+      instance = app.buildInstance();
       resolve().then(function() {
-        return cb(container);
+        return cb();
       }).then(function() {
         done();
       });
@@ -60,6 +59,7 @@ export function module(name, cb) {
         });
         stores = [];
         app.destroy();
+        instance.destroy();
         run.next(() => {
           done();
         });
@@ -123,9 +123,10 @@ export function wait(arg, delay) {
 }
 
 export const baseURL = configs['2.0'].url;
+let storeIdentifier = 0;
 
 export function createStore(url = baseURL) {
-  let Store = container.factoryFor('sofa:store').class.extend({
+  let Store = instance.factoryFor('sofa:store').class.extend({
     databaseOptionsForIdentifier(identifier) {
       if(identifier === 'main') {
         return { url, name: 'ember-cli-sofa-test-main' };
@@ -134,8 +135,10 @@ export function createStore(url = baseURL) {
       }
     }
   });
+  let key = `sofa:store/test/${storeIdentifier++}`;
+  instance.register(key, Store);
+  Store = instance.factoryFor(key);
   let store = Store.create();
-  setOwner(store, container);
   stores.push(store);
   return store;
 }

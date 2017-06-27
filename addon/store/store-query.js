@@ -29,7 +29,7 @@ export default Ember.Mixin.create({
       name,
       factory,
       variant
-    })._create(properties);
+    }).create(properties);
   },
 
   _createQueryForRelation(_relation, variant) {

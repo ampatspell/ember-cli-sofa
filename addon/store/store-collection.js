@@ -1,5 +1,4 @@
 import Ember from 'ember';
-import create from '../util/create';
 
 const {
   merge
@@ -8,8 +7,8 @@ const {
 export default Ember.Mixin.create({
 
   _createCollectionForInternalCollection(internal) {
-    let collectionClass = internal.collectionClass;
-    return create(collectionClass, merge({ _internal: internal, content: internal.content }, internal.opts));
+    let Collection = internal.collectionClass;
+    return Collection.create(merge({ _internal: internal, content: internal.content }, internal.opts));
   }
 
 });

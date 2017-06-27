@@ -56,10 +56,11 @@ test('lookup', assert => {
   assert.ok(makeRelationFind() === makeRelationFind());
   assert.ok(makeBase() === makeBase());
   assert.ok(makeRelationFind() !== makeRelationFirst());
-  assert.ok(makeBase() === makeRelationFirst().superclass);
+  assert.ok(makeBase().class === makeRelationFirst().class.superclass);
   assert.deepEqual(store.get('_classes'), {
-    'query:foo:-base': makeBase(),
-    'query:foo:relation-find': makeRelationFind(),
-    'query:foo:relation-first': makeRelationFirst()
+    'query:foo': store.get('_classes')['query:foo'],
+    'sofa:query/foo': makeBase(),
+    'sofa:query/foo/relation-find': makeRelationFind(),
+    'sofa:query/foo/relation-first': makeRelationFirst()
   });
 });
