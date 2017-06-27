@@ -1,3 +1,4 @@
+import StoreIdentifier from 'sofa/store-identifier';
 import Store from 'sofa/store';
 import Couches from 'sofa/couches';
 import Couch from 'sofa/couch';
@@ -39,6 +40,7 @@ export default {
     container.registerOptionsForType('sofa/database', { instantiate: false });
     // container.registerOptionsForType('sofa/query', { instantiate: false });
 
+    container.register('sofa:store-identifier', StoreIdentifier);
     container.register('sofa:store', Store, { instantiate: false });
     container.register('sofa:couches', Couches, { instantiate: false });
     container.register('sofa:couch', Couch, { instantiate: false });

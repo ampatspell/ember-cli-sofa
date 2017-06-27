@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import { object } from '../util/computed';
 import { assert, notBlank } from '../util/assert';
+import { lookupStoreIdentifier } from '../store-identifier';
 
 const {
   getOwner,
@@ -10,15 +11,14 @@ const {
   typeOf
 } = Ember;
 
-let storeIdentifier = -1;
-
 export default Ember.Mixin.create({
 
+  _identifier: null,
   _classes: object(),
 
   init() {
     this._super(...arguments);
-    storeIdentifier++;
+    this.set('_identifier', lookupStoreIdentifier(this));
   },
 
   _classFactoryIdentifier(factory) {
@@ -56,8 +56,9 @@ export default Ember.Mixin.create({
 
   _storeClassFactoryPrefix() {
     let prefix = 'sofa';
-    if(storeIdentifier) {
-      prefix = `${prefix}/${storeIdentifier}`;
+    let identifier = this.get('_identifier');
+    if(identifier) {
+      prefix = `${prefix}/${identifier}`;
     }
     return prefix;
   },
