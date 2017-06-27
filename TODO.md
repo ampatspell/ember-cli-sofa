@@ -23,6 +23,7 @@
 
 ### fastboot
 
+* serialize `isNew` models -- include model `_state`
 * push and retrieve session state from shoebox
   // https://simplabs.com/blog/2016/12/06/out-of-the-box-fastboot-support-in-ember-simple-auth.html
   // implementation might go to ember-cli-couch
