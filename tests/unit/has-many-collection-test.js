@@ -97,7 +97,7 @@ configurations(({ module, test, createStore }) => {
     assert.deepEqual(root.get('ducks').mapBy('id'), [ 'yellow' ]);
   });
 
-  test.skip('autoload', assert => {
+  test('autoload', assert => {
     let root;
     return all([ 'yellow', 'red', 'green' ].map(id => db.model('duck', { id }).save())).then(() => {
       flush();
@@ -109,12 +109,12 @@ configurations(({ module, test, createStore }) => {
     });
   });
 
-  test.skip('load', assert => {
+  test('load', assert => {
     let root;
     return all([ 'yellow', 'red', 'green' ].map(id => db.model('duck', { id }).save())).then(() => {
       flush();
       root = db.model('root');
-      return db.get('ducks.promise');
+      return root.get('ducks.promise');
     }).then(() => {
       assert.deepEqual(root.get('ducks').mapBy('id'), [ 'green', 'red', 'yellow' ]);
     });

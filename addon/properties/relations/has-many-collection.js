@@ -73,11 +73,4 @@ export default class HasManyCollectionRelation extends Relation {
     }
   }
 
-  load(notify) {
-    if(!this.value) {
-      return;
-    }
-    this.loader.load(notify);
-  }
-
 }
