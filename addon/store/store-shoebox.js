@@ -11,7 +11,7 @@ export default Ember.Mixin.create({
     let result = [];
     for(let identifier in databases) {
       let database = databases[identifier];
-      result.push({ identifier, docs: database._createShoebox() });
+      result.push({ identifier, shoebox: database._createShoebox() });
     }
     return result;
   },
@@ -20,11 +20,11 @@ export default Ember.Mixin.create({
     if(!shoebox) {
       return;
     }
-    return A(shoebox).map(({ identifier, docs }) => {
+    return A(shoebox).map(({ identifier, shoebox }) => {
       let database = this.database(identifier);
       return {
         identifier,
-        status: database._pushShoebox(docs)
+        status: database._pushShoebox(shoebox)
       };
     });
   }
