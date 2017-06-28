@@ -117,7 +117,7 @@ configurations({ only: '1.6' }, ({ module, test, createStore }) => {
     });
   });
 
-  test.only('shoebox includes state for models', assert => {
+  test('shoebox includes state for models', assert => {
     let duck = db.model('duck', { id: 'red' });
     let json = duck.serialize('shoebox');
     assert.deepEqual_(json, {
