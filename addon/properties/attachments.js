@@ -65,7 +65,7 @@ export default class Attachments extends Property {
       value = attachments.serialize(type);
     }
 
-    if(type === 'preview' && Object.keys(value) === 0) {
+    if([ 'preview', 'shoebox' ].indexOf(type) !== -1 && Object.keys(value).length === 0) {
       value = undefined;
     }
 

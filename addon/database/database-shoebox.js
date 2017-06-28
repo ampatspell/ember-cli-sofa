@@ -11,10 +11,10 @@ export default Ember.Mixin.create({
   _createShoeboxModels() {
     let all = this._modelIdentity.all;
     return A(all.map(internal => {
-      if(internal.isNew) {
+      let definition = internal.definition;
+      if(!definition.shouldSerialize(internal, shoebox)) {
         return;
       }
-      let definition = internal.definition;
       return definition.serialize(internal, shoebox);
     })).compact();
   },

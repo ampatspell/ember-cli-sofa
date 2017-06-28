@@ -103,7 +103,7 @@ configurations(({ module, test, createStore }) => {
       flush();
       root = db.model('root');
       assert.deepEqual(root.get('ducks').mapBy('id'), []);
-      return wait(null, 100);
+      return wait(null, 300);
     }).then(() => {
       assert.deepEqual(root.get('ducks').mapBy('id'), [ 'green', 'red', 'yellow' ]);
     });

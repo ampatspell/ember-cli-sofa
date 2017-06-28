@@ -27,12 +27,10 @@ configurations(({ module, test, createStore }) => {
   let db;
 
   let HouseDucks = Query.extend({
-
     find: computed('model.docId', function() {
       let docId = this.get('model.docId');
       return { ddoc: 'ducks', view: 'by-house', key: docId };
-    }),
-
+    })
   });
 
   let Duck = Model.extend({
@@ -71,28 +69,24 @@ configurations(({ module, test, createStore }) => {
       assert.deepEqual_(db._createShoebox(), {
         documents: [
           {
-            "_attachments": {},
             "_id": "duck:yellow",
             "_rev": "ignored",
             "house": "house:big",
             "type": "duck"
           },
           {
-            "_attachments": {},
             "_id": "duck:green",
             "_rev": "ignored",
             "house": "house:big",
             "type": "duck"
           },
           {
-            "_attachments": {},
             "_id": "duck:red",
             "_rev": "ignored",
             "house": "house:big",
             "type": "duck"
           },
           {
-            "_attachments": {},
             "_id": "house:big",
             "_rev": "ignored",
             "type": "house",

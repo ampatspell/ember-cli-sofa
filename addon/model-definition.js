@@ -105,6 +105,19 @@ export default class Definition {
     });
   }
 
+  shouldSerialize(internal, type) {
+    if(type === 'shoebox') {
+      let state = internal.state;
+      if(state.isNew) {
+        return false;
+      }
+      if(!state.isLoaded) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   serialize(internal, type='document') {
     isOneOf('type', type, [ 'preview', 'document', 'shoebox' ]);
     let doc = copy(internal.raw || {});
