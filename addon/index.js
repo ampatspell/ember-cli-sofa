@@ -28,6 +28,10 @@ import {
 
 const hasOne = belongsTo;
 
+import {
+  transient
+} from './computed';
+
 export {
   Error,
 
@@ -55,7 +59,9 @@ export {
   attr,
   belongsTo,
   hasOne,
-  hasMany
+  hasMany,
+
+  transient
 };
 
 export default Store;
