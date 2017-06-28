@@ -12,6 +12,9 @@ export default Ember.Mixin.create({
     let all = this._modelIdentity.all;
     return A(all.map(internal => {
       let definition = internal.definition;
+      if(!definition.shouldSerialize(internal, shoebox)) {
+        return;
+      }
       return definition.serialize(internal, shoebox);
     })).compact();
   },

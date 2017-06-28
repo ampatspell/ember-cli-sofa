@@ -118,15 +118,25 @@ export default class Definition {
     return true;
   }
 
+  didSerialize(internal, type, doc) {
+    if(type === 'shoebox') {
+      let state = internal.state;
+      let isNew = state.isNew;
+      if(isNew) {
+        doc._state = {
+          isNew
+        };
+      }
+    }
+  }
+
   serialize(internal, type='document') {
     isOneOf('type', type, [ 'preview', 'document', 'shoebox' ]);
-    if(!this.shouldSerialize(internal, type)) {
-      return;
-    }
     let doc = copy(internal.raw || {});
     this.eachProperty(property => {
       property.serialize(internal, doc, type);
     });
+    this.didSerialize(internal, type, doc);
     return doc;
   }
 
