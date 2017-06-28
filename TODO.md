@@ -12,6 +12,7 @@
 ### Collection relation
 
 * belongsTo with `{ inverse: null }`
+* collection relations should not set parent model dirty
 
 ### changes
 
