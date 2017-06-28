@@ -135,4 +135,18 @@ configurations(({ module, test, createStore }) => {
     });
   });
 
+  test('transient models are included in shoebox', assert => {
+    db.transient('duck', 'yellow');
+    assert.deepEqual_(db._createShoebox(), {
+      "documents": [
+        {
+          "_transient": true,
+          "_id": "duck:yellow",
+          "name": null,
+          "type": "duck"
+        }
+      ]
+    });
+  });
+
 });

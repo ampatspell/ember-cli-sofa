@@ -118,12 +118,21 @@ export default class Definition {
     return true;
   }
 
+  didSerialize(internal, doc, type) {
+    if(type === 'shoebox') {
+      if(internal.transient) {
+        doc._transient = true;
+      }
+    }
+  }
+
   serialize(internal, type='document') {
     isOneOf('type', type, [ 'preview', 'document', 'shoebox' ]);
     let doc = copy(internal.raw || {});
     this.eachProperty(property => {
       property.serialize(internal, doc, type);
     });
+    this.didSerialize(internal, doc, type);
     return doc;
   }
 
