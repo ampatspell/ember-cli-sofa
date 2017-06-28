@@ -149,4 +149,16 @@ configurations(({ module, test, createStore }) => {
     });
   });
 
+  test('transient models are pushed from shoebox', assert => {
+    let info = db._pushShoeboxDocument({
+      "_transient": true,
+      "_id": "duck:yellow",
+      "name": null,
+      "type": "duck"
+    });
+    assert.ok(info.get());
+    assert.ok(db.transient('duck', 'yellow'));
+    assert.ok(info.get() === db.transient('duck', 'yellow'));
+  });
+
 });

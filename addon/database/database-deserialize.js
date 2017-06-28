@@ -74,6 +74,11 @@ export default Ember.Mixin.create({
   _deserializeSavedDocumentToInternalModel(doc, expectedModelClass, optional=true, type=null) {
     let docId = doc._id;
     let rev = doc._rev;
+    let transient = !!doc._transient;
+
+    if(type !== 'shoebox') {
+      transient = false;
+    }
 
     let modelClass = this._modelClassForDocument(doc);
     if(!modelClass && !expectedModelClass) {
@@ -97,13 +102,19 @@ export default Ember.Mixin.create({
     } else {
       definition = this._definitionForModelClass(modelClass);
       let modelId = definition.modelId(docId);
-      internal = this._createExistingInternalModel(modelClass, modelId);
+      if(transient) {
+        internal = this._createTransientInternalModel(modelClass, modelId);
+      } else {
+        internal = this._createExistingInternalModel(modelClass, modelId);
+      }
     }
 
-    assert({
-      error: 'transient',
-      reason: `cannot deserialize document '${docId}' for transient model '${internal.modelName}'`
-    }, !internal.transient);
+    if(!transient) {
+      assert({
+        error: 'transient',
+        reason: `cannot deserialize document '${docId}' for transient model '${internal.modelName}'`
+      }, !internal.transient);
+    }
 
     if(internal.shouldDeserializeRevision(rev)) {
       this._deserializeDocument(internal, doc, type);
