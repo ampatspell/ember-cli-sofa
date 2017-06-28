@@ -2,8 +2,10 @@
 
 ## sofa
 
+
 ### Relationship classes
 
+* relationship with `query.find` embedded as `query`
 * sortable relationship helper `Relationship.extend({ sortable: sortable('position') })`: needed?
 * paginated relationship helper `Relationship.extend({ paginated: paginated(...) })`
 
