@@ -108,26 +108,14 @@ export default class Definition {
   shouldSerialize(internal, type) {
     if(type === 'shoebox') {
       let state = internal.state;
-      if(!state.isLoaded && !state.isNew) {
+      if(state.isNew) {
         return false;
       }
-      if(state.isNew && !internal.id) {
+      if(!state.isLoaded) {
         return false;
       }
     }
     return true;
-  }
-
-  didSerialize(internal, type, doc) {
-    if(type === 'shoebox') {
-      let state = internal.state;
-      let isNew = state.isNew;
-      if(isNew) {
-        doc._state = {
-          isNew
-        };
-      }
-    }
   }
 
   serialize(internal, type='document') {
@@ -136,7 +124,6 @@ export default class Definition {
     this.eachProperty(property => {
       property.serialize(internal, doc, type);
     });
-    this.didSerialize(internal, type, doc);
     return doc;
   }
 
