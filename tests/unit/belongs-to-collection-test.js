@@ -60,7 +60,7 @@ configurations(({ module, test, createStore }) => {
     });
   });
 
-  test('model is initially matched', assert => {
+  test.only('model is initially matched', assert => {
     [ 'yellow', 'red', 'green' ].map(id => db.model('duck', { id }));
     let root = db.model('root');
     assert.deepEqual(root.get('duck.id'), 'yellow');

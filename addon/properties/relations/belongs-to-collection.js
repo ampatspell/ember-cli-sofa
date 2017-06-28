@@ -1,6 +1,8 @@
-import BelongsToLoaded from './belongs-to-loaded';
+import Relation from './relation';
 
-// TODO: split belongs-to-loaded in 2 parts
-//       keep query, have 2
-export default class BelongsToCollectionRelation extends BelongsToLoaded {
+export default class BelongsToCollectionRelation extends Relation {
+
+  setValue() {
+  }
+
 }
