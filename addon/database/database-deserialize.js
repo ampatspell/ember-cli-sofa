@@ -15,6 +15,12 @@ export default Ember.Mixin.create({
     return internal;
   },
 
+  _createTransientInternalModel(modelClass, modelId, props) {
+    let internal = this.get('store')._createTransientInternalModel(modelClass, this, modelId, props);
+    this._storeSavedInternalModel(internal);
+    return internal;
+  },
+
   _deserializeInternalModelAttachments(internal, doc) {
     let definition = internal.definition;
     internal.withPropertyChanges(changed => {
@@ -86,7 +92,7 @@ export default Ember.Mixin.create({
     } else {
       definition = this._definitionForModelClass(modelClass);
       let modelId = definition.modelId(docId);
-      internal = this._createExistingInternalModel(modelClass, modelId, false);
+      internal = this._createExistingInternalModel(modelClass, modelId);
     }
 
     if(internal.shouldDeserializeRevision(rev)) {
@@ -157,11 +163,10 @@ export default Ember.Mixin.create({
     this._storeDeletedInternalModel(internal);
   },
 
-  _existingInternalModelForModelClass(modelClass, modelId, opts) {
-    let { create, deleted } = merge({ create: false, deleted: false }, opts);
+  _existingInternalModelForModelClass(modelClass, modelId, opts, props) {
+    let { create, deleted, transient } = merge({ create: false, deleted: false, transient: false }, opts);
 
     let definition = this._definitionForModelClass(modelClass);
-
     let docId = definition.docId(modelId);
 
     let internal = this._internalModelWithDocId(docId, deleted);
@@ -170,16 +175,29 @@ export default Ember.Mixin.create({
         internal = this._internalModelWithDocId(docId, true);
       }
       if(!internal) {
-        internal = this._createExistingInternalModel(modelClass, modelId);
+        if(transient) {
+          internal = this._createTransientInternalModel(modelClass, modelId, props);
+        } else {
+          internal = this._createExistingInternalModel(modelClass, modelId);
+        }
       }
     }
 
     return internal;
   },
 
+  _transientInternalModelForModelClass(modelClass, modelId, props) {
+    return this._existingInternalModelForModelClass(modelClass, modelId, { create: true, transient: true }, props);
+  },
+
   _existingInternalModelForModelName(modelName, modelId, opts) {
     let modelClass = this.modelClassForName(modelName);
     return this._existingInternalModelForModelClass(modelClass, modelId, opts);
+  },
+
+  _transientInternalModelForModelName(modelName, modelId, props) {
+    let modelClass = this.modelClassForName(modelName);
+    return this._transientInternalModelForModelClass(modelClass, modelId, props);
   }
 
 });

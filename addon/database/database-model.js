@@ -37,6 +37,11 @@ export default Ember.Mixin.create({
     return this._internalToModel(internal);
   },
 
+  transient(modelName, modelId, props) {
+    let internal = this._transientInternalModelForModelName(modelName, modelId, props);
+    return this._internalToModel(internal);
+  },
+
   load(modelName, id, opts) {
     if(modelName === null) {
       return this._loadInternalModelForDocId(id, opts).then(internal => {
