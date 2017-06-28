@@ -8,11 +8,9 @@
 
 ``` javascript
 // models/session.js
-import { Model, hasMany, transient } from 'sofa';
+import { Model, hasMany } from 'sofa';
 
 export default Model.extend({
-
-  id: transient(),
 
   ducks: hasMany('duck', { inverse: null, relationship: 'session-ducks' })
 
@@ -20,7 +18,10 @@ export default Model.extend({
 ```
 
 ``` javascript
-let session = db.model('session', { id: 'singleton' });
+let session = db.transient('session', 'singleton');
+  // db.existing('session', 'signleton', { create: true });
+  // and internal.transient = true
+
 session.get('state.isLoaded') // => true
 session.get('state.isNew') // => false
 session.save() // => rejects with { error: 'transient', reason: 'transient models cannot be saved' }
