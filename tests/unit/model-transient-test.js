@@ -159,6 +159,17 @@ configurations(({ module, test, createStore }) => {
     assert.ok(info.get());
     assert.ok(db.transient('duck', 'yellow'));
     assert.ok(info.get() === db.transient('duck', 'yellow'));
+    assert.ok(info.get().get('_internal').transient);
+    assert.deepEqual(info.get().get('state'), {
+      "error": null,
+      "isDeleted": false,
+      "isDirty": false,
+      "isError": false,
+      "isLoaded": true,
+      "isLoading": false,
+      "isNew": false,
+      "isSaving": false
+    });
   });
 
 });
