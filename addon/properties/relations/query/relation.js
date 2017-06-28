@@ -19,6 +19,12 @@ const model = () => {
   }).readOnly();
 };
 
+const relationship = () => {
+  return computed(function() {
+    return this._relation.getValue();
+  }).readOnly();
+};
+
 const isLoadable = opts => {
   opts = merge({ requireSavedModel: true }, opts);
   let props = [ 'find', 'database' ];
@@ -47,6 +53,7 @@ export default opts => Ember.Mixin.create({
   _isLoadable: isLoadable(opts),
 
   model: model(),
+  relationship: relationship(),
   store: relation('store'),
   database: relation('database'),
 

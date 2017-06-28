@@ -81,6 +81,7 @@ export default class BelongsToProxiedRelation extends BelongsToRelation {
     this.withPropertyChanges(changed => {
       this.propertyDidChange(changed);
     });
+    super.valueWillDestroy();
   }
 
 }
