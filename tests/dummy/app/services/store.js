@@ -2,19 +2,12 @@ import Ember from 'ember';
 import { Store } from 'sofa';
 
 const {
-  computed
+  computed,
+  computed: { reads }
 } = Ember;
 
-const root = () => {
-  return computed(function() {
-    return this.get('db.main').transient('dummy-root', 'singleton');
-  }).readOnly();
-};
-
 const prop = key => {
-  return computed(function() {
-    return this.get('root').get(key);
-  }).readOnly();
+  return reads(`root.${key}`).readOnly();
 };
 
 export default Store.extend({
@@ -35,7 +28,7 @@ export default Store.extend({
     }
   },
 
-  root: root(),
+  root: reads('db.main.root'),
 
   allModels: prop('all'),
   dirtyModels: prop('dirty'),
