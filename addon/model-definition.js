@@ -105,9 +105,22 @@ export default class Definition {
     });
   }
 
+  shouldSerialize(internal, type) {
+    if(type === 'shoebox') {
+      let state = internal.state;
+      if(!state.isLoaded && !state.isNew) {
+        return false;
+      }
+      if(state.isNew && !internal.id) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   serialize(internal, type='document') {
     isOneOf('type', type, [ 'preview', 'document', 'shoebox' ]);
-    if(type === 'shoebox' && !internal.state.isNew && !internal.state.isLoaded) {
+    if(!this.shouldSerialize(internal, type)) {
       return;
     }
     let doc = copy(internal.raw || {});
