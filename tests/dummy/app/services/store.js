@@ -2,7 +2,6 @@ import Ember from 'ember';
 import { Store } from 'sofa';
 
 const {
-  computed,
   computed: { reads }
 } = Ember;
 
