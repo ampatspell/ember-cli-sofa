@@ -273,6 +273,7 @@ export default class HasManyRelation extends Relation {
     this.withPropertyChanges(changed => {
       this.propertyDidChange(changed);
     });
+    super.valueWillDestroy();
   }
 
 }

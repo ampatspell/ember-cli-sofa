@@ -180,10 +180,13 @@ export default class Relation {
       return;
     }
     let value = this.value;
-    if(!value) {
-      return;
+    if(value) {
+      value.notifyPropertyChange('database');
     }
-    value.notifyPropertyChange('database');
+    let query = this.query;
+    if(query) {
+      query.notifyPropertyChange('database');
+    }
   }
 
   internalModelDidChange(internal, props) {
@@ -195,6 +198,13 @@ export default class Relation {
   }
 
   //
+
+  valueWillDestroy() {
+    let query = this.query;
+    if(query) {
+      query.notifyPropertyChange('relationship');
+    }
+  }
 
   onInternalDestroyed() {
     this.internal.removeObserver(this);

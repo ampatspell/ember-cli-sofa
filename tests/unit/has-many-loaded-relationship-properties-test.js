@@ -93,6 +93,19 @@ configurations(({ module, test, createStore }) => {
     return ducks.get('promise');
   });
 
+  test('proxy destroy is notified for query', assert => {
+    let house = store.model('house', { id: 'big' });
+    let ducks = house.get('ducks');
+    let query = ducks._relation.getQuery();
+    assert.ok(query);
+    assert.ok(query.get('relationship') === ducks);
+    ducks.destroy();
+    return next().then(() => {
+      assert.ok(query.get('relationship') !== ducks);
+      assert.ok(query.get('relationship') === house.get('ducks'));
+    });
+  });
+
   test('proxy is destroyed on model destroy', assert => {
     let house = store.model('house', { id: 'big' });
     let ducks = house.get('ducks');
