@@ -21,6 +21,10 @@ window.chunkArray = chunkArray;
 
 export default Ember.Mixin.create({
 
+  _rejectTransient(operation) {
+    return reject(new Error({ error: 'transient', reason: `cannot ${operation} transient model` }));
+  },
+
   _invokeInternalWillSaveCallbacks(internal) {
     let model = internal.model;
     if(!model) {
@@ -92,6 +96,10 @@ export default Ember.Mixin.create({
 
   _saveInternalModel(internal, opts) {
     opts = merge({}, opts);
+
+    if(internal.transient) {
+      return this._rejectTransient('save');
+    }
 
     let force = !!opts.force;
 
@@ -173,6 +181,10 @@ export default Ember.Mixin.create({
   },
 
   _reloadInternalModel(internal) {
+    if(internal.transient) {
+      return this._rejectTransient('reload');
+    }
+
     if(internal.state.isNew) {
       return reject(new Error({ error: 'not_saved', reason: 'Model is not saved yet' }));
     }
@@ -309,6 +321,10 @@ export default Ember.Mixin.create({
   },
 
   _deleteInternalModel(internal) {
+    if(internal.transient) {
+      return this._rejectTransient('delete');
+    }
+
     if(internal.state.isNew) {
       return reject(new Error({ error: 'not_saved', reason: 'Model is not saved yet' }));
     }

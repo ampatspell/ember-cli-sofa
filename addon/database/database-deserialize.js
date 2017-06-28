@@ -143,7 +143,7 @@ export default Ember.Mixin.create({
       let definition = internal.definition;
       assert({
         error: 'invalid_document',
-        reason: `document '${docId} is expected to be ${get(modelClass.class, 'modelName')} not ${definition.modelName}`
+        reason: `document '${docId}' is expected to be ${get(modelClass.class, 'modelName')} not ${definition.modelName}`
       }, definition.is(modelClass));
       return internal;
     }
@@ -181,6 +181,13 @@ export default Ember.Mixin.create({
           internal = this._createExistingInternalModel(modelClass, modelId);
         }
       }
+    }
+
+    if(transient) {
+      assert({
+        error: 'transient',
+        reason: `model '${definition.modelName}' with id '${modelId}' is already loaded`
+      }, internal.transient);
     }
 
     return internal;
