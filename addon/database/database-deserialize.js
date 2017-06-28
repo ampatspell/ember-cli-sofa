@@ -38,6 +38,11 @@ export default Ember.Mixin.create({
       return;
     }
 
+    assert({
+      error: 'transient',
+      reason: `cannot deserialize document '${docId}' delete for transient model '${internal.modelName}'`
+    }, !internal.transient);
+
     if(!internal.shouldDeserializeRevision(rev)) {
       return internal;
     }
@@ -94,6 +99,11 @@ export default Ember.Mixin.create({
       let modelId = definition.modelId(docId);
       internal = this._createExistingInternalModel(modelClass, modelId);
     }
+
+    assert({
+      error: 'transient',
+      reason: `cannot deserialize document '${docId}' for transient model '${internal.modelName}'`
+    }, !internal.transient);
 
     if(internal.shouldDeserializeRevision(rev)) {
       this._deserializeDocument(internal, doc, type);

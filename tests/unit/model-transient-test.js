@@ -22,6 +22,7 @@ configurations(({ module, test, createStore }) => {
     registerModels({ Duck });
     store = createStore();
     db = store.get('db.main');
+    db.set('modelNames', [ 'duck' ]);
     return cleanup(store, [ 'main' ]);
   });
 
@@ -95,6 +96,41 @@ configurations(({ module, test, createStore }) => {
       assert.deepEqual(err.toJSON(), {
         "error": "transient",
         "reason": "cannot delete transient model"
+      });
+    });
+  });
+
+  test('deserialize transient throws', assert => {
+    db.transient('duck', 'yellow');
+    return resolve().then(() => {
+      db.push({
+        _id: 'duck:yellow',
+        type: 'duck'
+      });
+    }).then(() => {
+      assert.ok(false, 'should reject');
+    }, err => {
+      assert.deepEqual(err.toJSON(), {
+        "error": "transient",
+        "reason": "cannot deserialize document 'duck:yellow' for transient model 'duck'"
+      });
+    });
+  });
+
+  test('deserialize delete for transient throws', assert => {
+    db.transient('duck', 'yellow');
+    return resolve().then(() => {
+      db.push({
+        _deleted: true,
+        _id: 'duck:yellow',
+        type: 'duck'
+      });
+    }).then(() => {
+      assert.ok(false, 'should reject');
+    }, err => {
+      assert.deepEqual(err.toJSON(), {
+        "error": "transient",
+        "reason": "cannot deserialize document 'duck:yellow' delete for transient model 'duck'"
       });
     });
   });
