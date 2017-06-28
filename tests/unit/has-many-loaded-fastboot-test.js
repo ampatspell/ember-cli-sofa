@@ -69,28 +69,24 @@ configurations(({ module, test, createStore }) => {
       assert.deepEqual_(db._createShoebox(), {
         documents: [
           {
-            "_attachments": {},
             "_id": "duck:yellow",
             "_rev": "ignored",
             "house": "house:big",
             "type": "duck"
           },
           {
-            "_attachments": {},
             "_id": "duck:green",
             "_rev": "ignored",
             "house": "house:big",
             "type": "duck"
           },
           {
-            "_attachments": {},
             "_id": "duck:red",
             "_rev": "ignored",
             "house": "house:big",
             "type": "duck"
           },
           {
-            "_attachments": {},
             "_id": "house:big",
             "_rev": "ignored",
             "type": "house",
