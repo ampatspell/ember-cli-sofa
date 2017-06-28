@@ -7,6 +7,7 @@ Version: {{version}}
 ### 2.0.7
 
 * [new] `has-many-collection` relationships now support fastboot
+* [new] `db.transient(modelName, id)` creates transient models which are not savable but are included in fastboot shoebox
 
 ### 2.0.6
 

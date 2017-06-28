@@ -2,10 +2,6 @@
 
 ## sofa
 
-### Model
-
-* transient models with generated ids for shoebox
-
 ### Query
 
 * figure out what context properties are needed, provide those

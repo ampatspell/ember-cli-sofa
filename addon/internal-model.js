@@ -45,7 +45,7 @@ export function internalModelDidSetDatabase(internal, props) {
 
 export default class InternalModel {
 
-  constructor(store, modelClass, database = null) {
+  constructor(store, modelClass, database=null, transient=false) {
     Ember.assert('modelClass should be factory', !!modelClass.class);
     this.store = store;
     this.modelClass = modelClass;
@@ -53,6 +53,7 @@ export default class InternalModel {
     this.values = new EmptyObject();
     this.raw = null;
     this._database = database;
+    this._transient = transient;
     this.model = null;
     this.loadPromise = null;
     this.boundNotifyPropertyChange = this.notifyPropertyChange.bind(this);
@@ -67,6 +68,10 @@ export default class InternalModel {
       isError: false,
       error: null
     };
+  }
+
+  get transient() {
+    return this._transient;
   }
 
   get isNew() {
