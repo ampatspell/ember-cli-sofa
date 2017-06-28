@@ -2,10 +2,6 @@
 
 ## sofa
 
-### Query
-
-* figure out what context properties are needed, provide those
-
 ### Relationship classes
 
 * sortable relationship helper `Relationship.extend({ sortable: sortable('position') })`: needed?
