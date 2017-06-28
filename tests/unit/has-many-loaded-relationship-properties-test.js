@@ -67,12 +67,12 @@ configurations(({ module, test, createStore }) => {
     let ducks = house.get('ducks');
 
     assert.ok(ducks.get('model'));
-    assert.ok(ducks.get('property'));
+    assert.ok(ducks.get('name'));
     assert.ok(ducks.get('database'));
     assert.ok(ducks.get('store'));
 
     assert.equal(ducks.get('model'), house);
-    assert.equal(ducks.get('property'), 'ducks');
+    assert.equal(ducks.get('name'), 'ducks');
     assert.equal(ducks.get('database'), db);
     assert.equal(ducks.get('store'), store);
 

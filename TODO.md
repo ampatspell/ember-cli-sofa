@@ -5,6 +5,7 @@
 ### Query
 
 * figure out what context properties are needed, provide those
+* query.relationship notify update on relation.value destroy
 
 ### Relationship classes
 
