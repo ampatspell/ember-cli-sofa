@@ -2,48 +2,6 @@
 
 ## sofa
 
-### Model
-
-* transient models with generated ids for shoebox
-
-``` javascript
-// models/session.js
-import { Model, hasMany } from 'sofa';
-
-export default Model.extend({
-
-  ducks: hasMany('duck', { inverse: null, relationship: 'session-ducks' })
-
-});
-```
-
-``` javascript
-let session = db.transient('session', 'singleton');
-  // db.existing('session', 'signleton', { create: true });
-  // and internal.transient = true
-
-session.get('state.isLoaded') // => true
-session.get('state.isNew') // => false
-session.save() // => rejects with { error: 'transient', reason: 'transient models cannot be saved' }
-```
-
-``` javascript
-session.serialize('shoebox') // =>
-// { _id: 'singleton', type: 'session', ducks: { isLoaded: true }}
-```
-
-``` javascript
-let model = db.push({
-  _id: 'singleton',
-  type: 'session',
-  ducks: {
-    isLoaded: true
-  }
-}).get();
-
-model.get('state.isLoaded') // => true
-```
-
 ### Query
 
 * figure out what context properties are needed, provide those
