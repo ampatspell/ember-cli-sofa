@@ -7,7 +7,7 @@ const {
 
 const root = () => {
   return computed(function() {
-    return this.get('db.main').model('dummy-root', { id: 'singleton' });
+    return this.get('db.main').transient('dummy-root', 'singleton');
   }).readOnly();
 };
 
