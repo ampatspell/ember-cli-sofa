@@ -10,6 +10,8 @@ export default Ember.ArrayProxy.extend(
   ValueWillDestroyMixin,
   ContextPropertiesMixin, {
 
-  _relation: null
+  _relation: null,
+
+  query: null
 
 });
