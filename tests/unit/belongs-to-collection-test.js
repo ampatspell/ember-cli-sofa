@@ -127,7 +127,7 @@ configurations(({ module, test, createStore }) => {
       assert.equal(root.get('duck.id'), undefined);
       return wait(null, 300);
     }).then(() => {
-      assert.equal(root.get('duck.id'), 'asd');
+      assert.equal(root.get('duck.id'), 'green');
     });
   });
 
