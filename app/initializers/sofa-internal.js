@@ -17,6 +17,7 @@ import DateTransform from 'sofa/transforms/date';
 import JSONTransform from 'sofa/transforms/json';
 
 import BelongsToLoaded from 'sofa/properties/relations/proxies/belongs-to-loaded';
+import BelongsToCollection from 'sofa/properties/relations/proxies/belongs-to-collection';
 import HasManyPersisted from 'sofa/properties/relations/proxies/has-many-persisted';
 import HasManyLoaded from 'sofa/properties/relations/proxies/has-many-loaded';
 import HasManyCollection from 'sofa/properties/relations/proxies/has-many-collection';
@@ -41,6 +42,7 @@ export default {
     container.register('sofa:database-security-pair', DatabaseSecurityPair, { instantiate: false });
 
     container.register('sofa:belongs-to-loaded', BelongsToLoaded, { instantiate: false });
+    container.register('sofa:belongs-to-collection', BelongsToCollection, { instantiate: false });
     container.register('sofa:has-many-persisted', HasManyPersisted, { instantiate: false });
     container.register('sofa:has-many-loaded', HasManyLoaded, { instantiate: false });
     container.register('sofa:has-many-collection', HasManyCollection, { instantiate: false });

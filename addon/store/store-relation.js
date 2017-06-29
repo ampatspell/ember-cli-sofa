@@ -55,6 +55,10 @@ export default Ember.Mixin.create({
     return this._relationProxyClassForName(_relation, 'belongs-to-loaded').create({ _relation });
   },
 
+  _createBelongsToCollectionProxyForRelation(_relation) {
+    return this._relationProxyClassForName(_relation, 'belongs-to-collection').create({ _relation });
+  },
+
   _createHasManyLoadedProxyForRelation(_relation, content) {
     return this._relationProxyClassForName(_relation, 'has-many-loaded').create({ _relation, content });
   },

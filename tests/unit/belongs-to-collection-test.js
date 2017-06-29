@@ -41,7 +41,7 @@ configurations(({ module, test, createStore }) => {
   });
 
   let Root = Model.extend({
-    ducks: belongsTo('duck', { inverse: null, relationship: 'all-ducks' })
+    duck: belongsTo('duck', { inverse: null, relationship: 'all-ducks' })
   });
 
   function flush() {
@@ -60,84 +60,95 @@ configurations(({ module, test, createStore }) => {
     });
   });
 
-  test.only('model is initially matched', assert => {
-    [ 'yellow', 'red', 'green' ].map(id => db.model('duck', { id }));
-    let root = db.model('root');
-    assert.deepEqual(root.get('duck.id'), 'yellow');
-    return root.get('duck.promise');
+  test('model is initially matched and matched after load', assert => {
+    let root;
+    return all([ 'yellow', 'red', 'green' ].map(id => db.model('duck', { id }).save())).then(() => {
+      assert.equal(db.transient('root', 'one').get('duck.docId'), 'duck:yellow');
+      flush();
+      root = db.transient('root', 'one');
+      assert.equal(root.get('duck.content'), null);
+      return root.get('duck.promise');
+    }).then(() => {
+      assert.equal(root.get('duck.docId'), 'duck:green');
+    });
   });
 
-  // test('new models are added to collection', assert => {
-  //   db.model('duck', { id: 'yellow' });
-  //   let root = db.model('root');
-  //   assert.deepEqual(root.get('ducks').mapBy('id'), [ 'yellow' ]);
-  //   db.model('duck', { id: 'red' });
-  //   assert.deepEqual(root.get('ducks').mapBy('id'), [ 'yellow', 'red' ]);
-  //   db.model('duck', { id: 'green' });
-  //   assert.deepEqual(root.get('ducks').mapBy('id'), [ 'yellow', 'red', 'green' ]);
-  //   return root.get('ducks.promise');
-  // });
+  test('model is matched on create', assert => {
+    db.model('duck', { id: 'yellow' });
+    let root = db.model('root');
+    assert.equal(root.get('duck.id'), 'yellow');
+    return root.get('ducks.promise');
+  });
 
-  // test('destroyed isNew model is removed from coll', assert => {
-  //   [ 'yellow', 'red', 'green' ].map(id => db.model('duck', { id }));
-  //   let root = db.model('root');
-  //   assert.deepEqual(root.get('ducks').mapBy('id'), [ 'yellow', 'red', 'green' ]);
-  //   root.get('ducks').objectAt(0).destroy();
-  //   return next().then(() => {
-  //     assert.deepEqual(root.get('ducks').mapBy('id'), [ 'red', 'green' ]);
-  //     return root.get('ducks.promise');
-  //   });
-  // });
+  test('created model model is matched', assert => {
+    let root = db.model('root');
+    assert.equal(root.get('duck.id'), undefined);
+    db.model('duck', { id: 'yellow' });
+    assert.equal(root.get('duck.id'), 'yellow');
+    return root.get('ducks.promise');
+  });
 
-  // test('assign database after model creation', assert => {
-  //   db.model('duck', { id: 'yellow' });
-  //   let root = store.model('root');
-  //   assert.deepEqual(root.get('ducks').mapBy('id'), []);
-  //   root.set('database', db);
-  //   assert.deepEqual(root.get('ducks').mapBy('id'), [ 'yellow' ]);
-  // });
+  test('destroyed isNew model is removed from coll', assert => {
+    let duck = db.model('duck', { id: 'yellow' });
+    let root = db.model('root');
+    assert.equal(root.get('duck.id'), 'yellow');
+    duck.destroy();
+    return next().then(() => {
+      assert.equal(root.get('duck.id'), null);
+      duck = db.model('duck', { id: 'green' });
+      assert.equal(root.get('duck.id'), 'green');
+    });
+  });
 
-  // test('autoload', assert => {
-  //   let root;
-  //   return all([ 'yellow', 'red', 'green' ].map(id => db.model('duck', { id }).save())).then(() => {
-  //     flush();
-  //     root = db.model('root');
-  //     assert.deepEqual(root.get('ducks').mapBy('id'), []);
-  //     return wait(null, 300);
-  //   }).then(() => {
-  //     assert.deepEqual(root.get('ducks').mapBy('id'), [ 'green', 'red', 'yellow' ]);
-  //   });
-  // });
+  test('assign database after model creation', assert => {
+    db.model('duck', { id: 'yellow' });
+    let root = store.model('root');
+    assert.deepEqual(root.get('duck.id'), undefined);
+    root.set('database', db);
+    assert.deepEqual(root.get('duck.id'), 'yellow');
+  });
 
-  // test('load', assert => {
-  //   let root;
-  //   return all([ 'yellow', 'red', 'green' ].map(id => db.model('duck', { id }).save())).then(() => {
-  //     flush();
-  //     root = db.model('root');
-  //     return root.get('ducks.promise');
-  //   }).then(() => {
-  //     assert.deepEqual(root.get('ducks').mapBy('id'), [ 'green', 'red', 'yellow' ]);
-  //   });
-  // });
+  test('load', assert => {
+    let root;
+    return all([ 'yellow', 'red', 'green' ].map(id => db.model('duck', { id }).save())).then(() => {
+      flush();
+      root = db.model('root');
+      return root.get('duck.promise');
+    }).then(() => {
+      assert.deepEqual(root.get('duck.id'), 'green');
+    });
+  });
 
-  // test('destroy', assert => {
-  //   let root;
-  //   let relation;
-  //   return all([ 'yellow', 'red', 'green' ].map(id => db.model('duck', { id }).save())).then(() => {
-  //     flush();
-  //     root = db.model('root');
-  //     return root.get('ducks.promise');
-  //   }).then(() => {
-  //     assert.deepEqual(root.get('ducks').mapBy('id'), [ 'green', 'red', 'yellow' ]);
-  //     relation = root.get('ducks._relation');
-  //     assert.ok(relation);
-  //     root.get('ducks').destroy();
-  //     return next();
-  //   }).then(() => {
-  //     assert.ok(!relation.value);
-  //     assert.ok(!root.get('ducks').isDestroying);
-  //     assert.ok(relation.value);
-  //   });
-  // });
+  test.only('autoload', assert => {
+    let root;
+    return all([ 'yellow', 'red', 'green' ].map(id => db.model('duck', { id }).save())).then(() => {
+      flush();
+      root = db.model('root');
+      assert.equal(root.get('duck.id'), undefined);
+      return wait(null, 300);
+    }).then(() => {
+      assert.equal(root.get('duck.id'), 'asd');
+    });
+  });
+
+  test('destroy', assert => {
+    let root;
+    let relation;
+    return all([ 'yellow', 'red', 'green' ].map(id => db.model('duck', { id }).save())).then(() => {
+      flush();
+      root = db.model('root');
+      return root.get('duck.promise');
+    }).then(() => {
+      assert.equal(root.get('duck.id'), 'green');
+      relation = root.get('duck._relation');
+      assert.ok(relation);
+      root.get('duck').destroy();
+      return next();
+    }).then(() => {
+      assert.ok(!relation.value);
+      assert.ok(!root.get('duck').isDestroying);
+      assert.ok(relation.value);
+    });
+  });
 
 });
