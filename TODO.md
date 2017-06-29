@@ -2,6 +2,9 @@
 
 ## sofa
 
+### Query loader
+
+* figure out how to improve this thing
 
 ### Relationship classes
 
