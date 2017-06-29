@@ -7,4 +7,12 @@ export default class BelongsToCollection extends BelongsToLoaded {
     return new BelongsToCollectionRelation(this, internal);
   }
 
+  get serializeShoebox() {
+    return true;
+  }
+
+  get deserializeShoebox() {
+    return true;
+  }
+
 }

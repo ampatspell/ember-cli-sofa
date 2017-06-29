@@ -113,4 +113,15 @@ export default class BelongsToCollectionRelation extends Relation {
   relationLoaderDidLoad() {
   }
 
+  serialize() {
+    let isLoaded = this.loader.state.isLoaded;
+    return { isLoaded };
+  }
+
+  deserialize(value) {
+    if(value.isLoaded) {
+      this.loader.setLoaded();
+    }
+  }
+
 }
