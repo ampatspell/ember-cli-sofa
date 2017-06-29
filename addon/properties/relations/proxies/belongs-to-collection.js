@@ -16,7 +16,7 @@ const matches = () => {
 
 const content = () => {
   return computed('matches', function() {
-    // this._relation.loader.load();
+    // this._relation.loader.loadNext();
     return this.get('matches') || null;
   }).readOnly();
 }
@@ -32,6 +32,6 @@ export default Ember.ObjectProxy.extend(
   query: null,
 
   matches: matches(),
-  content: content(),
+  content: content()
 
 });

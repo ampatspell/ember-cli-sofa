@@ -44,6 +44,12 @@ configurations(({ module, test, createStore }) => {
     duck: belongsTo('duck', { inverse: null, relationship: 'all-ducks' })
   });
 
+  const saveDuckAndFlush = () => {
+    return db.model('duck', { id: 'random' }).save().then(() => {
+      flush();
+    });
+  }
+
   function flush() {
     store = createStore();
     db = store.get('db.main');
@@ -81,11 +87,13 @@ configurations(({ module, test, createStore }) => {
   });
 
   test('created model model is matched', assert => {
-    let root = db.model('root');
-    assert.equal(root.get('duck.id'), undefined);
-    db.model('duck', { id: 'yellow' });
-    assert.equal(root.get('duck.id'), 'yellow');
-    return root.get('ducks.promise');
+    return saveDuckAndFlush().then(() => {
+      let root = db.model('root');
+      assert.equal(root.get('duck.id'), undefined);
+      db.model('duck', { id: 'yellow' });
+      assert.equal(root.get('duck.id'), 'yellow');
+      return root.get('ducks.promise');
+    });
   });
 
   test('destroyed isNew model is removed from coll', assert => {
@@ -125,7 +133,7 @@ configurations(({ module, test, createStore }) => {
       flush();
       root = db.model('root');
       assert.equal(root.get('duck.id'), undefined);
-      return wait(null, 300);
+      return wait(null, 100);
     }).then(() => {
       assert.equal(root.get('duck.id'), 'green');
     });
