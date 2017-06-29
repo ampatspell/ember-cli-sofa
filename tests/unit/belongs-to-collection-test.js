@@ -119,7 +119,7 @@ configurations(({ module, test, createStore }) => {
     });
   });
 
-  test.only('autoload', assert => {
+  test('autoload', assert => {
     let root;
     return all([ 'yellow', 'red', 'green' ].map(id => db.model('duck', { id }).save())).then(() => {
       flush();
