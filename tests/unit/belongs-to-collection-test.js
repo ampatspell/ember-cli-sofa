@@ -69,9 +69,12 @@ configurations(({ module, test, createStore }) => {
   test('model is initially matched and matched after load', assert => {
     let root;
     return all([ 'yellow', 'red', 'green' ].map(id => db.model('duck', { id }).save())).then(() => {
-      assert.equal(db.transient('root', 'one').get('duck.docId'), 'duck:yellow');
-      flush();
       root = db.transient('root', 'one');
+      assert.equal(root.get('duck.docId'), 'duck:yellow');
+      return root.get('duck.promise');
+    }).then(() => {
+      flush();
+      root = db.model('root', 'one');
       assert.equal(root.get('duck.content'), null);
       return root.get('duck.promise');
     }).then(() => {
@@ -80,40 +83,50 @@ configurations(({ module, test, createStore }) => {
   });
 
   test('model is matched on create', assert => {
-    db.model('duck', { id: 'yellow' });
-    let root = db.model('root');
-    assert.equal(root.get('duck.id'), 'yellow');
-    return root.get('ducks.promise');
+    return saveDuckAndFlush().then(() => {
+      db.model('duck', { id: 'yellow' });
+      let root = db.model('root');
+      assert.equal(root.get('duck.id'), 'yellow');
+      return root.get('duck.promise');
+    });
   });
 
-  test('created model model is matched', assert => {
+  test('created model is matched', assert => {
     return saveDuckAndFlush().then(() => {
       let root = db.model('root');
       assert.equal(root.get('duck.id'), undefined);
       db.model('duck', { id: 'yellow' });
       assert.equal(root.get('duck.id'), 'yellow');
-      return root.get('ducks.promise');
+      return root.get('duck.promise');
     });
   });
 
   test('destroyed isNew model is removed from coll', assert => {
-    let duck = db.model('duck', { id: 'yellow' });
-    let root = db.model('root');
-    assert.equal(root.get('duck.id'), 'yellow');
-    duck.destroy();
-    return next().then(() => {
+    let root;
+    let duck;
+    return saveDuckAndFlush().then(() => {
+      duck = db.model('duck', { id: 'yellow' });
+      root = db.model('root');
+      assert.equal(root.get('duck.id'), 'yellow');
+      duck.destroy();
+      return next();
+    }).then(() => {
       assert.equal(root.get('duck.id'), null);
       duck = db.model('duck', { id: 'green' });
       assert.equal(root.get('duck.id'), 'green');
+      return root.get('duck.promise');
     });
   });
 
   test('assign database after model creation', assert => {
-    db.model('duck', { id: 'yellow' });
-    let root = store.model('root');
-    assert.deepEqual(root.get('duck.id'), undefined);
-    root.set('database', db);
-    assert.deepEqual(root.get('duck.id'), 'yellow');
+    return saveDuckAndFlush().then(() => {
+      db.model('duck', { id: 'yellow' });
+      let root = store.model('root');
+      assert.deepEqual(root.get('duck.id'), undefined);
+      root.set('database', db);
+      assert.deepEqual(root.get('duck.id'), 'yellow');
+      return root.get('duck.promise');
+    });
   });
 
   test('load', assert => {
@@ -132,10 +145,11 @@ configurations(({ module, test, createStore }) => {
     return all([ 'yellow', 'red', 'green' ].map(id => db.model('duck', { id }).save())).then(() => {
       flush();
       root = db.model('root');
-      assert.equal(root.get('duck.id'), undefined);
-      return wait(null, 100);
+      assert.deepEqual(root.get('duck').getProperties('isLoaded', 'id'), { isLoaded: false, id: undefined });
+      return wait(null, 300);
     }).then(() => {
-      assert.equal(root.get('duck.id'), 'green');
+      assert.deepEqual(root.get('duck').getProperties('isLoaded', 'id'), { isLoaded: true, id: 'green' });
+      return root.get('duck.promise');
     });
   });
 
