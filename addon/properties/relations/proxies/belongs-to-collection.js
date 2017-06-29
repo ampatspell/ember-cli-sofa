@@ -3,6 +3,7 @@ import { LoadableRelationLoaderStateMixin } from './util/relation-loader-state-m
 import ValueWillDestroyMixin from './util/value-will-destroy-mixin';
 import ContextPropertiesMixin from './util/context-properties-mixin';
 import CollectionModelsMixin from './util/collection-models-mixin';
+import InitializedMixin from './util/initialized-mixin';
 
 const {
   computed
@@ -16,12 +17,15 @@ const matches = () => {
 
 const content = () => {
   return computed('matches', function() {
-    // this._relation.loader.loadNext();
+    if(this._isProxyInitialized) {
+      this._relation.loader.load(true);
+    }
     return this.get('matches') || null;
   }).readOnly();
 }
 
 export default Ember.ObjectProxy.extend(
+  InitializedMixin,
   LoadableRelationLoaderStateMixin,
   ValueWillDestroyMixin,
   ContextPropertiesMixin,
