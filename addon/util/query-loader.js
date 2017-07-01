@@ -106,7 +106,9 @@ export default class QueryLoader {
       }
       this.needed = false;
       const done = arg => {
-        this.promise = null;
+        if(this.promise === promise) {
+          this.promise = null;
+        }
         return arg;
       };
       promise = this.createPromise(notify).then(arg => done(resolve(arg)), err => done(reject(err)));

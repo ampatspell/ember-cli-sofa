@@ -69,6 +69,9 @@ export default class Relation {
   }
 
   getQuery() {
+    if(this.destroyed) {
+      return;
+    }
     let query = this.query;
     if(!query) {
       query = this.createQuery();

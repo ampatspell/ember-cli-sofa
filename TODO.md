@@ -2,6 +2,9 @@
 
 ## sofa
 
+### Query loader
+
+* figure out how to improve this thing
 
 ### Relationship classes
 
@@ -12,6 +15,7 @@
 ### Collection relation
 
 * belongsTo with `{ inverse: null }`
+* collection relations should not set parent model dirty
 
 ### changes
 

@@ -1,23 +1,26 @@
 import Ember from 'ember';
-import ValueWillDestroyMixin from './util/value-will-destroy-mixin';
 import { LoadableRelationLoaderStateMixin } from './util/relation-loader-state-mixin';
+import ValueWillDestroyMixin from './util/value-will-destroy-mixin';
 import ContextPropertiesMixin from './util/context-properties-mixin';
 import CollectionModelsMixin from './util/collection-models-mixin';
 
 const {
-  computed: { reads },
+  computed
 } = Ember;
 
-export const matches = () => {
-  return reads('models');
-};
+const matches = () => {
+  return Ember.computed('models.[]', function() {
+    return this.get('models').objectAt(0);
+  });
+}
 
 const content = () => {
-  return reads('matches').readOnly();
-};
+  return computed('matches', function() {
+    return this.get('matches') || null;
+  }).readOnly();
+}
 
-
-export default Ember.ArrayProxy.extend(
+export default Ember.ObjectProxy.extend(
   LoadableRelationLoaderStateMixin,
   ValueWillDestroyMixin,
   ContextPropertiesMixin,
@@ -28,6 +31,6 @@ export default Ember.ArrayProxy.extend(
   query: null,
 
   matches: matches(),
-  content: content(),
+  content: content()
 
 });

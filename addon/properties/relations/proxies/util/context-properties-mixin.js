@@ -19,6 +19,6 @@ export default Ember.Mixin.create({
   model:    property('parentModel'),
   name:     property('relationshipPropertyName'),
   database: property('relationshipDatabase'),
-  store:    property('store'),
+  store:    property('store')
 
 });

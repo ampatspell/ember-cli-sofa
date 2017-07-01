@@ -7,10 +7,10 @@ import Type from './type';
 import Attribute from './attribute';
 import BelongsToPersisted from './belongs-to-persisted';
 import BelongsToLoaded from './belongs-to-loaded';
+import BelongsToCollection from './belongs-to-collection';
 import HasManyPersisted from './has-many-persisted';
 import HasManyLoaded from './has-many-loaded';
 import HasManyCollection from './has-many-collection';
-import Error from 'sofa/util/error';
 
 const {
   computed,
@@ -88,7 +88,7 @@ function isCollectionRelationship(store, opts={}) {
 function belongsTo(modelName, opts={}) {
   return make(store => {
     if(isCollectionRelationship(store, opts)) {
-      throw new Error({ error: 'not-implemented', reason: 'collection belongsTo is not yet implemented' });
+      return new BelongsToCollection(modelName, opts);
     } else if(isLoadedRelationship(store, opts)) {
       return new BelongsToLoaded(modelName, opts);
     } else {
