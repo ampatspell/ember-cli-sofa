@@ -2,20 +2,19 @@
 
 ## sofa
 
-### Query loader
-
-* figure out how to improve this thing
-
 ### Relationship classes
 
-* relationship with `query.find` embedded as `query`
-* sortable relationship helper `Relationship.extend({ sortable: sortable('position') })`: needed?
 * paginated relationship helper `Relationship.extend({ paginated: paginated(...) })`
+* sortable relationship helper `Relationship.extend({ sortable: sortable('position') })`: needed?
+* relationship with `query.find` embedded as `query`
 
 ### Collection relation
 
-* belongsTo with `{ inverse: null }`
 * collection relations should not set parent model dirty
+
+### Query loader
+
+* figure out how to improve this thing
 
 ### changes
 
