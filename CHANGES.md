@@ -4,6 +4,10 @@
 Version: {{version}}
 ```
 
+### 2.0.8
+
+* [new] `belongs-to-collection` relationship with fastboot support
+
 ### 2.0.7
 
 * [new] `has-many-collection` relationships now support fastboot
