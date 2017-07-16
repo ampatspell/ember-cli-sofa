@@ -13,7 +13,7 @@ configurations(({ module, test, createStore, config }) => {
   test('info', assert => {
     return db.get('documents.couch').info().then(json => {
       assert.equal('Welcome', json.couchdb);
-      assert.ok(json.version.indexOf(config.name) === 0);
+      assert.ok(json.version.indexOf(config.key) === 0);
     });
   });
 
