@@ -10,7 +10,8 @@ const {
   Logger: { info, error },
   run,
   merge,
-  String: { dasherize }
+  String: { dasherize },
+  copy
 } = Ember;
 
 const configs = {
@@ -67,7 +68,8 @@ class State {
     return this.once(config);
   }
   _createSystemDatabases(config) {
-    let couch = this.couch(config.url);
+    let store = this.createStore(config.url);
+    let couch = store.get('db.main.couch.documents');
     let dbs = [ '_global_changes', '_metadata', '_replicator', '_users' ];
     return resolve()
       .then(() => couch.get('session').save(admin.name, admin.password))
@@ -182,7 +184,7 @@ export const logout = db => db.get('documents.couch.session').delete();
 
 export const recreate = db => login(db).then(() => db.get('documents.database').recreate({ design: true }));
 
-export const cleanup = (store, ...dbNames) => all(dbNames.map(dbName => recreate(store.database(dbName))));
+export const cleanup = (store, dbNames) => all(dbNames.map(dbName => recreate(store.database(dbName))));
 
 export const waitFor = fn => {
   let start = new Date();
