@@ -1,26 +1,30 @@
-import { module, test, createStore, registerModels, cleanup } from '../helpers/setup';
+import { configurations, registerModels, cleanup } from '../helpers/setup';
 import { Model, prefix, attr } from 'sofa';
 
-let store;
-let db;
+configurations({ only: '1.6' }, ({ module, test, createStore }) => {
 
-let Duck = Model.extend({
-  id: prefix(),
-  createdAt: attr('date'),
-});
+  let store;
+  let db;
 
-module('property-key', () => {
-  registerModels({ Duck });
-  store = createStore();
-  db = store.get('db.main');
-  return cleanup(store, [ 'main' ]);
-});
-
-test('key is underscored by default', assert => {
-  let date = new Date();
-  let model = db.model('duck', { createdAt: date });
-  assert.deepEqual(model.serialize('preview'), {
-    "created_at": date.toJSON(),
-    "type": "duck"
+  let Duck = Model.extend({
+    id: prefix(),
+    createdAt: attr('date'),
   });
+
+  module('property-key', () => {
+    registerModels({ Duck });
+    store = createStore();
+    db = store.get('db.main');
+    return cleanup(store, [ 'main' ]);
+  });
+
+  test('key is underscored by default', assert => {
+    let date = new Date();
+    let model = db.model('duck', { createdAt: date });
+    assert.deepEqual(model.serialize('preview'), {
+      "created_at": date.toJSON(),
+      "type": "duck"
+    });
+  });
+
 });

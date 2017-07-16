@@ -1,153 +1,214 @@
 import Ember from 'ember';
 import { module as qmodule, skip } from 'qunit';
-import { test as qtest, only as qonly, todo as qtodo } from 'ember-qunit';
+import { test as qtest, only as qonly } from 'ember-qunit';
 import startApp from './start-app';
 import extendAssert from './extend-assert';
-import params from './params';
-
 import globalOptions from 'sofa/util/global-options';
 
 const {
-  RSVP: { Promise, resolve, all },
+  RSVP: { Promise, resolve, reject, all },
   Logger: { info, error },
   run,
+  merge,
   String: { dasherize },
-  copy,
-  merge
+  copy
 } = Ember;
 
 const configs = {
   '1.6': {
     url: '/api/1.6',
+    name: 'ember-cli-couch',
     feed: 'event-source'
   },
   '2.0': {
     url: '/api/2.0',
+    name: 'ember-cli-couch',
     feed: 'long-polling'
   }
 };
 
-let app;
-let instance;
-let stores = [];
+export const admin = {
+  name: 'admin',
+  password: 'hello'
+};
 
-function setupGlobalOptions() {
-  globalOptions.autoload.internalModel = false;
-  globalOptions.autoload.persistedArray = false;
-}
+const _catch = err => {
+  error(err);
+  error(err.stack);
+  return reject(err);
+};
 
-export function module(name, cb) {
+const makeModule = (name, cb, config, state) => {
   qmodule(name, {
-    beforeEach: function(assert) {
+    beforeEach(assert) {
       window.currentTestName = `${name}: ${assert.test.testName}`;
       info(`→ ${window.currentTestName}`);
-      setupGlobalOptions();
       let done = assert.async();
-      app = startApp();
-      instance = app.buildInstance();
-      resolve().then(function() {
-        return cb();
-      }).then(function() {
-        done();
-      });
+      state.start(config).then(() => cb()).catch(_catch).finally(() => done());
     },
-    afterEach: function(assert) {
+    afterEach(assert) {
       let done = assert.async();
-      run(() => {
-        stores.forEach(store => {
-          store.destroy();
-        });
-        stores = [];
-        app.destroy();
-        instance.destroy();
-        run.next(() => {
-          done();
-        });
-      });
+      state.destroy().catch(_catch).finally(() => done());
     },
   });
+}
+
+class State {
+  constructor() {
+    this.keys = [];
+    this.baseURL = configs['2.0'].url;
+    this.storeIdentifier = 0;
+    this.stores = [];
+  }
+  start(config) {
+    globalOptions.autoload.internalModel = false;
+    globalOptions.autoload.persistedArray = false;
+    this.application = startApp();
+    this.instance = this.application.buildInstance();
+    return this.once(config);
+  }
+  _createSystemDatabases(config) {
+    let store = this.createStore(config.url);
+    let couch = store.get('db.main.couch.documents');
+    let dbs = [ '_global_changes', '_metadata', '_replicator', '_users' ];
+    return resolve()
+      .then(() => couch.get('session').save(admin.name, admin.password))
+      .then(() => all(dbs.map(name => couch.database(name).get('database').create({ optional: true }))));
+  }
+  _once(config) {
+    if(config.key === '2.0') {
+      return this._createSystemDatabases(config);
+    }
+    return resolve();
+  }
+  once(config) {
+    let { key } = config;
+    if(this.keys.includes(key)) {
+      return resolve();
+    }
+    this.keys.push(key);
+    return this._once(config);
+  }
+  destroy() {
+    return next().then(() => {
+      this.stores.forEach(store => store.destroy());
+      this.stores = [];
+    }).then(() => {
+      this.instance.destroy();
+      this.instance = null;
+      this.application.destroy();
+      this.application = null;
+    });
+  }
+  createStore(url=this.baseURL) {
+    let Store = this.instance.factoryFor('sofa:store').class.extend({
+      databaseOptionsForIdentifier(identifier) {
+        if(identifier === 'main') {
+          return { url, name: 'ember-cli-sofa-test-main' };
+        } else if(identifier === 'second') {
+          return { url, name: 'ember-cli-sofa-test-second' };
+        }
+      }
+    });
+    let key = `sofa:store/test/${this.storeIdentifier++}`;
+    this.instance.register(key, Store);
+    Store = this.instance.factoryFor(key);
+    let store = Store.create();
+    this.stores.push(store);
+    return store;
+  }
+}
+
+let state = new State();
+
+export function configurations(opts, body) {
+  if(typeof opts === 'function') {
+    body = opts;
+    opts = {};
+  }
+
+  let only = opts.only || [];
+  if(typeof only === 'string') {
+    only = [ only ];
+  }
+
+  for(let key in configs) {
+    if(only.length > 0 && only.indexOf(key) === -1) {
+      continue;
+    }
+    let config = merge({ key }, configs[key]);
+    body({
+      config,
+      state,
+      test,
+      module(name, cb) {
+        return makeModule(`${name} [${config.key}]`, cb, config, state)
+      },
+      createStore() {
+        return state.createStore(config.url);
+      }
+    });
+  }
 }
 
 function q(fn, name, cb) {
-  return fn(name, function(assert) {
+  return fn(name, assert => {
     extendAssert(assert);
     let done = assert.async();
-    resolve().then(function() {
-      return cb(assert);
-    }).then(function() {
-      done();
-    }, function(err) {
+    resolve().then(() => cb(assert)).catch(err => {
       error(err);
       error(err.stack);
       assert.ok(false, err.stack);
-      done();
-    });
+    }).finally(() => done());
   });
 }
 
-export function test(name, cb) {
+function test(name, cb) {
   return q(qtest, name, cb);
 }
 
-export function only(name, cb) {
+function only(name, cb) {
   return q(qonly, name, cb);
-}
-
-export function todo(name, cb) {
-  return q(qtodo, name, cb);
 }
 
 test.only = only;
 test.skip = skip;
-test.todo = todo;
 
-export function next(arg) {
-  return new Promise(function(resolve) {
-    run.next(function() {
-      resolve(arg);
-    });
-  });
-}
+export const next = arg => new Promise(resolve => run.next(() => resolve(arg)));
 
-function defaultDelay(delay) {
-  return delay || parseInt(params.delay) || 250;
-}
+export const wait = (arg, delay) => new Promise(resolve => run.later(() => resolve(arg), delay));
 
-export function wait(arg, delay) {
-  delay = defaultDelay(delay);
-  return new Promise(function(resolve) {
-    run.later(function() {
-      resolve(arg);
-    }, delay);
-  });
-}
+export const login = db => db.get('documents.couch.session').save(admin.name, admin.password);
 
-export const baseURL = configs['2.0'].url;
-let storeIdentifier = 0;
+export const logout = db => db.get('documents.couch.session').delete();
 
-export function createStore(url = baseURL) {
-  let Store = instance.factoryFor('sofa:store').class.extend({
-    databaseOptionsForIdentifier(identifier) {
-      if(identifier === 'main') {
-        return { url, name: 'ember-cli-sofa-test-main' };
-      } else if(identifier === 'second') {
-        return { url, name: 'ember-cli-sofa-test-second' };
+export const recreate = db => login(db).then(() => db.get('documents.database').recreate({ design: true }));
+
+export const cleanup = (store, dbNames) => all(dbNames.map(dbName => recreate(store.database(dbName))));
+
+export const waitFor = fn => {
+  let start = new Date();
+  return new Promise((resolve, reject) => {
+    let i = setInterval(() => {
+      if(fn()) {
+        resolve();
+        clearInterval(i);
+      } else {
+        let now = new Date();
+        if(now - start > 20000) {
+          reject(new Error('took more than 20 seconds'));
+          clearInterval(i);
+        }
       }
-    }
+    }, 50);
   });
-  let key = `sofa:store/test/${storeIdentifier++}`;
-  instance.register(key, Store);
-  Store = instance.factoryFor(key);
-  let store = Store.create();
-  stores.push(store);
-  return store;
 }
 
 function registerHash(prefix, hash) {
   for(let name in hash) {
     let Class = hash[name];
     let normalizedName = dasherize(name);
-    app.register(`${prefix}:${normalizedName}`, Class, { instantiate: false });
+    state.instance.register(`${prefix}:${normalizedName}`, Class, { instantiate: false });
   }
 }
 
@@ -168,39 +229,7 @@ export function registerChanges(hash) {
 }
 
 export function register() {
-  return app.register(...arguments);
-}
-
-export const admin = {
-  name: 'ampatspell',
-  password: 'hello'
-};
-
-export function login(db) {
-  return db.get('documents.couch.session').save(admin.name, admin.password);
-}
-
-export function logout(db) {
-  return db.get('documents.couch.session').delete();
-}
-
-export function recreate(db) {
-  let docs = db.get('documents');
-  return login(db).then(() => {
-    return docs.get('database').create({ optional: true });
-  }).then(() => {
-    return docs.all();
-  }).then(json => {
-    return all(json.rows.map(row => {
-      return docs.delete(row.id, row.value.rev);
-    }));
-  });
-}
-
-export function cleanup(store, databaseNames) {
-  return all(databaseNames.map(name => {
-    return recreate(store.database(name));
-  }));
+  return state.instance.register(...arguments);
 }
 
 function withoutUndefined(opts) {
@@ -237,41 +266,4 @@ export function intercept(db) {
     return request.call(docs, opts);
   };
   return requests;
-}
-
-
-export function configurations(opts, fn) {
-  if(typeof opts === 'function') {
-    fn = opts;
-    opts = {};
-  }
-
-  let invoke = (couch, url, config) => {
-    fn({
-      module(name, cb) {
-        name = `${name} [${couch}]`;
-        return module(name, cb);
-      },
-      test,
-      createStore() {
-        return createStore(url);
-      },
-      config
-    });
-  };
-
-  let only = opts.only;
-  if(!only) {
-    only = [];
-  } else if(typeof only === 'string') {
-    only = [ only ];
-  }
-
-  for(let key in configs) {
-    if(only.length > 0 && only.indexOf(key) === -1) {
-      continue;
-    }
-    let value = configs[key];
-    invoke(key, value.url, merge({ name: key }, value));
-  }
 }
