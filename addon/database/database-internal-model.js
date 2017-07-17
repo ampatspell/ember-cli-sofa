@@ -114,7 +114,7 @@ export default Ember.Mixin.create({
     let documents = this.get('documents');
     let resume;
 
-    return resolve().then(() => {
+    return this._registerInternalModelOperation('save', internal, resolve().then(() => {
       return this._onInternalModelWillSave(internal);
     }).then(() => {
       let doc = this._serializeInternalModelToDocument(internal, 'document');
@@ -135,7 +135,7 @@ export default Ember.Mixin.create({
         resume();
       }
       return reject(err);
-    });
+    }));
   },
 
   _onInternalModelLoading(internal) {
