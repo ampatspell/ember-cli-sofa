@@ -7,6 +7,7 @@ import Databases from 'sofa/databases';
 import Database from 'sofa/database';
 import DatabaseSecurity from 'sofa/security';
 import DatabaseSecurityPair from 'sofa/security-pair';
+import DatabaseOperations from 'sofa/operations/database-operations';
 
 import NoopTransform from 'sofa/transforms/noop';
 import StringTransform from 'sofa/transforms/string';
@@ -40,6 +41,7 @@ export default {
     container.register('sofa:database', Database, { instantiate: false });
     container.register('sofa:database-security', DatabaseSecurity, { instantiate: false });
     container.register('sofa:database-security-pair', DatabaseSecurityPair, { instantiate: false });
+    container.register('sofa:database-operations', DatabaseOperations, { instantiate: false });
 
     container.register('sofa:belongs-to-loaded', BelongsToLoaded, { instantiate: false });
     container.register('sofa:belongs-to-collection', BelongsToCollection, { instantiate: false });
