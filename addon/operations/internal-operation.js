@@ -18,14 +18,14 @@ export default class InternalOperation {
   set promise(promise) {
     assert(`promise already set`, !this._promise);
     this._promise = promise;
-    this._promise.finally(() => this.done());
+    this._promise.finally(() => this._done());
   }
 
   get promise() {
     return this._promise;
   }
 
-  done() {
+  _done() {
     assert(`already done`, !this.isDone);
     this.isDone = true;
     this.owner._internalOperationDidFinish(this);
