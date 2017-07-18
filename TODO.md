@@ -40,6 +40,7 @@
 
 ### other
 
+* remove *-destroy.js
 * is it possible to provide `promise` prop for `PassiveRelationLoaderStateMixin`?
 * `model.save()`, `model.delete()`, ... second call while 1st is pending should return the same promise
 * option to delete documents by saving with `_deleted:true` or delete with `{_deleted: true, type:..}`
