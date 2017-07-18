@@ -3,7 +3,7 @@ import InternalOperation from './internal-operation';
 import { array } from '../util/computed';
 
 const {
-  RSVP: { all, resolve }
+  RSVP: { all }
 } = Ember;
 
 const noop = () => {};
