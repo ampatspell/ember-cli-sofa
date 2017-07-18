@@ -1,21 +1,4 @@
 import Ember from 'ember';
-import { lookup } from '../util/computed';
+import OperationsMixin from '../operations/operations-mixin';
 
-const operations = function() {
-  return lookup('sofa:operations');
-};
-
-export default Ember.Mixin.create({
-
-  operations: operations(),
-
-  _registerOperation(name, subject, promise) {
-    this.get('operations').register(name, subject, promise);
-    return promise;
-  },
-
-  _destroyOperations() {
-    this.get('operations').destroy();
-  }
-
-});
+export default Ember.Mixin.create(OperationsMixin);
