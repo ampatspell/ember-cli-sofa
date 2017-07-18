@@ -1,6 +1,10 @@
 import Ember from 'ember';
 import { lookup } from '../util/computed';
 
+const {
+  on
+} = Ember;
+
 const operations = () => lookup('sofa:operations');
 
 export default Ember.Mixin.create({
@@ -12,8 +16,12 @@ export default Ember.Mixin.create({
     return promise;
   },
 
-  _destroyOperations() {
-    this.get('operations').destroy();
+  willDestroy() {
+    this._super();
+    let ops = this.cacheFor('operations');
+    if(ops) {
+      ops.destroy();
+    }
   }
 
 });
