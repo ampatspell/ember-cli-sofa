@@ -429,8 +429,8 @@ export default Ember.Mixin.create({
     let ddoc = opts.ddoc;
     let selector = opts.selector;
 
-    let result = (type) => {
-      return (result) => {
+    let result = type => {
+      return result => {
         return { result, type };
       };
     };
