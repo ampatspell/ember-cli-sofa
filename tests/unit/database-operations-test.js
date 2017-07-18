@@ -38,7 +38,7 @@ configurations(({ module, test, createStore }) => {
     assert.equal(op.owner, ops);
     assert.equal(op.isDone, false);
     assert.equal(op.subject, model._internal);
-    assert.equal(op.name, 'internal-model:save');
+    assert.equal(op.name, 'internal-model-save');
     assert.ok(op.promise);
 
     return promise.then(() => {
