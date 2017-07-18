@@ -6,8 +6,6 @@ const {
   RSVP: { all }
 } = Ember;
 
-const noop = () => {};
-
 export default Ember.Object.extend({
 
   internalOperations: array(),
@@ -19,7 +17,7 @@ export default Ember.Object.extend({
   },
 
   wait() {
-    return all(this.get('internalOperations').map(op => op.promise.then(noop, noop)));
+    return all(this.get('internalOperations').map(op => op.done));
   },
 
   _internalOperationDidFinish(op) {
