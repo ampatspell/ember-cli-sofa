@@ -51,7 +51,7 @@ configurations(({ module, test, createStore }) => {
     let ops = db.get('operations');
     db.model('duck', { id: 'yellow' }).save();
     assert.ok(ops.get('internalOperations.length') === 1);
-    ops.wait().then(() => {
+    return ops.wait().then(() => {
       assert.ok(ops.get('internalOperations.length') === 0);
     });
   });
