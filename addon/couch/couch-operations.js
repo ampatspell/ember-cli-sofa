@@ -1,4 +1,3 @@
-import Ember from 'ember';
-import OperationsMixin from '../operations/operations-mixin';
+import forward from '../operations/forward-register-operation';
 
-export default Ember.Mixin.create(OperationsMixin);
+export default forward('store');

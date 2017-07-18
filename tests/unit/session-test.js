@@ -241,13 +241,14 @@ configurations(({ module, test, createStore }) => {
   });
 
   test('session has operation', assert => {
+    let ops = session.get('couch.store.operations');
     session.set('name', admin.name);
     session.set('password', admin.password);
-    assert.equal(session.get('couch.operations.internalOperations.length'), 0);
+    assert.equal(ops.get('internalOperations.length'), 0);
     let promise = session.save();
-    assert.equal(session.get('couch.operations.internalOperations.length'), 1);
+    assert.equal(ops.get('internalOperations.length'), 1);
     return promise.then(() => next()).then(() => {
-      assert.equal(session.get('couch.operations.internalOperations.length'), 0);
+      assert.equal(ops.get('internalOperations.length'), 0);
     });
   });
 

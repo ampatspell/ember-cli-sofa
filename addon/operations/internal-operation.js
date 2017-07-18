@@ -8,11 +8,9 @@ const noop = () => {};
 
 export default class InternalOperation {
 
-  constructor(owner, name, subject, promise) {
-    assert(`promise is required`, promise);
+  constructor(owner, promise) {
+    assert(`promise must have promise.then`, promise && promise.then);
     this.owner = owner;
-    this.name = name;
-    this.subject = subject;
     this.promise = promise;
     this.isDone = false;
   }

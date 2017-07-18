@@ -18,14 +18,13 @@ configurations({ only: '1.6' }, ({ module, test, createStore }) => {
   });
 
   test('exists', assert => {
+    let ops = store.get('operations');
     let db = store.get('db.main');
     db.model('duck', { id: 'yellow' }).save();
     db.get('couch.session').save('foo', 'bar');
-    assert.ok(db.get('operations.internalOperations.length') === 1);
-    assert.ok(db.get('couch.operations.internalOperations.length') === 1);
-    return store.wait().then(() => {
-      assert.ok(db.get('operations.internalOperations.length') === 0);
-      assert.ok(db.get('couch.operations.internalOperations.length') === 0);
+    assert.ok(ops.get('internalOperations.length') === 2);
+    return ops.wait().then(() => {
+      assert.ok(ops.get('internalOperations.length') === 0);
     });
   });
 

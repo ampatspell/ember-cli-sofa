@@ -10,8 +10,8 @@ export default Ember.Object.extend({
 
   internalOperations: array(),
 
-  register(name, subject, promise) {
-    let op = new InternalOperation(this, name, subject, promise);
+  register(promise) {
+    let op = new InternalOperation(this, promise);
     this.get('internalOperations').pushObject(op);
     return op;
   },

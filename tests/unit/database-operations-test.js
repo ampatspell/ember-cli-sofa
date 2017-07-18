@@ -22,14 +22,14 @@ configurations(({ module, test, createStore }) => {
     return cleanup(store, [ 'main' ]);
   });
 
-  test('database has operations', assert => {
-    let ops = db.get('operations');
+  test('store has operations', assert => {
+    let ops = db.get('store.operations');
     assert.ok(ops);
   });
 
   test('database operation is registered for model save', assert => {
     let model = db.model('duck', { id: 'yellow' });
-    let ops = db.get('operations');
+    let ops = db.get('store.operations');
 
     let promise = model.save();
     assert.ok(ops.get('internalOperations.length') === 1);
@@ -37,8 +37,6 @@ configurations(({ module, test, createStore }) => {
     let op = ops.get('internalOperations.lastObject');
     assert.equal(op.owner, ops);
     assert.equal(op.isDone, false);
-    assert.equal(op.subject, model._internal);
-    assert.equal(op.name, 'internal-model-save');
     assert.ok(op.promise);
 
     return promise.then(() => {
@@ -48,7 +46,7 @@ configurations(({ module, test, createStore }) => {
   });
 
   test('wait for all ops to finish', assert => {
-    let ops = db.get('operations');
+    let ops = db.get('store.operations');
     db.model('duck', { id: 'yellow' }).save();
     assert.ok(ops.get('internalOperations.length') === 1);
     return ops.wait().then(() => {

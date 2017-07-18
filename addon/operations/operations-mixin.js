@@ -7,8 +7,8 @@ export default Ember.Mixin.create({
 
   operations: operations(),
 
-  _registerOperation(name, subject, promise) {
-    this.get('operations').register(name, subject, promise);
+  _registerOperation(promise) {
+    this.get('operations').register(promise);
     return promise;
   },
 
