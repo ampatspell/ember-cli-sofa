@@ -4,6 +4,8 @@ const {
   assert
 } = Ember;
 
+const noop = () => {};
+
 export default class InternalOperation {
 
   constructor(owner, name, subject, promise) {
@@ -18,14 +20,18 @@ export default class InternalOperation {
   set promise(promise) {
     assert(`promise already set`, !this._promise);
     this._promise = promise;
-    this._promise.finally(() => this._done());
+    this._done = this._promise.then(noop, noop).finally(() => this._setDone());
   }
 
   get promise() {
     return this._promise;
   }
 
-  _done() {
+  get done() {
+    return this._done;
+  }
+
+  _setDone() {
     assert(`already done`, !this.isDone);
     this.isDone = true;
     this.owner._internalOperationDidFinish(this);
