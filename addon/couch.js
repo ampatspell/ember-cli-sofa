@@ -2,6 +2,7 @@ import Ember from 'ember';
 import CouchSession from './couch/couch-session';
 import CouchChanges from './couch/couch-changes';
 import CouchInternalChangesIdentity from './couch/couch-internal-changes-identity';
+import CouchOperations from './couch/couch-operations';
 import CouchDestroy from './couch/couch-destroy';
 
 const {
@@ -20,6 +21,7 @@ export default Ember.Object.extend(
   CouchSession,
   CouchChanges,
   CouchInternalChangesIdentity,
+  CouchOperations,
   CouchDestroy, {
 
   documents: null,

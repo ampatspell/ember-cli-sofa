@@ -1,4 +1,4 @@
-import { configurations, login, logout, admin } from '../helpers/setup';
+import { configurations, login, logout, admin, next } from '../helpers/setup';
 
 configurations(({ module, test, createStore }) => {
 
@@ -237,6 +237,17 @@ configurations(({ module, test, createStore }) => {
       return session.load();
     }).then(session => {
       assert.ok(session.get('roles').indexOf('_admin') !== -1);
+    });
+  });
+
+  test('session has operation', assert => {
+    session.set('name', admin.name);
+    session.set('password', admin.password);
+    assert.equal(session.get('couch.operations.internalOperations.length'), 0);
+    let promise = session.save();
+    assert.equal(session.get('couch.operations.internalOperations.length'), 1);
+    return promise.then(() => next()).then(() => {
+      assert.equal(session.get('couch.operations.internalOperations.length'), 0);
     });
   });
 
