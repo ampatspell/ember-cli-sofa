@@ -1,10 +1,6 @@
 import Ember from 'ember';
 import { lookup } from '../util/computed';
 
-const {
-  on
-} = Ember;
-
 const operations = () => lookup('sofa:operations');
 
 export default Ember.Mixin.create({
