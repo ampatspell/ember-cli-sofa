@@ -1,4 +1,5 @@
 import StoreIdentifier from 'sofa/store-identifier';
+import Operations from 'sofa/operations/operations';
 import Store from 'sofa/store';
 import Couches from 'sofa/couches';
 import Couch from 'sofa/couch';
@@ -7,7 +8,6 @@ import Databases from 'sofa/databases';
 import Database from 'sofa/database';
 import DatabaseSecurity from 'sofa/security';
 import DatabaseSecurityPair from 'sofa/security-pair';
-import DatabaseOperations from 'sofa/operations/database-operations';
 
 import NoopTransform from 'sofa/transforms/noop';
 import StringTransform from 'sofa/transforms/string';
@@ -34,6 +34,7 @@ export default {
   initialize(container) {
     container.register('sofa:store-identifier', StoreIdentifier);
     container.register('sofa:store', Store, { instantiate: false });
+    container.register('sofa:operations', Operations, { instantiate: false });
     container.register('sofa:couches', Couches, { instantiate: false });
     container.register('sofa:couch', Couch, { instantiate: false });
     container.register('sofa:session', Session, { instantiate: false });
@@ -41,7 +42,6 @@ export default {
     container.register('sofa:database', Database, { instantiate: false });
     container.register('sofa:database-security', DatabaseSecurity, { instantiate: false });
     container.register('sofa:database-security-pair', DatabaseSecurityPair, { instantiate: false });
-    container.register('sofa:database-operations', DatabaseOperations, { instantiate: false });
 
     container.register('sofa:belongs-to-loaded', BelongsToLoaded, { instantiate: false });
     container.register('sofa:belongs-to-collection', BelongsToCollection, { instantiate: false });

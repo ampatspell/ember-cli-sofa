@@ -2,9 +2,7 @@ import Ember from 'ember';
 import { lookup } from '../util/computed';
 
 const operations = function() {
-  return lookup('sofa:database-operations', function() {
-    return { database: this };
-  });
+  return lookup('sofa:operations');
 };
 
 export default Ember.Mixin.create({
