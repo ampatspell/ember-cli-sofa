@@ -1,10 +1,22 @@
 import Ember from 'ember';
 import InternalOperation from './internal-operation';
 import { array } from '../util/computed';
+import { next } from '../util/run';
 
 const {
   RSVP: { all }
 } = Ember;
+
+const iteration = (owner, resolve, idx=0) => {
+  next().then(() => {
+    let promises = owner.promises();
+    if(promises.length === 0) {
+      resolve();
+      return;
+    }
+    all(promises).then(() => iteration(owner, resolve, ++idx));
+  });
+};
 
 export default Ember.Object.extend({
 
@@ -16,12 +28,16 @@ export default Ember.Object.extend({
     return op;
   },
 
+  promises() {
+    return this.get('internalOperations').map(op => op.done);
+  },
+
   wait() {
-    return all(this.get('internalOperations').map(op => op.done));
+    return all(this.promises());
   },
 
   settle() {
-    return this.wait();
+    return new Promise(resolve => iteration(this, resolve));
   },
 
   _internalOperationDidFinish(op) {
