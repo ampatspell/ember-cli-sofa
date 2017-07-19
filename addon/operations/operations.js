@@ -20,6 +20,10 @@ export default Ember.Object.extend({
     return all(this.get('internalOperations').map(op => op.done));
   },
 
+  settle() {
+    return this.wait();
+  },
+
   _internalOperationDidFinish(op) {
     this.get('internalOperations').removeObject(op);
   }
