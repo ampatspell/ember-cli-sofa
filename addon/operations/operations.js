@@ -4,12 +4,14 @@ import { array } from '../util/computed';
 import { next } from '../util/run';
 
 const {
-  RSVP: { all }
+  RSVP: { all },
+  run
 } = Ember;
 
 const iteration = (owner, resolve, idx=0) => {
   next().then(() => {
     let promises = owner.promises();
+    console.log(`operations.settle #${idx}: ${promises.length} promise(s)`);
     if(promises.length === 0) {
       resolve();
       return;

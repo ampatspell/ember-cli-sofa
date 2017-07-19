@@ -23,7 +23,7 @@ export default {
     let store = app.lookup('service:store');
 
     if(fastboot.get('isFastBoot')) {
-      fastboot.deferRendering(store.get('operations').settle());
+      fastboot.deferRendering(store.get('operations').settle().then(() => console.log('deferRendering done')));
       shoebox.put(key, {
         get docs() {
           return store._createShoebox();
