@@ -2,6 +2,11 @@
 
 ## sofa
 
+## Operations
+
+* figure out when exactly `fastboot.deferRendering`
+* wait until there are zero ops for 1-2(?) runloops
+
 ### Relationship classes
 
 * paginated relationship helper `Relationship.extend({ paginated: paginated(...) })`
