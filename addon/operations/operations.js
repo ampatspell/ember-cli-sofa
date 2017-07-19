@@ -4,8 +4,7 @@ import { array } from '../util/computed';
 import { next } from '../util/run';
 
 const {
-  RSVP: { all },
-  run
+  RSVP: { all }
 } = Ember;
 
 const iteration = (owner, resolve, idx=0) => {
