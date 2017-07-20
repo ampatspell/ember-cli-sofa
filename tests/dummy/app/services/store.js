@@ -12,7 +12,7 @@ const prop = key => {
 export default Store.extend({
 
   databaseOptionsForIdentifier(identifier) {
-    let url = 'http://127.0.0.1:5984'; // '/api';
+    let url = '/api/dummy';
     if(identifier === 'main') {
       return { url, name: 'thing' };
     }
