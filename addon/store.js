@@ -14,6 +14,7 @@ import StoreRelation from './store/store-relation';
 import StoreChangesClass from './store/store-changes-class';
 import StoreChanges from './store/store-changes';
 import StoreShoebox from './store/store-shoebox';
+import StoreOperations from './store/store-operations';
 
 const {
   Logger: { warn }
@@ -34,7 +35,8 @@ export default Ember.Service.extend(
   StoreModelNames,
   StoreDestroy,
   StoreModelAttachments,
-  StoreShoebox, {
+  StoreShoebox,
+  StoreOperations, {
 
   find() {
     warn(this+'', '`find`', ...arguments);

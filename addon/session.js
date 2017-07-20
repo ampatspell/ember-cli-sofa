@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import createStateMixin from './util/basic-state-mixin';
+import createForwardMixin from './operations/forward-register-operation';
 import { array } from './util/computed';
 
 const {
@@ -13,7 +14,12 @@ const State = createStateMixin({
   onDirty: [ 'name', 'password' ]
 });
 
-export default Ember.Object.extend(State, Ember.Evented, {
+const ForwardRegisterOperation = createForwardMixin('couch');
+
+export default Ember.Object.extend(
+  State,
+  ForwardRegisterOperation,
+  Ember.Evented, {
 
   couch: null,
   documents: oneWay('couch.documents.session'),
@@ -45,25 +51,27 @@ export default Ember.Object.extend(State, Ember.Evented, {
 
   load() {
     this.onLoading();
-    return this.get('documents').load().then(data => {
+    let documents = this.get('documents');
+    return this._registerOperation(documents.load().then(data => {
       this.onLoaded(data.userCtx);
       return this;
     }, err => {
       this.onError(err);
       return reject(err);
-    });
+    }));
   },
 
   _save() {
     this.onSaving();
     let { name, password } = this.getProperties('name', 'password');
-    return this.get('documents').save(name, password).then(data => {
+    let documents = this.get('documents');
+    return this._registerOperation(documents.save(name, password).then(data => {
       this.onSaved(data);
       return this;
     }, err => {
       this.onSaveError(err);
       return reject(err);
-    });
+    }));
   },
 
   save(name, password) {
@@ -75,13 +83,14 @@ export default Ember.Object.extend(State, Ember.Evented, {
 
   delete() {
     this.onSaving();
-    return this.get('documents').delete().then(() => {
+    let documents = this.get('documents');
+    return this._registerOperation(documents.delete().then(() => {
       this.onDeleted();
       return this;
     }, err => {
       this.onError(err);
       return reject(err);
-    });
+    }));
   },
 
   onDeleted() {

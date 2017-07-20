@@ -11,6 +11,7 @@ import DatabaseSecurity from './database/database-security';
 import DatabaseShoebox from './database/database-shoebox';
 import DatabaseChanges from './database/database-changes';
 import DatabaseInternalChangesIdentity from './database/database-internal-changes-identity';
+import DatabaseOperations from './database/database-operations';
 import DatabaseDestroy from './database/database-destroy';
 
 export default Ember.Object.extend(
@@ -25,6 +26,7 @@ export default Ember.Object.extend(
   DatabaseShoebox,
   DatabaseChanges,
   DatabaseInternalChangesIdentity,
+  DatabaseOperations,
   DatabaseDestroy, {
 
   identifier: null,

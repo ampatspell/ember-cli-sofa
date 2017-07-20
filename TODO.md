@@ -2,6 +2,11 @@
 
 ## sofa
 
+## Operations
+
+* figure out when exactly `fastboot.deferRendering`
+* wait until there are zero ops for 1-2(?) runloops
+
 ### Relationship classes
 
 * paginated relationship helper `Relationship.extend({ paginated: paginated(...) })`
@@ -40,8 +45,9 @@
 
 ### other
 
+* remove *-destroy.js
 * is it possible to provide `promise` prop for `PassiveRelationLoaderStateMixin`?
-* `model.save()`, `model.delete()`, ... second call while 1st is pending should return the same promise
+* `model.save()`, `model.delete()`, ... second call while 1st is pending should return the same promise. `internalModel.running().then...`
 * option to delete documents by saving with `_deleted:true` or delete with `{_deleted: true, type:..}`
 * per-database models (each database is initialized with model folder name which is returned by `store.databaseOptionsForIdentifier`)
 * embedded models (persisted as a `{ key: { model } }`)

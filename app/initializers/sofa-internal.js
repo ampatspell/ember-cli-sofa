@@ -1,4 +1,5 @@
 import StoreIdentifier from 'sofa/store-identifier';
+import Operations from 'sofa/operations/operations';
 import Store from 'sofa/store';
 import Couches from 'sofa/couches';
 import Couch from 'sofa/couch';
@@ -33,6 +34,7 @@ export default {
   initialize(container) {
     container.register('sofa:store-identifier', StoreIdentifier);
     container.register('sofa:store', Store, { instantiate: false });
+    container.register('sofa:operations', Operations, { instantiate: false });
     container.register('sofa:couches', Couches, { instantiate: false });
     container.register('sofa:couch', Couch, { instantiate: false });
     container.register('sofa:session', Session, { instantiate: false });

@@ -114,7 +114,7 @@ export default Ember.Mixin.create({
     let documents = this.get('documents');
     let resume;
 
-    return resolve().then(() => {
+    return this._registerOperation(resolve().then(() => {
       return this._onInternalModelWillSave(internal);
     }).then(() => {
       let doc = this._serializeInternalModelToDocument(internal, 'document');
@@ -135,7 +135,7 @@ export default Ember.Mixin.create({
         resume();
       }
       return reject(err);
-    });
+    }));
   },
 
   _onInternalModelLoading(internal) {
@@ -194,12 +194,12 @@ export default Ember.Mixin.create({
 
     this._onInternalModelLoading(internal);
 
-    return documents.load(docId).then(doc => {
+    return this._registerOperation(documents.load(docId).then(doc => {
       return this._onInternalModelLoaded(internal, doc);
     }, err => {
       this._onInternalModelLoadFailed(internal, err);
       return reject(err);
-    });
+    }));
   },
 
   _loadInternalModel(internal, opts) {
@@ -217,16 +217,7 @@ export default Ember.Mixin.create({
     let documents = this.get('documents');
     let ids = A(array.map(internal => internal.docId));
 
-    // TODO: chunk array in 300 ids per request
-    // let size = 1;
-    // let chunks = chunkArray(array, size);
-    // return allSettled(chunks.map(chunk => {
-    //   return documents.all({ include_docs: true, keys: chunk.map(internal => internal.docId) });
-    // })).then(blocks => {
-    // }).then(hash => {
-    // });
-
-    return documents.all({ include_docs: true, keys: ids }).then(json => {
+    return this._registerOperation(documents.all({ include_docs: true, keys: ids }).then(json => {
       let rows = json.rows;
       return allSettled(array.map((internal, idx) => {
         let row = rows[idx];
@@ -248,7 +239,7 @@ export default Ember.Mixin.create({
         return reject(new Errors(rejected.map(rejection => rejection.reason)));
       }
       return array;
-    });
+    }));
   },
 
   _loadInternalModelForDocId(docId, opts) {
@@ -257,9 +248,11 @@ export default Ember.Mixin.create({
       return this._loadInternalModel(internal, opts);
     }
 
-    return this.get('documents').load(docId).then(doc => {
+    let documents = this.get('documents');
+
+    return this._registerOperation(documents.load(docId).then(doc => {
       return this._deserializeSavedDocumentToInternalModel(doc, null, false);
-    });
+    }));
   },
 
   _loadInternalModelForModelName(modelName, modelId, opts) {
@@ -272,9 +265,11 @@ export default Ember.Mixin.create({
     let definition = this._definitionForModelClass(modelClass);
     let docId = definition.docId(modelId);
 
-    return this.get('documents').load(docId).then(doc => {
+    let documents = this.get('documents');
+
+    return this._registerOperation(documents.load(docId).then(doc => {
       return this._deserializeSavedDocumentToInternalModel(doc, modelClass, false);
-    });
+    }));
   },
 
   _onInternalModelDeleted(internal, json) {
@@ -300,18 +295,13 @@ export default Ember.Mixin.create({
   _invokeInternalWillDeleteCallbacks(internal) {
     let model = internal.model;
     if(!model) {
-      return resolve();
+      return;
     }
-
-    return resolve().then(() => {
-      return model.willDelete();
-    });
+    return resolve(model.willDelete());
   },
 
   _onInternalModelWillDelete(internal) {
-    return resolve().then(() => {
-      return this._invokeInternalWillDeleteCallbacks(internal);
-    });
+    return resolve(this._invokeInternalWillDeleteCallbacks(internal));
   },
 
   _onInternalModelDeleting(internal) {
@@ -337,7 +327,7 @@ export default Ember.Mixin.create({
     let rev = internal.rev;
     let documents = this.get('documents');
 
-    return resolve().then(() => {
+    return this._registerOperation(resolve().then(() => {
       return this._onInternalModelWillDelete(internal);
     }).then(() => {
       this._onInternalModelDeleting(internal);
@@ -347,7 +337,7 @@ export default Ember.Mixin.create({
       return internal;
     }, err => {
       return this._onInternalModelDeleteFailed(internal, err);
-    });
+    }));
   },
 
   _expectedModelClassFromOpts(opts) {
@@ -377,9 +367,10 @@ export default Ember.Mixin.create({
     let optional = this._optionalFromOpts(opts);
 
     let documents = this.get('documents');
-    return documents.view(ddoc, view, opts).then(json => {
+
+    return this._registerOperation(documents.view(ddoc, view, opts).then(json => {
       return this._deserializeDocuments(A(json.rows).map(row => row.doc), expectedModelClass, optional);
-    });
+    }));
   },
 
   _internalModelMango(opts) {
@@ -397,9 +388,10 @@ export default Ember.Mixin.create({
     }
 
     let mango = this.get('documents.mango');
-    return mango.find(opts).then(json => {
+
+    return this._registerOperation(mango.find(opts).then(json => {
       return this._deserializeDocuments(json.docs, expectedModelClass, optional);
-    });
+    }));
   },
 
   _internalModelAll(opts) {
@@ -409,9 +401,10 @@ export default Ember.Mixin.create({
     let optional = this._optionalFromOpts(opts);
 
     let documents = this.get('documents');
-    return documents.all(opts).then(json => {
+
+    return this._registerOperation(documents.all(opts).then(json => {
       return this._deserializeDocuments(A(json.rows).map(row => row.doc), expectedModelClass, optional);
-    });
+    }));
   },
 
   //
@@ -431,8 +424,8 @@ export default Ember.Mixin.create({
     let ddoc = opts.ddoc;
     let selector = opts.selector;
 
-    let result = (type) => {
-      return (result) => {
+    let result = type => {
+      return result => {
         return { result, type };
       };
     };
