@@ -25,6 +25,7 @@
 ### fastboot
 
 * serialize `isNew` models with docId -- include model `_state`
+* do not autoload models and relationships in fastboot. but `relationshi[.get('isLoading')` should return `true` and update internal state
 
 ### attachments
 
