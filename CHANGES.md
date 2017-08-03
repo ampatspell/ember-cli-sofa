@@ -4,6 +4,11 @@
 Version: {{version}}
 ```
 
+### 2.0.9
+
+* [new] Session support in FastBoot
+* [new] Default to FastBoot request protocol and host if CouchDB URL is relative
+
 ### 2.0.8
 
 * [new] `belongs-to-collection` relationship with fastboot support
