@@ -24,7 +24,7 @@
 
 ### fastboot
 
-* serialize `isNew` models -- include model `_state`
+* serialize `isNew` models with docId -- include model `_state`
 
 ### attachments
 
