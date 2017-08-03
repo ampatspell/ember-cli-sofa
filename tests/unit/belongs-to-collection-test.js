@@ -146,7 +146,7 @@ configurations(({ module, test, createStore }) => {
       flush();
       root = db.model('root');
       assert.deepEqual(root.get('duck').getProperties('isLoaded', 'id'), { isLoaded: false, id: undefined });
-      return wait(null, 300);
+      return wait(null, 500);
     }).then(() => {
       assert.deepEqual(root.get('duck').getProperties('isLoaded', 'id'), { isLoaded: true, id: 'green' });
       return root.get('duck.promise');

@@ -19,7 +19,8 @@ module.exports = app => {
     stack.unshift(m);
   };
 
-  add('/api/1.6', 'http://127.0.0.1:6016');
-  add('/api/2.0', 'http://127.0.0.1:6020');
+  add('/api/dummy', 'http://127.0.0.1:5984');
+  add('/api/1.6',   'http://127.0.0.1:6016');
+  add('/api/2.0',   'http://127.0.0.1:6020');
 
 };
