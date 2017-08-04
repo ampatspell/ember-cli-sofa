@@ -8,7 +8,7 @@ const {
 export default Query.extend({
 
   find: computed(function() {
-    return { selector: { type: 'image' } };
-  }),
+    return { ddoc: 'images', view: 'all' };
+  })
 
 });

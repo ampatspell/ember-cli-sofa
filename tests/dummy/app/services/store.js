@@ -5,6 +5,8 @@ const {
   computed: { reads }
 } = Ember;
 
+const url = '/api/dummy';
+
 const prop = key => {
   return reads(`root.${key}`).readOnly();
 };
@@ -12,7 +14,6 @@ const prop = key => {
 export default Store.extend({
 
   databaseOptionsForIdentifier(identifier) {
-    let url = '/api/dummy';
     if(identifier === 'main') {
       return { url, name: 'thing' };
     }
