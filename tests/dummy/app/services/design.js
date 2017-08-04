@@ -7,6 +7,7 @@ const {
   assign
 } = Ember;
 
+/* global emit */
 const docs = [
   {
     id: 'main',
