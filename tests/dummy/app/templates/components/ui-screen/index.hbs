@@ -46,3 +46,26 @@
     {{/ui-row}}
   {{/if}}
 {{/ui-block}}
+
+{{#ui-block title='Design documents'}}
+  {{#if design.isBusy}}
+    {{#ui-row}}
+      Inserting…
+    {{/ui-row}}
+  {{else}}
+    {{#if design.result}}
+      {{#each design.result as |json|}}
+        {{#ui-row title=json._id}}
+          {{ui-json value=json}}
+        {{/ui-row}}
+      {{/each}}
+    {{else if design.error}}
+      {{#ui-row}}
+        {{ui-json value=design.error}}
+      {{/ui-row}}
+    {{/if}}
+  {{/if}}
+  {{#ui-row}}
+    {{ui-button title='Insert' disabled=design.isBusy action=(action 'ddocs')}}
+  {{/ui-row}}
+{{/ui-block}}

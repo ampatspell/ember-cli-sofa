@@ -1,6 +1,7 @@
 import Ember from 'ember';
 
 const {
+  inject: { service },
   RSVP: { hash },
   computed: { reads }
 } = Ember;
@@ -9,6 +10,7 @@ export default Ember.Component.extend({
   classNameBindings: [':ui-screen', ':index'],
 
   session: reads('store.db.main.couch.session'),
+  design: service(),
 
   info: null,
 
@@ -20,6 +22,9 @@ export default Ember.Component.extend({
       }).then(info => {
         this.set('info', info);
       });
+    },
+    ddocs() {
+      this.get('design').insert();
     }
   }
 });
