@@ -8,7 +8,8 @@ const {
 export default Query.extend({
 
   find: computed(function() {
-    return { selector: { } };
+    let author = this.get('model.docId');
+    return { ddoc: 'posts', view: 'by-author', key: author };
   }),
 
 });

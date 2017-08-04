@@ -9,15 +9,7 @@ export default Query.extend({
 
   find: computed('model.docId', function() {
     let author = this.get('model.docId');
-    return {
-      selector: {
-        authors: {
-          $elemMatch: {
-            $eq: author
-          }
-        }
-      }
-    };
+    return { ddoc: 'blogs', view: 'by-author', key: author };
   }),
 
 });
