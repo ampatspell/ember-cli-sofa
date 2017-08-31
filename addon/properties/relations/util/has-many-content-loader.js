@@ -48,7 +48,7 @@ export default class HasManyContentLoader {
   splitInternalModelsByDatabase(content) {
     let dbs = new Map();
     content.forEach(internal => {
-      if(!internal.shouldLazyLoad(true)) {
+      if(!internal.shouldLazyLoad()) {
         return;
       }
       let db = internal.database;

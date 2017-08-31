@@ -351,11 +351,11 @@ export default class InternalModel {
     error(`Lazy load failed for ${message}`, info);
   }
 
-  shouldLazyLoad(checkForExistingLoad) {
+  shouldLazyLoad() {
     if(!globalOptions.autoload.internalModel) {
       return;
     }
-    if(checkForExistingLoad && this.loadPromise) {
+    if(this.loadPromise) {
       return;
     }
     let state = this.state;
@@ -387,7 +387,7 @@ export default class InternalModel {
   }
 
   enqueueLazyLoadModelIfNeeded() {
-    if(!this.shouldLazyLoad(true)) {
+    if(!this.shouldLazyLoad()) {
       return;
     }
     this.setLazyLoadModelPromise(this.createLazyLoadPromise());
