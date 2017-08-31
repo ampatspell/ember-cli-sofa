@@ -5,7 +5,6 @@ import Error from './util/error';
 import { next } from './util/run';
 import { getDefinition } from './model';
 import Relationship from './properties/relationship';
-import globalOptions from './util/global-options';
 
 const {
   A,
@@ -351,11 +350,11 @@ export default class InternalModel {
     error(`Lazy load failed for ${message}`, info);
   }
 
-  shouldLazyLoad(checkForExistingLoad) {
-    if(!globalOptions.autoload.internalModel) {
+  shouldLazyLoad() {
+    if(!this.store.shouldAutoloadInternalModel(this)) {
       return;
     }
-    if(checkForExistingLoad && this.loadPromise) {
+    if(this.loadPromise) {
       return;
     }
     let state = this.state;
@@ -387,7 +386,7 @@ export default class InternalModel {
   }
 
   enqueueLazyLoadModelIfNeeded() {
-    if(!this.shouldLazyLoad(true)) {
+    if(!this.shouldLazyLoad()) {
       return;
     }
     this.setLazyLoadModelPromise(this.createLazyLoadPromise());

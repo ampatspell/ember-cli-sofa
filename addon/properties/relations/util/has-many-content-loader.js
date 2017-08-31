@@ -1,6 +1,5 @@
 import Ember from 'ember';
 import { Errors } from '../../../util/error';
-import globalOptions from '../../../util/global-options';
 
 const {
   RSVP: { resolve, allSettled },
@@ -12,6 +11,7 @@ export default class HasManyContentLoader {
 
   constructor(relation) {
     this.relation = relation;
+    this.store = relation.store;
     this.state = {
       isLoading: false,
       isError: false,
@@ -48,7 +48,7 @@ export default class HasManyContentLoader {
   splitInternalModelsByDatabase(content) {
     let dbs = new Map();
     content.forEach(internal => {
-      if(!internal.shouldLazyLoad(true)) {
+      if(!internal.shouldLazyLoad()) {
         return;
       }
       let db = internal.database;
@@ -90,7 +90,7 @@ export default class HasManyContentLoader {
   load() {
     let state = this.state;
 
-    if(!globalOptions.autoload.persistedArray) {
+    if(!this.store.shouldAutoloadPersistedArray(this)) {
       return state;
     }
 
