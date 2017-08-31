@@ -5,7 +5,6 @@ import Error from './util/error';
 import { next } from './util/run';
 import { getDefinition } from './model';
 import Relationship from './properties/relationship';
-import globalOptions from './util/global-options';
 
 const {
   A,
@@ -352,7 +351,7 @@ export default class InternalModel {
   }
 
   shouldLazyLoad() {
-    if(!globalOptions.autoload.internalModel) {
+    if(!this.store.shouldAutoloadInternalModel(this)) {
       return;
     }
     if(this.loadPromise) {

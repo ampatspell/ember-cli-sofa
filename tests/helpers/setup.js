@@ -3,7 +3,6 @@ import { module as qmodule, skip } from 'qunit';
 import { test as qtest, only as qonly } from 'ember-qunit';
 import startApp from './start-app';
 import extendAssert from './extend-assert';
-import globalOptions from 'sofa/util/global-options';
 
 const {
   RSVP: { Promise, resolve, reject, all },
@@ -61,8 +60,6 @@ class State {
     this.stores = [];
   }
   start(config) {
-    globalOptions.autoload.internalModel = false;
-    globalOptions.autoload.persistedArray = false;
     this.application = startApp();
     this.instance = this.application.buildInstance();
     return this.once(config);
@@ -102,6 +99,8 @@ class State {
   }
   createStore(url=this.baseURL) {
     let Store = this.instance.factoryFor('sofa:store').class.extend({
+      _isAutoloadInternalModelEnabled: false,
+      _isAutoloadPersistedArrayEnabled: false,
       databaseOptionsForIdentifier(identifier) {
         if(identifier === 'main') {
           return { url, name: 'ember-cli-sofa-test-main' };
