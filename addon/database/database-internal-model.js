@@ -1,23 +1,12 @@
 import Ember from 'ember';
 import Error, { Errors } from '../util/error';
+// import chunkArray from '../util/chunk-array';
 
 const {
   merge,
   RSVP: { resolve, reject, allSettled },
-  assert,
   A
 } = Ember;
-
-const chunkArray = (array, size) => {
-  assert(`size must be more than zero`, size > 0);
-  let result = A();
-  for(let i = 0; i < array.length; i += size) {
-    result.push(A(array.slice(i, i + size)));
-  }
-  return result;
-};
-
-window.chunkArray = chunkArray;
 
 export default Ember.Mixin.create({
 
